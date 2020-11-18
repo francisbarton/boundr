@@ -65,9 +65,5 @@ get_ward_bounds <- function(x = NA) {
 
 }
 
-test_out <- get_ward_bounds("Ealing")
-
-tmap::tm_shape(test_out) + tm_borders()
-
-test_out <- jsonlite::fromJSON("https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/WD19_LAD19_UK_LU/FeatureServer/0/query?where=LAD19NM%20%3D%20'EALING'&outFields=*&outSR=4326&f=json") %>%
-  purrr::pluck("features", "attributes")
+# test_out <- get_ward_bounds("Ealing")
+# tmap::tm_shape(test_out) + tm_borders()
