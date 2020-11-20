@@ -1,7 +1,15 @@
 Package: jogger
 Version: 0.0.0.9000
-Title: Retrieves Area Boundaries and Data from ONS OpenGeography
-Authors@R: person("Francis", "Barton", email = "fbarton@alwaysdata.net", role = c("aut", "cre"))
+Title: Retrieve Area Boundaries and Data from the ONS Open Geography Portal
+Description: The main function of this package is to download area boundaries
+  (in GeoJSON format) using the ONS Open Geography API, for all sub-areas - at a
+  specified level - within a specified area. The main script will return a data
+  frame with the sub-area geometry as an `sf` object ready to be visualised as a
+  map. Initially just for areas within England and Wales, with a hope to add
+  Scottish geographies at a later date.
+Authors@R: person("Francis", "Barton",
+  email = "fbarton@alwaysdata.net",
+  role = c("aut", "cre"))
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
