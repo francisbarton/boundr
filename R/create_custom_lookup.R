@@ -3,7 +3,8 @@
 #' @param bounds_level
 #' @param within
 #' @param within_level
-#' @param return
+#' @param include_msoa
+#' @param return_style
 #'
 #' @return
 #' @export
@@ -14,9 +15,16 @@ create_custom_lookup <- function(
   within,
   within_level,
   include_msoa = NULL,
-  return = "tidy" # can be "all", "simple" or "minimal"
+  return_style = "tidy" # can be "all", "simple" or "minimal"
   ) {
 
+
+
+  if (is.null(include_msoa) && tolower(bounds_level) == "lsoa" && !tolower(within_level) %in% c("wd", "ward") && !return_style %in% c("simple", "minimal")) {
+    include_msoa <- TRUE
+  } else if (is.null(include_msoa)) {
+    include_msoa <- FALSE
+  }
 
   if (include_msoa && !tolower(bounds_level) %in% c("lsoa", "msoa")) {
     usethis::ui_info(
@@ -26,13 +34,6 @@ create_custom_lookup <- function(
       )
     include_msoa <- FALSE
   }
-
-  if (is.null(include_msoa) && tolower(bounds_level) == "lsoa" && !to_lower(within_level) %in% c("wd", "ward") && !return %in% c("simple", "minimal")) {
-    include_msoa <- TRUE
-  } else if (is.null(include_msoa)) {
-    include_msoa <- FALSE
-  }
-
 
   if (tolower(bounds_level) == "msoa") {
     bounds_level <- "lsoa"
@@ -81,7 +82,9 @@ create_custom_lookup <- function(
     # "utla",   "rgn"     1,    3,
     # "lsoa",   "cauth"   2,    5,
     # "msoa",   "cauth"   2,    5,
+    # "lsoa",   "rgn"     1,    5,
     # "msoa",   "rgn"     1,    5,
+    # "lsoa",   "ctry"    1,    5
     # "msoa",   "ctry"    1,    5
   ) %>%
     dplyr::mutate(bounds_level = dplyr::case_when(
@@ -97,13 +100,6 @@ create_custom_lookup <- function(
       dplyr::pull(serious)
   }
 
-  extract_lookup <- function(x) {
-    x %>%
-      jsonlite::fromJSON() %>%
-      purrr::pluck("features", "attributes") %>%
-      janitor::clean_names()
-  }
-
 
   fields <- c(bounds_level, within_level) %>%
     get_serious() %>%
@@ -115,69 +111,73 @@ create_custom_lookup <- function(
     dplyr::filter(bounds_level == fields[1]) %>%
     dplyr::filter(within_level == fields[4]) %>%
     dplyr::select(3:4) %>%
-    # c() %>%
-    unlist()
+    unlist() %>%
+    unname() %>%
+    c(recursive = TRUE)
 
 
   return_fields <- "*"
   end_col <- 4
 
 
-  if (return == "simple") {
+  if (return_style == "simple") {
     return_fields <- fields
   }
 
-  if (return == "minimal") {
+  if (return_style == "minimal") {
     return_fields <- fields[1:2]
-    end_col <- 2
+    # end_col <- 2
   }
 
-  treat_results <- function(df, return) {
+  treat_results <- function(df, return_style) {
 
-    if (!return %in% c("tidy", "all", "simple", "minimal")) {
-      usethis::ui_warn("return parameter not correctly specified")
+    if (!return_style %in% c("tidy", "all", "simple", "minimal")) {
+      usethis::ui_warn("'return_style' parameter not correctly specified.
+                       Options are \"tidy\", \"all\", \"simple\", \"minimal\".
+                       Setting to \"tidy\"")
+      return_style <- "tidy"
     }
 
-    if (return == "all") {
+    if (return_style == "all") {
       df <- df %>%
         dplyr::select(!!rlang::sym(fields[1]):!!rlang::sym(fields[end_col])) %>%
         dplyr::distinct()
     }
 
-    if (return == "tidy") {
+    if (return_style == "tidy") {
       df <- df %>%
         dplyr::select(!!rlang::sym(fields[1]):!!rlang::sym(fields[end_col])) %>%
         dplyr::distinct() %>%
         janitor::remove_empty("cols")
     }
 
-    if (return %in% c("simple", "minimal")) {
+    if (return_style %in% c("simple", "minimal")) {
       df <- df %>%
         dplyr::distinct()
     }
 
-    df
+    return(df)
   }
 
   # create another lookup (if necessary) for automatically looking
   # up the type and server parameters required for each table_code;
   # currently assuming that type="census" and server="feature" work for all!?
-  build_api_query(
+  df_out <- build_api_query(
     table_code_ref = table_code_refs[1],
     search_within = fields[4],
     locations = within,
     fields = return_fields
     ) %>%
     extract_lookup() %>%
-    treat_results(return = return) # %>%
-    # convert_lsoa_to_msoa
+    treat_results(return_style = return_style)
 
+  if (!include_msoa) return(df_out)
+
+  df_out %>%
+    lsoa_to_msoa_lookup(keep = keep_lsoa_cols, nmw = FALSE)
 
 
 }
 
 
-create_custom_lookup(bounds_level = "lsoa", within = "Swindon", within_level = "lad", return = "simple")
-
-
-
+# create_custom_lookup(include_msoa = TRUE, bounds_level = "msoa", within = "Swindon", within_level = "lad", return_style = "simple")

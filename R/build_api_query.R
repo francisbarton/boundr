@@ -57,7 +57,8 @@ build_api_query <- function(
 
   # pull table code from lookup_lookup
 
-  table_code <- lookup_lookup[[table_code_ref]]
+  # table_code <- lookup_lookup[[table_code_ref]]
+  table_code <- lookup_lookup[[5]]
 
 
   # type = "census" or "admin"
