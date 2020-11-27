@@ -1,14 +1,16 @@
-#' Helper Function to Build Query for Open Geography API
+#' Helper Function to Build Queries to the Open Geography API
 #'
-#' @param table_code_ref
-#' @param type
-#' @param server
-#' @param search_within
-#' @param locations
-#' @param fields
+#' @description A function called by create_custom_lookup.R and geo_get.R to build a valid query
 #'
-#' @return
+#' @param table_code_ref an integer, passed by the calling function, that indicates which table_code to use
+#' @param type geographies can be listed as various types. Here we are just using Census geographies and Administrative geographies. This affects the beginning of the query URL. Census is the default, but Admin can be passed instead where necessary.
+#' @param server Some API queries (lookup tables) require the Feature server, others (boundaries) require the Map server
+#' @param search_within The area level variable name associated with the locations filter. e.g. \code{"cty19nm"} or \code{"rgn19nm"}
+#' @param locations A place name, or list of place names, to filter the data by. If nothing is stipulated then the full unfiltered table will be returned
+#' @param fields The fields of the data to be returned. Defaults to \code{"*"} (all); can instead be a set of column names/variables.
 #'
+#' @return a string that should function as a valid API query
+#' @export
 #' @examples
 #' build_api_query(table_code = "Wards_December_2019_Boundaries_EW_BFC",
 #' type = "admin",
@@ -25,7 +27,8 @@ build_api_query <- function(
   fields = "*") {
 
 
-  lookup_lookup <- c(
+  # create a list of codes for the main function. Source URLs are included in comments.
+  table_codes <- c(
 
     # "https://geoportal.statistics.gov.uk/datasets/ward-to-local-authority-district-to-county-to-region-to-country-december-2019-lookup-in-united-kingdom"
     "WD19_LAD19_CTY19_OTH_UK_LU",
@@ -55,14 +58,11 @@ build_api_query <- function(
   # "API Explorer" tab on each Open Geography Portal page.
 
 
-  # pull table code from lookup_lookup
-
-  # table_code <- lookup_lookup[[table_code_ref]]
-  table_code <- lookup_lookup[[5]]
+  # pull table code from lookup_lookup above
+  table_code <- table_codes[table_code_ref]
 
 
   # type = "census" or "admin"
-
   if (type == "census") {
     url_base <- "https://services1.arcgis.com/ESMARspQHYMw9BZ9/"
     admin <- ""
