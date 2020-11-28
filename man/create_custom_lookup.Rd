@@ -2,22 +2,38 @@
 % Please edit documentation in R/create_custom_lookup.R
 \name{create_custom_lookup}
 \alias{create_custom_lookup}
-\title{Title}
+\title{Uses build_api_query() to Retrieve, Tidy and Return a Lookup Table}
 \usage{
 create_custom_lookup(
   bounds_level,
   within,
   within_level,
   include_msoa = NULL,
-  return_style = "tidy"
+  return_style = "tidy",
+  include_welsh_names = NULL
 )
 }
 \arguments{
-\item{return_style}{}
+\item{bounds_level}{the lowest level at which to return codes and names, eg "LSOA". Has to be one of "lsoa", "msoa", "wd/ward", "lad", "ltla/lower", "utla/upper", "cty/county", "cauth", "rgn/region", "ctry/country". Case-insensitive.}
+
+\item{within}{the name of a geographic area to filter by eg "Swindon", "Gloucestershire", "Wales"}
+
+\item{within_level}{upper geographic level to filter at. eg if filtering to find all LSOAs in a local authority, within_level will be "lad" or "ltla" or "utla". Has to be one of "lad", "cty/county", "utla/upper", "rgn/region", "cauth" or "ctry/country". Case-insensitive.}
+
+\item{include_msoa}{if bounds_level is LSOA, whether to also include MSOA columns (in "tidy" or "all" styles). If bounds_level is MSOA, this will be forced to TRUE.}
+
+\item{return_style}{"tidy" (the default) means all available columns between bounds_level and within_level will be returned, but with any empty columns removed. "all" is as "tidy" except empty columns are retained. "simple" means that only the code and name (cd and nm) columns for bounds_level and within_level are returned - other columns are omitted. "minimal" means only return the columns for bounds_level.}
+
+\item{include_welsh_names}{only makes a difference when bounds_level = msoa, or when bounds_level = lsoa and return_style = "all" or "tidy". FALSE returns no Welsh language columns. TRUE attempts to return Welsh language columns for MSOA names. NULL (default) means that a decision will be made by the program, based on whether lsoa11cd or msoa11cd columns contain "^W"}
 }
 \value{
-
+a data frame (tibble)
 }
 \description{
-Title
+Uses build_api_query() to Retrieve, Tidy and Return a Lookup Table
+}
+\examples{
+create_custom_lookup(bounds_level = "msoa", within = "Swindon", within_level = "lad", return_style = "simple")
+create_custom_lookup(bounds_level = "msoa", within = "Swansea", within_level = "lad", return_style = "tidy")
+# TODO add in more examples
 }

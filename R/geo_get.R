@@ -9,32 +9,18 @@
 #' @param return_areas Sub-areas to be retrieved
 #' @param boundaries Boolean, default TRUE. Whether to return geometry as well as lookup df
 #' @param minimal Boolean, default FALSE. Whether to return all columns of lookup df or just the columns for the specified area and sub-area levels
-#' @importFrom dplyr pull
-#' @importFrom jsonlite fromJSON
-#' @importFrom purrr pluck
-#' @importFrom sf st_read
-#' @importFrom stringr str_c
 #'
 #' @return an sf (simple features) object
 #' @export
 #'
-#' @examples
-#'
-#'
-
-
-
-
 geo_get <- function(
-  place = NA,
-  search_within = "lad19",
-  return_areas = "wd19",
-  boundaries = TRUE,
-  minimal = FALSE) {
-
-
+                    place = NA,
+                    search_within = "lad19",
+                    return_areas = "wd19",
+                    boundaries = TRUE,
+                    minimal = FALSE) {
   bounds_lookup_table <- tribble(
-    ~ level, ~ title, ~ code, ~ reference_url,
+    ~level, ~title, ~code, ~reference_url,
 
     # Postcode Centroids
     # "postcode",
@@ -95,8 +81,6 @@ geo_get <- function(
     "Countries (December 2019) Boundaries UK BGC",
     "https://ons-inspire.esriuk.com/arcgis/rest/services/Administrative_Boundaries/Countries_December_2019_Boundaries_UK_BGC/MapServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json",
     "https://geoportal.statistics.gov.uk/datasets/countries-december-2019-boundaries-uk-bgc"
-
-
   )
 
 
@@ -116,7 +100,6 @@ geo_get <- function(
   ) %>%
     URLencode() %>%
     sf::st_read()
-
 }
 
 # test_out <- get_ward_bounds("Ealing")

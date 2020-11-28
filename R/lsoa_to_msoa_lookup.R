@@ -5,25 +5,15 @@
 #' @param nmw whether to keep the Welsh language MSOA names (ONS and HOCL) or not. Boolean. Default TRUE.
 #' @param keep whether to keep the LSOA column(s) or just return a df starting at MSOA level. Default FALSE.
 #'
-#' @importFrom dplyr mutate select left_join relocate distinct all_of any_of
-#' @importFrom httr GET content status_code
-#' @importFrom janitor clean_names
-#' @importFrom readr read_csv
-#' @importFrom stringr str_remove
-#'
 #' @return a data frame (a lookup table)
 #' @export
 #'
-#' @examples
 lsoa_to_msoa_lookup <- function(
                                 df,
                                 hocl_names_version = "1.8",
                                 nmw = TRUE,
                                 keep = FALSE) {
-
-    create_msoa_lookup <- function(version, keep_nmw = TRUE) {
-
-
+  create_msoa_lookup <- function(version, keep_nmw = TRUE) {
     hocl_msoa_names <- function(version, nmw = TRUE) {
       msoa_cols <- 1:5
       # don't include Welsh language names (codes ending "nmw")
@@ -42,7 +32,7 @@ lsoa_to_msoa_lookup <- function(
 
       if (httr::status_code(httr_out) == 200) {
         hocl_msoa_names <- httr::content(httr_out, as = "text") %>%
-        readr::read_csv()
+          readr::read_csv()
       }
 
       hocl_msoa_names %>%

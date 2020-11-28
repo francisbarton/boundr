@@ -10,21 +10,21 @@
 #' @param fields The fields of the data to be returned. Defaults to \code{"*"} (all); can instead be a set of column names/variables.
 #'
 #' @return a string that should function as a valid API query
+#' @importFrom utils URLencode
 #' @export
 #' @examples
-#' build_api_query(table_code = "Wards_December_2019_Boundaries_EW_BFC",
-#' type = "admin",
-#' server = "map"
+#' build_api_query(
+#'   table_code = "Wards_December_2019_Boundaries_EW_BFC",
+#'   type = "admin",
+#'   server = "map"
 #' )
-#'
-#' [1] "https://ons-inspire.esriuk.com/arcgis/rest/services/Administrative_Boundaries/Wards_December_2019_Boundaries_EW_BFC/MapServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json"
 build_api_query <- function(
-  table_code_ref,
-  type = "census",
-  server = "feature",
-  search_within,
-  locations = NULL,
-  fields = "*") {
+                            table_code_ref,
+                            type = "census",
+                            server = "feature",
+                            search_within,
+                            locations = NULL,
+                            fields = "*") {
 
 
   # create a list of codes for the main function. Source URLs are included in comments.
@@ -49,7 +49,6 @@ build_api_query <- function(
 
     # "https://geoportal.statistics.gov.uk/datasets/lower-layer-super-output-area-2011-to-ward-2019-lookup-in-england-and-wales"
     "LSOA11_WD19_LAD19_EW_LU"
-
   )
 
 
@@ -90,8 +89,9 @@ build_api_query <- function(
 
   # format locations correctly
 
-  if (is.null(locations)) locations <- "1%3D1"
-  else {
+  if (is.null(locations)) {
+    locations <- "1%3D1"
+  } else {
     locations <- stringr::str_c(
       search_within,
       "%3D",
@@ -123,5 +123,4 @@ build_api_query <- function(
     fields,
     json_coda
   )
-
 }
