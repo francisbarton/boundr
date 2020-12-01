@@ -6,11 +6,10 @@
 #' @param type geographies can be listed as various types. Here we are just using Census geographies and Administrative geographies. This affects the beginning of the query URL. Census is the default, but Admin can be passed instead where necessary.
 #' @param server Some API queries (lookup tables) require the Feature server, others (boundaries) require the Map server
 #' @param search_within The area level variable name associated with the locations filter. e.g. \code{"cty19nm"} or \code{"rgn19nm"}
-#' @param locations A place name, or list of place names, to filter the data by. If nothing is stipulated then the full unfiltered table will be returned
+#' @param locations A place name, or list of place names or codes, to filter the data by. If nothing is stipulated then the full unfiltered table will be returned
 #' @param fields The fields of the data to be returned. Defaults to \code{"*"} (all); can instead be a set of column names/variables.
 #'
 #' @return a string that should function as a valid API query
-#' @export
 build_api_query <- function(
                             table_code_ref,
                             type = "census",
@@ -25,6 +24,7 @@ build_api_query <- function(
   table_codes <- c(
 
     ### LOOKUPS
+    #########################################################################
 
     # "https://geoportal.statistics.gov.uk/datasets/ward-to-local-authority-district-to-county-to-region-to-country-december-2019-lookup-in-united-kingdom"
     "WD19_LAD19_CTY19_OTH_UK_LU",
@@ -48,6 +48,7 @@ build_api_query <- function(
 
 
     ### BOUNDARIES
+    ########################################################################
 
     # Lower Layer Super Output Areas (December 2011) Boundaries EW BFC
     # https://geoportal.statistics.gov.uk/datasets/lower-layer-super-output-areas-december-2011-boundaries-ew-bfc
@@ -93,9 +94,11 @@ build_api_query <- function(
   )
 
 
+  ####################################################################
   # set up commonly used string variables for query URL construction;
   # just for neatness & easier updating. These are just taken from the
   # "API Explorer" tab on each Open Geography Portal page.
+  ####################################################################
 
 
   # pull table code from list above
@@ -118,7 +121,6 @@ build_api_query <- function(
 
 
   # server string in query URL
-
   if (server == "feature") {
     server_line <- "/FeatureServer/0/"
   }
@@ -128,36 +130,50 @@ build_api_query <- function(
   }
 
 
-  # utils::URLencode isn't vectorised!
-  url_encode <-
-
-  # format locations correctly
+  # format 'locations' correctly
+  # weird that I'm manually putting in percent-encoded strings _before_
+  # doing the call to URLencode, but I found that it wasn't encoding
+  # all the things as I needed it to for the query to be valid???
 
   if (is.null(locations)) {
     locations <- "1%3D1"
   } else {
     locations <- locations %>%
       stringr::str_replace_all(" ", "%20") %>%
+
+      # don't think this is needed but it's what the site itself does
       toupper() %>%
+
+      # surround each location in ''
       paste0("'", ., "'") %>%
+
       stringr::str_c(
-      search_within,
-      "%3D",
-      .,
-      sep = "%20",
-      collapse = "%20OR%20"
+      search_within, # area level code eg wd19cd, lad19nm
+      "%3D", # "="
+      .,     # vector of 'locations'
+      sep = "%20",          # Open Geog website puts spaces in so so will I
+      collapse = "%20OR%20" # collapse multiple locations with an " OR "
     ) %>%
-      utils::URLencode()
+      utils::URLencode() # not sure this is still needed!
   }
 
-  fields <- fields %>%
-    stringr::str_c(collapse = ",")
+  # collapse a vector of fields to a single string
+  # (it should usually be more than one)
+  # fields is the columns to retrieve, if only some are wanted
+  if (length(fields) > 1) {
+    fields <- fields %>%
+      stringr::str_c(collapse = ",")
+  }
 
 
   arcgis_base <- "arcgis/rest/services/"
   query_line <- "query?where="
   fields_line <- "&outFields="
-  json_coda <- "&returnDistinctValues=true&outSR=4326&f=json"
+
+  # in theory there are several other options that could be customised here
+  # if it were worth the candle.
+  # maybe I should bother to allow that, in order better to replicate the API
+  coda <- "&returnDistinctValues=true&outSR=4326&f=json"
 
   # create the query
   paste0(
@@ -170,6 +186,6 @@ build_api_query <- function(
     locations,
     fields_line,
     fields,
-    json_coda
+    coda
   )
 }
