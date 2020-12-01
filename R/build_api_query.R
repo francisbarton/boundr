@@ -93,6 +93,13 @@ build_api_query <- function(
 
   )
 
+  # not sure why I am including this...
+  assertthat::assert_that(
+    0 <= table_code_ref && table_code_ref <= length(table_codes)
+  )
+
+
+
 
   ####################################################################
   # set up commonly used string variables for query URL construction;
@@ -104,6 +111,8 @@ build_api_query <- function(
   # pull table code from list above
   table_code <- table_codes[[table_code_ref]]
 
+
+  assertthat::assert_that(type %in% c("census", "admin"))
 
   # type = "census" or "admin"
   if (type == "census") {
@@ -119,6 +128,7 @@ build_api_query <- function(
   }
 
 
+  assertthat::assert_that(server %in% c("feature", "map"))
 
   # server string in query URL
   if (server == "feature") {
@@ -130,10 +140,20 @@ build_api_query <- function(
   }
 
 
+  # upper or lower case field names? it seems to depend on the server, or
+  # maybe the type, haven't managed to check yet.
+  # NB the queries seem to actually work fine either way, I am just going
+  # for 100% fidelity for the sake of the function tests!
+
+  if (server == "feature") {
+    fields <- toupper(fields)
+    search_within <- toupper(search_within)
+  }
+
   # format 'locations' correctly
-  # weird that I'm manually putting in percent-encoded strings _before_
-  # doing the call to URLencode, but I found that it wasn't encoding
-  # all the things as I needed it to for the query to be valid???
+  # I'm manually putting in percent-encoded strings instead of calling
+  # utils::URLencode because I found that it wasn't encoding
+  # all the things as I needed it to for the query to be valid
 
   if (is.null(locations)) {
     locations <- "1%3D1"
@@ -145,17 +165,17 @@ build_api_query <- function(
       toupper() %>%
 
       # surround each location in ''
-      paste0("'", ., "'") %>%
+      paste0("%27", ., "%27") %>%
 
       stringr::str_c(
-      search_within, # area level code eg wd19cd, lad19nm
+      search_within, # area level code eg WD19CD, CAUTH19NM
       "%3D", # "="
       .,     # vector of 'locations'
       sep = "%20",          # Open Geog website puts spaces in so so will I
       collapse = "%20OR%20" # collapse multiple locations with an " OR "
-    ) %>%
-      utils::URLencode() # not sure this is still needed!
+    )
   }
+
 
   # collapse a vector of fields to a single string
   # (it should usually be more than one)

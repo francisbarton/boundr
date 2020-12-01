@@ -57,51 +57,54 @@ create_custom_lookup <- function(
 
   area_code_lookup <- dplyr::tribble(
     ~friendly, ~serious,
-    "lsoa", "lsoa11",
-    "msoa", "msoa11",
-    "wd", "wd19",
-    "ward", "wd19",
-    "lad", "lad19",
-    "ltla", "ltla19",
-    "lower", "ltla19",
-    "utla", "utla19",
-    "upper", "utla19",
-    "cty", "cty19",
-    "county", "cty19",
-    "cauth", "cauth19",
-    "rgn", "rgn19",
-    "region", "rgn19",
-    "ctry", "ctry19",
+    "lsoa",    "lsoa11",
+    "msoa",    "msoa11",
+    "wd",      "wd19",
+    "ward",    "wd19",
+    "lad",     "lad19",
+    "ltla",    "ltla19",
+    "lower",   "ltla19",
+    "utla",    "utla19",
+    "upper",   "utla19",
+    "cty",     "cty19",
+    "county",  "cty19",
+    "cauth",   "cauth19",
+    "rgn",     "rgn19",
+    "region",  "rgn19",
+    "ctry",    "ctry19",
     "country", "ctry19"
   )
 
 
 
+  # can only work with a singe ref currently - ideally I will enable it
+  # to work with two (or more?) refs for two-step lookups
+  # eg MSOA to region (via lad)
   table_code_ref_lookup <- dplyr::tribble(
     ~bounds_level, ~within_level, ~table_code_ref1, ~table_code_ref2,
 
-    "wd", "lad", 1, NULL,
-    "wd", "cty", 1, NULL,
-    "wd", "rgn", 1, NULL,
-    "wd", "ctry", 1, NULL,
-    "lad", "cty", 1, NULL,
-    "lad", "rgn", 1, NULL,
-    "lad", "ctry", 1, NULL,
-    "cty", "rgn", 1, NULL,
-    "lad", "cauth", 2, NULL,
-    "ltla", "utla", 3, NULL,
-    "lsoa", "utla", 4, NULL,
-    "msoa", "utla", 4, NULL,
-    "lsoa", "wd", 5, NULL,
-    "lsoa", "lad", 5, NULL,
-    "msoa", "lad", 5, NULL
-    # "utla",   "rgn"     1,    3,
-    # "lsoa",   "cauth"   2,    5,
-    # "msoa",   "cauth"   2,    5,
-    # "lsoa",   "rgn"     1,    5,
-    # "msoa",   "rgn"     1,    5,
-    # "lsoa",   "ctry"    1,    5
-    # "msoa",   "ctry"    1,    5
+    "wd",      "lad",     1,     NULL,
+    "wd",      "cty",     1,     NULL,
+    "wd",      "rgn",     1,     NULL,
+    "wd",      "ctry",    1,     NULL,
+    "lad",     "cty",     1,     NULL,
+    "lad",     "rgn",     1,     NULL,
+    "lad",     "ctry",    1,     NULL,
+    "cty",     "rgn",     1,     NULL,
+    "lad",     "cauth",   2,     NULL,
+    "ltla",    "utla",    3,     NULL,
+    "lsoa",    "utla",    4,     NULL,
+    "msoa",    "utla",    4,     NULL,
+    "lsoa",    "wd",      5,     NULL,
+    "lsoa",    "lad",     5,     NULL,
+    "msoa",    "lad",     5,     NULL
+    # "utla",   "rgn"     1,     3,
+    # "lsoa",   "cauth"   2,     5,
+    # "msoa",   "cauth"   2,     5,
+    # "lsoa",   "rgn"     1,     5,
+    # "msoa",   "rgn"     1,     5,
+    # "lsoa",   "ctry"    1,     5
+    # "msoa",   "ctry"    1,     5
   ) %>%
     dplyr::mutate(bounds_level = dplyr::case_when(
       stringr::str_ends(bounds_level, "oa") ~ paste0(bounds_level, "11cd"),
@@ -117,16 +120,11 @@ create_custom_lookup <- function(
   }
 
 
+  # create a vector of field codes from the upper and lower levels supplied
   fields <- c(bounds_level, within_level) %>%
     get_serious() %>%
     rep(each = 2) %>%
     paste0(c("cd", "nm"))
-
-  # TODO check if lad19nmw can reliably be added as a column when include_welsh_names = TRUE
-  # https://geoportal.statistics.gov.uk/datasets/local-authority-districts-december-2019-names-and-codes-in-the-united-kingdom/
-  # https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/LAD_DEC_2019_UK_NC/FeatureServer/0/query?outFields=*&where=1%3D1
-  # https://opendata.arcgis.com/datasets/35de30c6778b463a8305939216656132_0.geojson (full dataset)
-  # has the lad19nm to lad19nmw lookup
 
 
   table_code_refs <- table_code_ref_lookup %>%
@@ -138,14 +136,11 @@ create_custom_lookup <- function(
     c(recursive = TRUE)
 
 
-  # doesn't work reliably, unfortunately
-  # if (include_welsh_names && fields[4] == "lad19nm" ) fields <- c(fields, "lad19nmw")
-  # if (include_welsh_names && fields[4] == "lad19nm" ) fields <- c(fields[1:2], "lad19nmw", fields[3:4])
-
   end_col <- length(fields)
-  return_fields <- "*"
+  return_fields <- "*"     # default for return_style = "all" and "tidy"
 
 
+  # use return_style to decide how many columns to return
   if (return_style == "simple") {
     return_fields <- fields
   }
@@ -155,6 +150,8 @@ create_custom_lookup <- function(
   }
 
   treat_results <- function(df, return_style) {
+
+    # check that the parameter is valid
     if (!return_style %in% c("tidy", "all", "simple", "minimal")) {
       usethis::ui_warn("'return_style' parameter not correctly specified.
                        Options are \"tidy\", \"all\", \"simple\", \"minimal\".
@@ -164,12 +161,15 @@ create_custom_lookup <- function(
 
     if (return_style == "all") {
       df <- df %>%
+        # return all columns between first and last specified fields
         dplyr::select(!!rlang::sym(fields[1]):!!rlang::sym(fields[end_col])) %>%
         dplyr::distinct()
     }
 
+    # same as "all" but removes any "empty" (all NA) fields
     if (return_style == "tidy") {
       df <- df %>%
+        # return all columns between first and last specified fields
         dplyr::select(!!rlang::sym(fields[1]):!!rlang::sym(fields[end_col])) %>%
         dplyr::distinct() %>%
         janitor::remove_empty("cols")
@@ -184,7 +184,7 @@ create_custom_lookup <- function(
   }
 
   # create another lookup (if necessary) for automatically looking
-  # up the type and server parameters required for each table_code;
+  # up the type and server parameters required for each table_code
   # currently assuming that type="census" and server="feature" work for all!?
   df_out <- build_api_query(
     table_code_ref = table_code_refs[1],
@@ -196,11 +196,9 @@ create_custom_lookup <- function(
     treat_results(return_style = return_style)
 
 
-  if (!include_msoa) {
-    return(df_out)
-  }
-
-
+  # if not specified by the user, make an educated decision about
+  # including Welsh language MSOA and LAD names (LAD19NMW / MSOA11NMW /
+  # MSOA11HOCLNMW, where relevant)
   if (is.null(include_welsh_names)) {
     check_w <- df_out %>%
       dplyr::select(dplyr::ends_with("cd")) %>%
@@ -213,6 +211,24 @@ create_custom_lookup <- function(
     } else {
       include_welsh_names <- FALSE
     }
+  }
+
+  # add Welsh language LAD names if desired
+  if ("lad19nm" %in% colnames(df_out) && include_welsh_names) {
+
+    lad19nmw_lookup <- jsonlite::fromJSON("https://opendata.arcgis.com/datasets/35de30c6778b463a8305939216656132_0.geojson") %>%
+      purrr::pluck("features", "properties") %>%
+      janitor::clean_names() %>%
+      dplyr::select(-fid)
+
+    df_out <- df_out %>%
+      dplyr::left_join(lad19nmw_lookup) %>%
+      dplyr::relocate(lad19nmw, .after = lad19nm)
+  }
+
+
+  if (!include_msoa) {
+    return(df_out)
   }
 
   df_out %>%
