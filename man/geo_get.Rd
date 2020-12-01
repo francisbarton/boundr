@@ -5,32 +5,35 @@
 \title{Get boundaries for small areas within a local authority area}
 \usage{
 geo_get(
-  place = NA,
-  search_within = "lad19",
-  return_areas = "wd19",
-  boundaries = TRUE,
-  minimal = FALSE
+  bounds_level,
+  within,
+  within_level,
+  include_msoa = NULL,
+  return_style = "tidy",
+  include_welsh_names = NULL,
+  boundaries = TRUE
 )
 }
 \arguments{
-\item{place}{Name of an area such as a local authority}
+\item{bounds_level}{the lowest level at which to return codes and names, eg "LSOA". Has to be one of "lsoa", "msoa", "wd/ward", "lad", "ltla/lower", "utla/upper", "cty/county", "cauth", "rgn/region", "ctry/country". Case-insensitive.}
 
-\item{search_within}{Area level of 'place', LAD by default (lad19nm)}
+\item{within}{the name of a geographic area to filter by eg "Swindon", "Gloucestershire", "Wales"}
 
-\item{return_areas}{Sub-areas to be retrieved}
+\item{within_level}{upper geographic level to filter at. eg if filtering to find all LSOAs in a local authority, within_level will be "lad" or "ltla" or "utla". Has to be one of "lad", "cty/county", "utla/upper", "rgn/region", "cauth" or "ctry/country". Case-insensitive.}
 
-\item{boundaries}{Boolean, default TRUE. Whether to return geometry as well as lookup df}
+\item{include_msoa}{if bounds_level is LSOA, whether to also include MSOA columns (in "tidy" or "all" styles). If bounds_level is MSOA, this will be forced to TRUE.}
 
-\item{minimal}{Boolean, default FALSE. Whether to return all columns of lookup df or just the columns for the specified area and sub-area levels}
+\item{return_style}{"tidy" (the default) means all available columns between bounds_level and within_level will be returned, but with any empty columns removed. "all" is as "tidy" except empty columns are retained. "simple" means that only the code and name (cd and nm) columns for bounds_level and within_level are returned - other columns are omitted. "minimal" means only return the columns for bounds_level.}
+
+\item{include_welsh_names}{only makes a difference when bounds_level = msoa, or when bounds_level = lsoa and return_style = "all" or "tidy". FALSE returns no Welsh language columns. TRUE attempts to return Welsh language columns for MSOA names. NULL (default) means that a decision will be made by the program, based on whether lsoa11cd or msoa11cd columns contain "^W"}
+
+\item{boundaries}{whether to retrieve object boundaries data from the API. Default TRUE. If FALSE, just returns a df with area codes and names etc.}
 }
 \value{
-an sf (simple features) object
+an sf (simple features) object (data frame with geometries)
 }
 \description{
 The ONS OpenGeography Portal (https://geoportal.statistics.gov.uk/)
 is a great resource for area boundary and data lookups within the UK.
 This program focuses on areas within England and Wales only, initially.
-}
-\examples{
-
 }

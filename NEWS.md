@@ -1,4 +1,18 @@
+# jogger 0.1.2
+
+* Amended `geo_get()` to be the main function - copied params documentation over from create_custom_lookup()
+* Fixed various build errors mostly to do with namespace
+* Realised that utils::URLencode() isn't vectorised so rewrote build_api_query() process to account for that
+* Removed examples where no longer accurate (params have shifted)
+* TODOs from 0.1.1 remain
+
 # jogger 0.1.1
+
+* Sort out Imports in DESCRIPTION file
+* check() package and build documentation
+* TODO: document internal package data
+* TODO: work on README
+* TODO: examples
 
 # jogger 0.1.0
 

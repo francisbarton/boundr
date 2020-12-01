@@ -11,8 +11,16 @@
 #' @export
 #'
 #' @examples
-#' create_custom_lookup(bounds_level = "msoa", within = "Swindon", within_level = "lad", return_style = "simple")
-#' create_custom_lookup(bounds_level = "msoa", within = "Swansea", within_level = "lad", return_style = "tidy")
+#' create_custom_lookup(
+#'   bounds_level = "msoa",
+#'   within = "Swindon",
+#'   within_level = "lad",
+#'   return_style = "simple")
+#' create_custom_lookup(
+#'   bounds_level = "msoa",
+#'   within = "Swansea",
+#'   within_level = "lad",
+#'   return_style = "tidy")
 #' # TODO add in more examples
 create_custom_lookup <- function(
                                  bounds_level,
@@ -66,6 +74,8 @@ create_custom_lookup <- function(
     "ctry", "ctry19",
     "country", "ctry19"
   )
+
+
 
   table_code_ref_lookup <- dplyr::tribble(
     ~bounds_level, ~within_level, ~table_code_ref1, ~table_code_ref2,
@@ -193,7 +203,7 @@ create_custom_lookup <- function(
 
   if (is.null(include_welsh_names)) {
     check_w <- df_out %>%
-      dplyr::select(ends_with("cd")) %>%
+      dplyr::select(dplyr::ends_with("cd")) %>%
       dplyr::pull(1) %>%
       stringr::str_match("^[A-Z]{1}") %>%
       unique()

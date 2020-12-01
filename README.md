@@ -16,7 +16,7 @@ Initially just for areas within England and Wales, with a hope to add
 And currently just for the following area levels:
   LSOA, MSOA, Ward, LAD/LTLA, UTLA, CAUTH, RGN _[subject to change]_
   
-_Changes since 2019 (currently (Nov 2020) just the change in Buckinghamshire from two-tier to unitary) are not yet incorporated._
+_Changes since 2019 (currently -- Nov 2020 -- just the change in Buckinghamshire from two-tier to unitary) are not yet incorporated._
 
 ## Installation
 

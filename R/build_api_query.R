@@ -10,14 +10,7 @@
 #' @param fields The fields of the data to be returned. Defaults to \code{"*"} (all); can instead be a set of column names/variables.
 #'
 #' @return a string that should function as a valid API query
-#' @importFrom utils URLencode
 #' @export
-#' @examples
-#' build_api_query(
-#'   table_code = "Wards_December_2019_Boundaries_EW_BFC",
-#'   type = "admin",
-#'   server = "map"
-#' )
 build_api_query <- function(
                             table_code_ref,
                             type = "census",
@@ -27,8 +20,11 @@ build_api_query <- function(
                             fields = "*") {
 
 
-  # create a list of codes for the main function. Source URLs are included in comments.
+  # create a list of codes for the main function.
+  # Source URLs are included as comments.
   table_codes <- c(
+
+    ### LOOKUPS
 
     # "https://geoportal.statistics.gov.uk/datasets/ward-to-local-authority-district-to-county-to-region-to-country-december-2019-lookup-in-united-kingdom"
     "WD19_LAD19_CTY19_OTH_UK_LU",
@@ -48,7 +44,52 @@ build_api_query <- function(
     "LSOA11_UTLA19_EW_LU",
 
     # "https://geoportal.statistics.gov.uk/datasets/lower-layer-super-output-area-2011-to-ward-2019-lookup-in-england-and-wales"
-    "LSOA11_WD19_LAD19_EW_LU"
+    "LSOA11_WD19_LAD19_EW_LU",
+
+
+    ### BOUNDARIES
+
+    # Lower Layer Super Output Areas (December 2011) Boundaries EW BFC
+    # https://geoportal.statistics.gov.uk/datasets/lower-layer-super-output-areas-december-2011-boundaries-ew-bfc
+    "Lower_Layer_Super_Output_Areas_December_2011_Boundaries_EW_BFC_v3",
+
+    # Middle Layer Super Output Areas (December 2011) Boundaries EW BFC
+    # https://geoportal.statistics.gov.uk/datasets/middle-layer-super-output-areas-december-2011-boundaries-ew-bfc-1
+    "Middle_Layer_Super_Output_Areas_December_2011_Boundaries_EW_BFC",
+
+    # Wards (December 2019) Boundaries UK BFC
+    # https://geoportal.statistics.gov.uk/datasets/wards-december-2019-boundaries-uk-bfc-1
+    "Wards_December_2019_Boundaries_UK_BFC_v2",
+
+    # Local Authority Districts (December 2019) Boundaries UK BFC
+    # https://geoportal.statistics.gov.uk/datasets/local-authority-districts-december-2019-boundaries-uk-bfc
+    "Local_Authority_Districts_December_2019_Boundaries_UK_BFC",
+
+    # "Clinical Commissioning Groups (April 2020) Full Clipped Boundaries EN",
+    # "https://geoportal.statistics.gov.uk/datasets/clinical-commissioning-groups-april-2020-full-clipped-boundaries-en",
+    # "https://ons-inspire.esriuk.com/arcgis/rest/services/Health_Boundaries/Clinical_Commissioning_Groups_April_2020_EN_BFC_V2/MapServer/1/query?where=1%3D1&outFields=*&outSR=4326&f=json",
+
+    # Counties and Unitaries (Generalised) !!! admin
+    # Counties and Unitary Authorities (December 2019) Boundaries UK BGC
+    # https://geoportal.statistics.gov.uk/datasets/counties-and-unitary-authorities-december-2019-boundaries-uk-bgc
+    "Counties_and_Unitary_Authorities_December_2019_Boundaries_UK_BGC2"
+
+    # Regions (Generalised) !!! admin
+    # Regions (December 2019) Boundaries EN BGC
+    # https://geoportal.statistics.gov.uk/datasets/regions-december-2019-boundaries-en-bgc
+    # "rgn19cd",
+    # "Regions_December_2019_Boundaries_EN_BGC",
+    # "admin",
+    # "map"
+
+    # Countries (UK) (Generalised) !!! admin
+    # Countries (December 2019) Boundaries UK BGC
+    # https://geoportal.statistics.gov.uk/datasets/countries-december-2019-boundaries-uk-bgc
+    # "ctry",
+    # "Countries_December_2019_Boundaries_UK_BGC",
+    # "admin",
+    # "map"
+
   )
 
 
@@ -57,8 +98,8 @@ build_api_query <- function(
   # "API Explorer" tab on each Open Geography Portal page.
 
 
-  # pull table code from lookup_lookup above
-  table_code <- table_codes[table_code_ref]
+  # pull table code from list above
+  table_code <- table_codes[[table_code_ref]]
 
 
   # type = "census" or "admin"
@@ -87,18 +128,26 @@ build_api_query <- function(
   }
 
 
+  # utils::URLencode isn't vectorised!
+  url_encode <-
+
   # format locations correctly
 
   if (is.null(locations)) {
     locations <- "1%3D1"
   } else {
-    locations <- stringr::str_c(
+    locations <- locations %>%
+      stringr::str_replace_all(" ", "%20") %>%
+      toupper() %>%
+      paste0("'", ., "'") %>%
+      stringr::str_c(
       search_within,
       "%3D",
-      URLencode(paste0("'", toupper(locations), "'")),
+      .,
       sep = "%20",
       collapse = "%20OR%20"
-    )
+    ) %>%
+      utils::URLencode()
   }
 
   fields <- fields %>%

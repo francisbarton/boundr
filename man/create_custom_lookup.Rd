@@ -33,7 +33,15 @@ a data frame (tibble)
 Uses build_api_query() to Retrieve, Tidy and Return a Lookup Table
 }
 \examples{
-create_custom_lookup(bounds_level = "msoa", within = "Swindon", within_level = "lad", return_style = "simple")
-create_custom_lookup(bounds_level = "msoa", within = "Swansea", within_level = "lad", return_style = "tidy")
+create_custom_lookup(
+  bounds_level = "msoa",
+  within = "Swindon",
+  within_level = "lad",
+  return_style = "simple")
+create_custom_lookup(
+  bounds_level = "msoa",
+  within = "Swansea",
+  within_level = "lad",
+  return_style = "tidy")
 # TODO add in more examples
 }

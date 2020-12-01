@@ -32,10 +32,3 @@ a string that should function as a valid API query
 \description{
 A function called by create_custom_lookup.R and geo_get.R to build a valid query
 }
-\examples{
-build_api_query(
-  table_code = "Wards_December_2019_Boundaries_EW_BFC",
-  type = "admin",
-  server = "map"
-)
-}
