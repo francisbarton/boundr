@@ -28,7 +28,7 @@ batch_it_simple <- function(x, batch_size = 100) {
   }
 
   if (batch_size > length(x)) {
-    usethis::ui_info("Batch size provided was greater than the length of the vector.")
+    # usethis::ui_info("Batch size provided was greater than the length of the vector.")
     batch_size <- length(x)
   }
 

@@ -8,27 +8,59 @@ build_api_query(
   table_code_ref,
   type = "census",
   server = "feature",
-  search_within,
-  locations = NULL,
+  within_level,
+  within = NULL,
   fields = "*"
 )
 }
 \arguments{
-\item{table_code_ref}{an integer, passed by the calling function, that indicates which table_code to use}
+\item{table_code_ref}{an integer, passed by the calling function, that
+indicates which table_code to use}
 
-\item{type}{geographies can be listed as various types. Here we are just using Census geographies and Administrative geographies. This affects the beginning of the query URL. Census is the default, but Admin can be passed instead where necessary.}
+\item{type}{geographies can be listed as various types. Here we are just
+using Census geographies and Administrative geographies. This affects the
+beginning of the query URL. "census" is the default, but "admin" or "other"
+can be passed instead where necessary.}
 
-\item{server}{Some API queries (lookup tables) require the Feature server, others (boundaries) require the Map server}
+\item{server}{Some API queries (lookup tables) require the Feature server,
+others (boundaries) require the Map server}
 
-\item{search_within}{The area level variable name associated with the locations filter. e.g. \code{"cty19nm"} or \code{"rgn19nm"}}
+\item{within_level}{The area level variable name associated with the
+locations filter. e.g. \code{"cty19nm"} or \code{"rgn19nm"}}
 
-\item{locations}{A place name, or list of place names, to filter the data by. If nothing is stipulated then the full unfiltered table will be returned}
+\item{within}{A place name, or list of place names or codes, to filter the
+data by. If nothing is stipulated then the full unfiltered table will be
+returned}
 
-\item{fields}{The fields of the data to be returned. Defaults to \code{"*"} (all); can instead be a set of column names/variables.}
+\item{fields}{The fields of the data to be returned. Defaults to \code{"*"}
+(all); can instead be a set of column names/variables.}
 }
 \value{
 a string that should function as a valid API query
 }
 \description{
-A function called by create_custom_lookup.R and geo_get.R to build a valid query
+A function called by create_custom_lookup.R and geo_get.R to build a
+valid query
+}
+\examples{
+build_api_query(
+  table_code_ref = 2,
+  type = "census",
+  server = "feature",
+  within_level = "cauth19nm",
+  within = "Greater Manchester",
+  fields = c("lad19cd", "lad19nm", "cauth19cd", "cauth19nm")
+)
+build_api_query(
+  table_code_ref = 9,
+  type = "admin",
+  server = "map",
+  within_level = "lad19nm",
+  within = c(
+    "Cheltenham", "Gloucester",
+    "Stroud", "Cotswold",
+    "Tewkesbury", "Forest of Dean"
+  ),
+  fields = c("lad19cd", "lad19nm")
+)
 }

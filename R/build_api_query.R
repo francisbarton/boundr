@@ -1,21 +1,53 @@
 #' Helper Function to Build Queries to the Open Geography API
 #'
-#' @description A function called by create_custom_lookup.R and geo_get.R to build a valid query
+#' A function called by create_custom_lookup.R and geo_get.R to build a
+#' valid query
 #'
-#' @param table_code_ref an integer, passed by the calling function, that indicates which table_code to use
-#' @param type geographies can be listed as various types. Here we are just using Census geographies and Administrative geographies. This affects the beginning of the query URL. Census is the default, but Admin can be passed instead where necessary.
-#' @param server Some API queries (lookup tables) require the Feature server, others (boundaries) require the Map server
-#' @param search_within The area level variable name associated with the locations filter. e.g. \code{"cty19nm"} or \code{"rgn19nm"}
-#' @param locations A place name, or list of place names or codes, to filter the data by. If nothing is stipulated then the full unfiltered table will be returned
-#' @param fields The fields of the data to be returned. Defaults to \code{"*"} (all); can instead be a set of column names/variables.
+#' @param table_code_ref an integer, passed by the calling function, that
+#'   indicates which table_code to use
+#' @param type geographies can be listed as various types. Here we are just
+#'   using Census geographies and Administrative geographies. This affects the
+#'   beginning of the query URL. "census" is the default, but "admin" or "other"
+#'   can be passed instead where necessary.
+#' @param server Some API queries (lookup tables) require the Feature server,
+#'   others (boundaries) require the Map server
+#' @param within_level The area level variable name associated with the
+#'   locations filter. e.g. \code{"cty19nm"} or \code{"rgn19nm"}
+#' @param within A place name, or list of place names or codes, to filter the
+#'   data by. If nothing is stipulated then the full unfiltered table will be
+#'   returned
+#' @param fields The fields of the data to be returned. Defaults to \code{"*"}
+#'   (all); can instead be a set of column names/variables.
 #'
 #' @return a string that should function as a valid API query
+#' @export
+#' @examples
+#' build_api_query(
+#'   table_code_ref = 2,
+#'   type = "census",
+#'   server = "feature",
+#'   within_level = "cauth19nm",
+#'   within = "Greater Manchester",
+#'   fields = c("lad19cd", "lad19nm", "cauth19cd", "cauth19nm")
+#' )
+#' build_api_query(
+#'   table_code_ref = 9,
+#'   type = "admin",
+#'   server = "map",
+#'   within_level = "lad19nm",
+#'   within = c(
+#'     "Cheltenham", "Gloucester",
+#'     "Stroud", "Cotswold",
+#'     "Tewkesbury", "Forest of Dean"
+#'   ),
+#'   fields = c("lad19cd", "lad19nm")
+#' )
 build_api_query <- function(
                             table_code_ref,
                             type = "census",
                             server = "feature",
-                            search_within,
-                            locations = NULL,
+                            within_level,
+                            within = NULL,
                             fields = "*") {
 
 
@@ -62,9 +94,9 @@ build_api_query <- function(
     # https://geoportal.statistics.gov.uk/datasets/wards-december-2019-boundaries-uk-bfc-1
     "Wards_December_2019_Boundaries_UK_BFC_v2",
 
-    # Local Authority Districts (December 2019) Boundaries UK BFC
-    # https://geoportal.statistics.gov.uk/datasets/local-authority-districts-december-2019-boundaries-uk-bfc
-    "Local_Authority_Districts_December_2019_Boundaries_UK_BFC",
+    # Local Authority Districts (December 2019) Boundaries UK BGC
+    # https://geoportal.statistics.gov.uk/datasets/local-authority-districts-december-2019-boundaries-uk-bgc
+    "Local_Authority_Districts_December_2019_Boundaries_UK_BGC",
 
     # "Clinical Commissioning Groups (April 2020) Full Clipped Boundaries EN",
     # "https://geoportal.statistics.gov.uk/datasets/clinical-commissioning-groups-april-2020-full-clipped-boundaries-en",
@@ -73,7 +105,12 @@ build_api_query <- function(
     # Counties and Unitaries (Generalised) !!! admin
     # Counties and Unitary Authorities (December 2019) Boundaries UK BGC
     # https://geoportal.statistics.gov.uk/datasets/counties-and-unitary-authorities-december-2019-boundaries-uk-bgc
-    "Counties_and_Unitary_Authorities_December_2019_Boundaries_UK_BGC2"
+    "Counties_and_Unitary_Authorities_December_2019_Boundaries_UK_BGC2",
+
+    # Metropolitan Counties (Full)
+    # Metropolitan Counties (December 2018) EN BFC
+    # https://geoportal.statistics.gov.uk/datasets/metropolitan-counties-december-2018-en-bfc
+    "Metropolitan_Counties_December_2018_EN_BFC"
 
     # Regions (Generalised) !!! admin
     # Regions (December 2019) Boundaries EN BGC
@@ -90,7 +127,6 @@ build_api_query <- function(
     # "Countries_December_2019_Boundaries_UK_BGC",
     # "admin",
     # "map"
-
   )
 
   # not sure why I am including this...
@@ -112,19 +148,22 @@ build_api_query <- function(
   table_code <- table_codes[[table_code_ref]]
 
 
-  assertthat::assert_that(type %in% c("census", "admin"))
+  assertthat::assert_that(type %in% c("census", "admin", "other"))
 
   # type = "census" or "admin"
   if (type == "census") {
     url_base <- "https://services1.arcgis.com/ESMARspQHYMw9BZ9/"
     admin <- ""
-    map_server <- 1
   }
 
   if (type == "admin") {
     url_base <- "https://ons-inspire.esriuk.com/"
     admin <- "Administrative_Boundaries/"
-    map_server <- 0
+  }
+
+  if (type == "other") {
+    url_base <- "https://ons-inspire.esriuk.com/"
+    admin <- "Other_Boundaries/"
   }
 
 
@@ -147,7 +186,7 @@ build_api_query <- function(
 
   if (server == "feature") {
     fields <- toupper(fields)
-    search_within <- toupper(search_within)
+    within_level <- toupper(within_level)
   }
 
   # format 'locations' correctly
@@ -155,10 +194,10 @@ build_api_query <- function(
   # utils::URLencode because I found that it wasn't encoding
   # all the things as I needed it to for the query to be valid
 
-  if (is.null(locations)) {
-    locations <- "1%3D1"
+  if (is.null(within)) {
+    within <- "1%3D1"
   } else {
-    locations <- locations %>%
+    within <- within %>%
       stringr::str_replace_all(" ", "%20") %>%
 
       # don't think this is needed but it's what the site itself does
@@ -166,14 +205,13 @@ build_api_query <- function(
 
       # surround each location in ''
       paste0("%27", ., "%27") %>%
-
       stringr::str_c(
-      search_within, # area level code eg WD19CD, CAUTH19NM
-      "%3D", # "="
-      .,     # vector of 'locations'
-      sep = "%20",          # Open Geog website puts spaces in so so will I
-      collapse = "%20OR%20" # collapse multiple locations with an " OR "
-    )
+        within_level, # area level code eg WD19CD, CAUTH19NM
+        "%3D", # "="
+        ., # vector of 'within'
+        sep = "%20", # Open Geog website puts spaces in, so so will I
+        collapse = "%20OR%20" # collapse multiple locations with an " OR "
+      )
   }
 
 
@@ -203,7 +241,7 @@ build_api_query <- function(
     table_code,
     server_line,
     query_line,
-    locations,
+    within,
     fields_line,
     fields,
     coda

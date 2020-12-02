@@ -1,27 +1,54 @@
 #' Uses build_api_query() to Retrieve, Tidy and Return a Lookup Table
 #'
-#' @param bounds_level the lowest level at which to return codes and names, eg "LSOA". Has to be one of "lsoa", "msoa", "wd/ward", "lad", "ltla/lower", "utla/upper", "cty/county", "cauth", "rgn/region", "ctry/country". Case-insensitive.
-#' @param within the name of a geographic area to filter by eg "Swindon", "Gloucestershire", "Wales"
-#' @param within_level upper geographic level to filter at. eg if filtering to find all LSOAs in a local authority, within_level will be "lad" or "ltla" or "utla". Has to be one of "lad", "cty/county", "utla/upper", "rgn/region", "cauth" or "ctry/country". Case-insensitive.
-#' @param include_msoa if bounds_level is LSOA, whether to also include MSOA columns (in "tidy" or "all" styles). If bounds_level is MSOA, this will be forced to TRUE.
-#' @param return_style "tidy" (the default) means all available columns between bounds_level and within_level will be returned, but with any empty columns removed. "all" is as "tidy" except empty columns are retained. "simple" means that only the code and name (cd and nm) columns for bounds_level and within_level are returned - other columns are omitted. "minimal" means only return the columns for bounds_level.
-#' @param include_welsh_names only makes a difference when bounds_level = msoa, or when bounds_level = lsoa and return_style = "all" or "tidy". FALSE returns no Welsh language columns. TRUE attempts to return Welsh language columns for MSOA names. NULL (default) means that a decision will be made by the program, based on whether lsoa11cd or msoa11cd columns contain "^W"
+#' Roughly equivalent to \code{geo_get(boundaries = FALSE)}
+#'
+#'
+#' @param bounds_level The lowest level at which to return codes and names, eg
+#'   "LSOA". Has to be one of "lsoa", "msoa", "wd/ward", "lad", "ltla/lower",
+#'   "cty/county". Case-insensitive.
+#' @param within The name of a geographic area to filter by eg "Swindon",
+#'   "Gloucestershire", "Wales".
+#' @param within_level Upper geographic level to filter at. eg if filtering to
+#'   find all LSOAs in a local authority, \code{within_level} will be "lad". Has
+#'   to be one of "wd/ward", "lad", "cty/county", "utla/upper", "rgn/region",
+#'   "cauth" or "ctry/country". Case-insensitive. Not all combinations of
+#'   \code{bounds_level} and \code{within_level} make sense or are possible! NB
+#'   "county" includes metropolitan counties such as "Inner London", "Tyne and
+#'   Wear" and "West Midlands".
+#' @param include_msoa If \code{bounds_level} is LSOA, whether to also include
+#'   MSOA columns (in "tidy" or "all" styles). If \code{bounds_level} is MSOA,
+#'   this will be forced to \code{TRUE}.
+#' @param return_style "tidy" (the default) means all available columns between
+#'   \code{bounds_level} and \code{within_level} will be returned, but with any
+#'   empty columns removed. "all" is as "tidy" except empty columns are
+#'   retained. "simple" means that only the code and name (cd and nm) columns
+#'   for \code{bounds_level} and \code{within_level} are returned - other
+#'   columns are omitted. "minimal" means 'only return the columns for
+#'   \code{bounds_level}'.
+#' @param include_welsh_names Only makes a difference when \code{bounds_level} =
+#'   msoa, or when \code{bounds_level} = lsoa and \code{return_style} = "all" or
+#'   "tidy". \code{FALSE} returns no Welsh language columns. \code{TRUE}
+#'   attempts to return Welsh language LAD and MSOA names where relevant.
+#'   \code{NULL} (the default) means that an educated decision will be made by
+#'   the program, based on whether any of the areas returned have "^W" codes.
 #'
 #' @return a data frame (tibble)
 #' @export
-#'
 #' @examples
 #' create_custom_lookup(
 #'   bounds_level = "msoa",
 #'   within = "Swindon",
 #'   within_level = "lad",
-#'   return_style = "simple")
+#'   return_style = "simple"
+#' )
 #' create_custom_lookup(
 #'   bounds_level = "msoa",
 #'   within = "Swansea",
 #'   within_level = "lad",
-#'   return_style = "tidy")
-#' # TODO add in more examples
+#'   return_style = "tidy"
+#' )
+#'
+#' # TODO add in more (interesting) examples
 create_custom_lookup <- function(
                                  bounds_level,
                                  within,
@@ -29,18 +56,21 @@ create_custom_lookup <- function(
                                  include_msoa = NULL,
                                  return_style = "tidy",
                                  include_welsh_names = NULL) {
+
+  # when looking up LSOA -> MSOA, retain LSOA cols?
   keep_lsoa_cols <- TRUE
 
-  # automatically include MSOAs where it makes sense to, unless overridden by params
-  if (is.null(include_msoa) && tolower(bounds_level) == "lsoa" && !tolower(within_level) %in% c("wd", "ward") && !return_style %in% c("simple", "minimal")) {
+  # When returning LSOAs but not Wards, and return_style is "tidy" or
+  # "full", tend to include MSOA columns, unless overridden by user param
+  if (is.null(include_msoa) && tolower(bounds_level) == "lsoa" && !tolower(within_level) %in% c("wd", "ward") && return_style %in% c("tidy", "full")) {
     include_msoa <- TRUE
   } else if (is.null(include_msoa)) {
     include_msoa <- FALSE
   }
 
-  # throw an error if 'include_msoa' is set where it doesn't make any sense to
+  # notify if 'include_msoa' is set where it doesn't make any sense to
   if (include_msoa && !tolower(bounds_level) %in% c("lsoa", "msoa")) {
-    usethis::ui_info(
+    usethis::ui_oops(
       "'include_msoa' is set to TRUE but you are not retrieving data
       at a 'bounds_level' of LSOA or MSOA, so this will not work.
       Setting 'include_msoa' to FALSE."
@@ -49,55 +79,56 @@ create_custom_lookup <- function(
   }
 
   if (tolower(bounds_level) == "msoa") {
-    bounds_level <- "lsoa"
+    bounds_level <- "lsoa" # because OG doesn't have MSOA level lookups
     keep_lsoa_cols <- FALSE
     include_msoa <- TRUE
   }
 
 
   area_code_lookup <- dplyr::tribble(
-    ~friendly, ~serious,
-    "lsoa",    "lsoa11",
-    "msoa",    "msoa11",
-    "wd",      "wd19",
-    "ward",    "wd19",
-    "lad",     "lad19",
-    "ltla",    "ltla19",
-    "lower",   "ltla19",
-    "utla",    "utla19",
-    "upper",   "utla19",
-    "cty",     "cty19",
-    "county",  "cty19",
-    "cauth",   "cauth19",
-    "rgn",     "rgn19",
-    "region",  "rgn19",
-    "ctry",    "ctry19",
-    "country", "ctry19"
+    ~friendly,  ~serious,
+    "lsoa",     "lsoa11",
+    "msoa",     "msoa11",
+    "wd",       "wd19",
+    "ward",     "wd19",
+    "lad",      "lad19",
+    "ltla",     "ltla19",
+    "lower",    "ltla19",
+    "utla",     "utla19",
+    "upper",    "utla19",
+    "cty",      "cty19",
+    "county",   "cty19",
+    "cauth",    "cauth19",
+    "rgn",      "rgn19",
+    "region",   "rgn19",
+    "ctry",     "ctry19",
+    "country",  "ctry19"
   )
 
 
 
-  # can only work with a singe ref currently - ideally I will enable it
+  # can only work with a single ref currently - ideally I will enable it
   # to work with two (or more?) refs for two-step lookups
-  # eg MSOA to region (via lad)
+  # eg MSOA to region (via LAD)
   table_code_ref_lookup <- dplyr::tribble(
     ~bounds_level, ~within_level, ~table_code_ref1, ~table_code_ref2,
 
-    "wd",      "lad",     1,     NULL,
-    "wd",      "cty",     1,     NULL,
-    "wd",      "rgn",     1,     NULL,
-    "wd",      "ctry",    1,     NULL,
-    "lad",     "cty",     1,     NULL,
-    "lad",     "rgn",     1,     NULL,
-    "lad",     "ctry",    1,     NULL,
-    "cty",     "rgn",     1,     NULL,
-    "lad",     "cauth",   2,     NULL,
-    "ltla",    "utla",    3,     NULL,
-    "lsoa",    "utla",    4,     NULL,
-    "msoa",    "utla",    4,     NULL,
-    "lsoa",    "wd",      5,     NULL,
-    "lsoa",    "lad",     5,     NULL,
-    "msoa",    "lad",     5,     NULL
+    "wd",       "lad",    1,     NULL,
+    "wd",       "cty",    1,     NULL,
+    "wd",       "rgn",    1,     NULL,
+    "wd",       "ctry",   1,     NULL,
+    "lad",      "cty",    1,     NULL,
+    "lad",      "rgn",    1,     NULL,
+    "lad",      "ctry",   1,     NULL,
+    "cty",      "rgn",    1,     NULL,
+    "cty",      "ctry",   1,     NULL,
+    "lad",      "cauth",  2,     NULL,
+    "ltla",     "utla",   3,     NULL,
+    "lsoa",     "utla",   4,     NULL,
+    "msoa",     "utla",   4,     NULL,
+    "lsoa",     "wd",     5,     NULL,
+    "lsoa",     "lad",    5,     NULL,
+    "msoa",     "lad",    5,     NULL
     # "utla",   "rgn"     1,     3,
     # "lsoa",   "cauth"   2,     5,
     # "msoa",   "cauth"   2,     5,
@@ -137,7 +168,7 @@ create_custom_lookup <- function(
 
 
   end_col <- length(fields)
-  return_fields <- "*"     # default for return_style = "all" and "tidy"
+  return_fields <- "*" # default for return_style = "all" and "tidy"
 
 
   # use return_style to decide how many columns to return
@@ -145,10 +176,13 @@ create_custom_lookup <- function(
     return_fields <- fields
   }
 
+  # there's a question as to whether "minimal" should push include_welsh_names
+  # to FALSE (unless TRUE is stipulated by the user)
   if (return_style == "minimal") {
     return_fields <- fields[1:2]
   }
 
+  # maybe extract to an external helper function in another file?
   treat_results <- function(df, return_style) {
 
     # check that the parameter is valid
@@ -180,7 +214,7 @@ create_custom_lookup <- function(
         dplyr::distinct()
     }
 
-    return(df)
+    return(df) # return() is never necessary, but just to be clear!
   }
 
   # create another lookup (if necessary) for automatically looking
@@ -188,8 +222,8 @@ create_custom_lookup <- function(
   # currently assuming that type="census" and server="feature" work for all!?
   df_out <- build_api_query(
     table_code_ref = table_code_refs[1],
-    search_within = fields[4],
-    locations = within,
+    within_level = fields[4],
+    within = within,
     fields = return_fields
   ) %>%
     extract_lookup() %>%
@@ -199,6 +233,7 @@ create_custom_lookup <- function(
   # if not specified by the user, make an educated decision about
   # including Welsh language MSOA and LAD names (LAD19NMW / MSOA11NMW /
   # MSOA11HOCLNMW, where relevant)
+  # maybe extract to an external helper function in another file?
   if (is.null(include_welsh_names)) {
     check_w <- df_out %>%
       dplyr::select(dplyr::ends_with("cd")) %>%
@@ -214,8 +249,8 @@ create_custom_lookup <- function(
   }
 
   # add Welsh language LAD names if desired
+  # maybe extract to an external helper function in another file?
   if ("lad19nm" %in% colnames(df_out) && include_welsh_names) {
-
     lad19nmw_lookup <- jsonlite::fromJSON("https://opendata.arcgis.com/datasets/35de30c6778b463a8305939216656132_0.geojson") %>%
       purrr::pluck("features", "properties") %>%
       janitor::clean_names() %>%
@@ -228,9 +263,9 @@ create_custom_lookup <- function(
 
 
   if (!include_msoa) {
-    return(df_out)
+    df_out
+  } else {
+    df_out %>%
+      lsoa_to_msoa_lookup(keep = keep_lsoa_cols, nmw = include_welsh_names)
   }
-
-  df_out %>%
-    lsoa_to_msoa_lookup(keep = keep_lsoa_cols, nmw = include_welsh_names)
 }

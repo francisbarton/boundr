@@ -15,25 +15,60 @@ geo_get(
 )
 }
 \arguments{
-\item{bounds_level}{the lowest level at which to return codes and names, eg "LSOA". Has to be one of "lsoa", "msoa", "wd/ward", "lad", "ltla/lower", "utla/upper", "cty/county", "cauth", "rgn/region", "ctry/country". Case-insensitive.}
+\item{bounds_level}{The lowest level at which to return codes and names, eg
+"LSOA". Has to be one of "lsoa", "msoa", "wd/ward", "lad", "ltla/lower",
+"cty/county". Case-insensitive.}
 
-\item{within}{the name of a geographic area to filter by eg "Swindon", "Gloucestershire", "Wales"}
+\item{within}{The name of a geographic area to filter by eg "Swindon",
+"Gloucestershire", "Wales".}
 
-\item{within_level}{upper geographic level to filter at. eg if filtering to find all LSOAs in a local authority, within_level will be "lad" or "ltla" or "utla". Has to be one of "lad", "cty/county", "utla/upper", "rgn/region", "cauth" or "ctry/country". Case-insensitive.}
+\item{within_level}{Upper geographic level to filter at. eg if filtering to
+find all LSOAs in a local authority, \code{within_level} will be "lad". Has
+to be one of "wd/ward", "lad", "cty/county", "utla/upper", "rgn/region",
+"cauth" or "ctry/country". Case-insensitive. Not all combinations of
+\code{bounds_level} and \code{within_level} make sense or are possible! NB
+"county" includes metropolitan counties such as "Inner London", "Tyne and
+Wear" and "West Midlands".}
 
-\item{include_msoa}{if bounds_level is LSOA, whether to also include MSOA columns (in "tidy" or "all" styles). If bounds_level is MSOA, this will be forced to TRUE.}
+\item{include_msoa}{If \code{bounds_level} is LSOA, whether to also include
+MSOA columns (in "tidy" or "all" styles). If \code{bounds_level} is MSOA,
+this will be forced to \code{TRUE}.}
 
-\item{return_style}{"tidy" (the default) means all available columns between bounds_level and within_level will be returned, but with any empty columns removed. "all" is as "tidy" except empty columns are retained. "simple" means that only the code and name (cd and nm) columns for bounds_level and within_level are returned - other columns are omitted. "minimal" means only return the columns for bounds_level.}
+\item{return_style}{"tidy" (the default) means all available columns between
+\code{bounds_level} and \code{within_level} will be returned, but with any
+empty columns removed. "all" is as "tidy" except empty columns are
+retained. "simple" means that only the code and name (cd and nm) columns
+for \code{bounds_level} and \code{within_level} are returned - other
+columns are omitted. "minimal" means 'only return the columns for
+\code{bounds_level}'.}
 
-\item{include_welsh_names}{only makes a difference when bounds_level = msoa, or when bounds_level = lsoa and return_style = "all" or "tidy". FALSE returns no Welsh language columns. TRUE attempts to return Welsh language columns for MSOA names. NULL (default) means that a decision will be made by the program, based on whether lsoa11cd or msoa11cd columns contain "^W"}
+\item{include_welsh_names}{Only makes a difference when \code{bounds_level} =
+msoa, or when \code{bounds_level} = lsoa and \code{return_style} = "all" or
+"tidy". \code{FALSE} returns no Welsh language columns. \code{TRUE}
+attempts to return Welsh language LAD and MSOA names where relevant.
+\code{NULL} (the default) means that an educated decision will be made by
+the program, based on whether any of the areas returned have "^W" codes.}
 
-\item{boundaries}{whether to retrieve object boundaries data from the API. Default TRUE. If FALSE, just returns a df with area codes and names etc.}
+\item{boundaries}{whether to retrieve object boundaries data from the API.
+Default \code{TRUE}. If \code{FALSE}, just returns a plain summary df with
+area codes and names etc but no geometry.}
 }
 \value{
 an sf (simple features) object (data frame with geometries)
 }
 \description{
-The ONS OpenGeography Portal (https://geoportal.statistics.gov.uk/)
+The ONS OpenGeography Portal (\url{https://geoportal.statistics.gov.uk/})
 is a great resource for area boundary and data lookups within the UK.
 This program focuses on areas within England and Wales only, initially.
+}
+\details{
+\emph{I want a better name for this function! Suggestions welcome...}
+}
+\examples{
+geo_get("wd", "Swindon", "lad")
+geo_get("msoa", "Swansea", "lad")
+geo_get("lsoa", "Zetland", "ward")
+geo_get("ltla", "Gloucestershire", "utla", return_style = "minimal")
+geo_get("lad", "Greater Manchester", "cauth")
+geo_get("cty", "East of England", "rgn", boundaries = FALSE)
 }

@@ -1,7 +1,7 @@
-#' Helper Function to Convert LSOA names to MSOA Codes and Names Including HOCL Names
+#' Helper Function to Convert LSOA names to MSOA Codes + Names
 #'
-#' @param df data frame with at least column \code{lsoa11nm} and possibly \code{lsoa11cd}
-#' @param hocl_names_version latest version of the House of Commons Library MSOA Names. Needs to be a string e.g. "1.8" (default)
+#' @param df data frame with at least column \code{lsoa11nm} and possibly \code{lsoa11cd}.
+#' @param hocl_names_version latest version of the House of Commons Library MSOA Names. Needs to be a string e.g. "1.8" (default).
 #' @param nmw whether to keep the Welsh language MSOA names (ONS and HOCL) or not. Boolean. Default TRUE.
 #' @param keep whether to keep the LSOA column(s) or just return a df starting at MSOA level. Default FALSE.
 #'
@@ -13,6 +13,8 @@ lsoa_to_msoa_lookup <- function(
                                 hocl_names_version = "1.8",
                                 nmw = TRUE,
                                 keep = FALSE) {
+
+
   create_msoa_lookup <- function(version, keep_nmw = TRUE) {
     hocl_msoa_names <- function(version, nmw = TRUE) {
       msoa_cols <- 1:5
@@ -53,8 +55,16 @@ lsoa_to_msoa_lookup <- function(
       dplyr::relocate(msoa11nm, .after = msoa11cd)
   }
 
+
+
+
   # get msoa lookup (above)
-  msoa_lookup <- create_msoa_lookup(version = hocl_names_version, keep_nmw = nmw)
+  msoa_lookup <- create_msoa_lookup(
+    version = hocl_names_version,
+    keep_nmw = nmw)
+
+
+
 
   df_out <- df %>%
     dplyr::select(dplyr::any_of(c("lsoa11cd", "lsoa11nm"))) %>%
@@ -62,10 +72,12 @@ lsoa_to_msoa_lookup <- function(
     dplyr::left_join(df)
 
   if (keep) {
-    return(df_out)
+    df_out
+  } else {
+    df_out %>%
+      dplyr::select(
+        !dplyr::any_of(c("lsoa11cd", "lsoa11nm", "wd19cd", "wd19nm"))
+        ) %>%
+      dplyr::distinct()
   }
-
-  df_out %>%
-    dplyr::select(!dplyr::any_of(c("lsoa11cd", "lsoa11nm", "wd19cd", "wd19nm"))) %>%
-    dplyr::distinct()
 }
