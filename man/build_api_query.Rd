@@ -10,7 +10,8 @@ build_api_query(
   server = "feature",
   within_level,
   within = NULL,
-  fields = "*"
+  fields = "*",
+  distinct = TRUE
 )
 }
 \arguments{
@@ -34,6 +35,9 @@ returned}
 
 \item{fields}{The fields of the data to be returned. Defaults to \code{"*"}
 (all); can instead be a set of column names/variables.}
+
+\item{distinct}{Boolean. Whether to enable "returnDistinctValues" as part of
+the query. Seems like a good idea for lookups but a problem for boundaries.}
 }
 \value{
 a string that should function as a valid API query
@@ -43,6 +47,7 @@ A function called by create_custom_lookup.R and geo_get.R to build a
 valid query
 }
 \examples{
+\dontrun{
 build_api_query(
   table_code_ref = 2,
   type = "census",
@@ -51,6 +56,8 @@ build_api_query(
   within = "Greater Manchester",
   fields = c("lad19cd", "lad19nm", "cauth19cd", "cauth19nm")
 )
+}
+\dontrun{
 build_api_query(
   table_code_ref = 9,
   type = "admin",
@@ -63,4 +70,5 @@ build_api_query(
   ),
   fields = c("lad19cd", "lad19nm")
 )
+}
 }

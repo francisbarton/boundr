@@ -16,7 +16,7 @@ geo_get(
 }
 \arguments{
 \item{bounds_level}{The lowest level at which to return codes and names, eg
-"LSOA". Has to be one of "lsoa", "msoa", "wd/ward", "lad", "ltla/lower",
+"LSOA". Has to be one of "lsoa", "msoa", "wd/ward", "lad",
 "cty/county". Case-insensitive.}
 
 \item{within}{The name of a geographic area to filter by eg "Swindon",
@@ -36,10 +36,9 @@ this will be forced to \code{TRUE}.}
 
 \item{return_style}{"tidy" (the default) means all available columns between
 \code{bounds_level} and \code{within_level} will be returned, but with any
-empty columns removed. "all" is as "tidy" except empty columns are
-retained. "simple" means that only the code and name (cd and nm) columns
-for \code{bounds_level} and \code{within_level} are returned - other
-columns are omitted. "minimal" means 'only return the columns for
+empty columns removed. "simple" means that only the code and name (cd and
+nm) columns for \code{bounds_level} and \code{within_level} are returned -
+other columns are omitted. "minimal" means 'only return the columns for
 \code{bounds_level}'.}
 
 \item{include_welsh_names}{Only makes a difference when \code{bounds_level} =
@@ -68,7 +67,7 @@ This program focuses on areas within England and Wales only, initially.
 geo_get("wd", "Swindon", "lad")
 geo_get("msoa", "Swansea", "lad")
 geo_get("lsoa", "Zetland", "ward")
-geo_get("ltla", "Gloucestershire", "utla", return_style = "minimal")
+geo_get("lad", "Gloucestershire", "cty", return_style = "simple")
 geo_get("lad", "Greater Manchester", "cauth")
 geo_get("cty", "East of England", "rgn", boundaries = FALSE)
 }

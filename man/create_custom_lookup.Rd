@@ -15,7 +15,7 @@ create_custom_lookup(
 }
 \arguments{
 \item{bounds_level}{The lowest level at which to return codes and names, eg
-"LSOA". Has to be one of "lsoa", "msoa", "wd/ward", "lad", "ltla/lower",
+"LSOA". Has to be one of "lsoa", "msoa", "wd/ward", "lad",
 "cty/county". Case-insensitive.}
 
 \item{within}{The name of a geographic area to filter by eg "Swindon",
@@ -35,10 +35,9 @@ this will be forced to \code{TRUE}.}
 
 \item{return_style}{"tidy" (the default) means all available columns between
 \code{bounds_level} and \code{within_level} will be returned, but with any
-empty columns removed. "all" is as "tidy" except empty columns are
-retained. "simple" means that only the code and name (cd and nm) columns
-for \code{bounds_level} and \code{within_level} are returned - other
-columns are omitted. "minimal" means 'only return the columns for
+empty columns removed. "simple" means that only the code and name (cd and
+nm) columns for \code{bounds_level} and \code{within_level} are returned -
+other columns are omitted. "minimal" means 'only return the columns for
 \code{bounds_level}'.}
 
 \item{include_welsh_names}{Only makes a difference when \code{bounds_level} =
@@ -55,18 +54,21 @@ a data frame (tibble)
 Roughly equivalent to \code{geo_get(boundaries = FALSE)}
 }
 \examples{
+\dontrun{
 create_custom_lookup(
   bounds_level = "msoa",
   within = "Swindon",
   within_level = "lad",
   return_style = "simple"
 )
+}
+\dontrun{
 create_custom_lookup(
   bounds_level = "msoa",
   within = "Swansea",
   within_level = "lad",
   return_style = "tidy"
 )
-
-# TODO add in more (interesting) examples
+}
+# TODO add in more (and more interesting) examples?
 }

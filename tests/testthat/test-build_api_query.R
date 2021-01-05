@@ -23,7 +23,7 @@ test_that(
 
     expect_identical(
       build_api_query(
-        table_code_ref = 7,
+        table_code_ref = 6,
         type = "census",
         server = "feature",
         within_level = "msoa11cd",
@@ -43,7 +43,7 @@ test_that(
 
     expect_identical(
       build_api_query(
-        table_code_ref = 9,
+        table_code_ref = 8,
         type = "admin",
         server = "map",
         within_level = "lad19nm",

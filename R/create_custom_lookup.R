@@ -32,22 +32,24 @@
 #'   the program, based on whether any of the areas returned have "^W" codes.
 #'
 #' @return a data frame (tibble)
-#' @export
 #' @examples
+#' \dontrun{
 #' create_custom_lookup(
 #'   bounds_level = "msoa",
 #'   within = "Swindon",
 #'   within_level = "lad",
 #'   return_style = "simple"
 #' )
+#' }
+#' \dontrun{
 #' create_custom_lookup(
 #'   bounds_level = "msoa",
 #'   within = "Swansea",
 #'   within_level = "lad",
 #'   return_style = "tidy"
 #' )
-#'
-#' # TODO add in more (interesting) examples
+#' }
+#' # TODO add in more (and more interesting) examples?
 create_custom_lookup <- function(
                                  bounds_level,
                                  within,

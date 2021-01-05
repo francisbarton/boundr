@@ -4,12 +4,10 @@
 \alias{lsoa_to_msoa_lookup}
 \title{Helper Function to Convert LSOA names to MSOA Codes + Names}
 \usage{
-lsoa_to_msoa_lookup(df, hocl_names_version = "1.8", nmw = TRUE, keep = FALSE)
+lsoa_to_msoa_lookup(df, nmw = TRUE, keep = FALSE)
 }
 \arguments{
 \item{df}{data frame with at least column \code{lsoa11nm} and possibly \code{lsoa11cd}.}
-
-\item{hocl_names_version}{latest version of the House of Commons Library MSOA Names. Needs to be a string e.g. "1.8" (default).}
 
 \item{nmw}{whether to keep the Welsh language MSOA names (ONS and HOCL) or not. Boolean. Default TRUE.}
 

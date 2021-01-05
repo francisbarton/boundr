@@ -5,7 +5,6 @@
 #' @param keep whether to keep the LSOA column(s) or just return a df starting at MSOA level. Default FALSE.
 #'
 #' @return a data frame (a lookup table)
-#' @export
 #'
 lsoa_to_msoa_lookup <- function(
                                 df,

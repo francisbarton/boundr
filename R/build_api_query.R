@@ -22,8 +22,8 @@
 #'   the query. Seems like a good idea for lookups but a problem for boundaries.
 #'
 #' @return a string that should function as a valid API query
-#' @export
 #' @examples
+#' \dontrun{
 #' build_api_query(
 #'   table_code_ref = 2,
 #'   type = "census",
@@ -32,6 +32,8 @@
 #'   within = "Greater Manchester",
 #'   fields = c("lad19cd", "lad19nm", "cauth19cd", "cauth19nm")
 #' )
+#' }
+#' \dontrun{
 #' build_api_query(
 #'   table_code_ref = 9,
 #'   type = "admin",
@@ -44,6 +46,7 @@
 #'   ),
 #'   fields = c("lad19cd", "lad19nm")
 #' )
+#' }
 build_api_query <- function(
                             table_code_ref,
                             type = "census",
@@ -203,7 +206,7 @@ build_api_query <- function(
       stringr::str_c(
         within_level, # area level code eg WD19CD, CAUTH19NM
         "%3D", # "="
-        ., # vector of 'within'
+        .,     # vector of 'within'
         sep = "%20", # Open Geog website puts spaces in, so so will I
         collapse = "%20OR%20" # collapse multiple locations with an " OR "
       )

@@ -19,7 +19,6 @@
 #' geo_get("msoa", "Swansea", "lad")
 #' geo_get("lsoa", "Zetland", "ward")
 #' geo_get("lad", "Gloucestershire", "cty", return_style = "simple")
-#' geo_get("lad", "Derbyshire", "utla", return_style = "minimal")
 #' geo_get("lad", "Greater Manchester", "cauth")
 #' geo_get("cty", "East of England", "rgn", boundaries = FALSE)
 geo_get <- function(
@@ -75,7 +74,7 @@ geo_get <- function(
     if (within %in% metro_counties) {
       bounds_query_level <- "mcty18cd"
     } else if (within %in% c("Inner London", "Outer London")) {
-      ui_stop("Sorry but boundaries are not available for Inner London and Outer London")
+      usethis::ui_stop("Sorry but boundaries are not available for Inner London and Outer London")
     } else {
       bounds_query_level <- "ctyua19cd"
     }
