@@ -4,7 +4,7 @@
 #'
 #'
 #' @param bounds_level The lowest level at which to return codes and names, eg
-#'   "LSOA". Has to be one of "lsoa", "msoa", "wd/ward", "lad", "ltla/lower",
+#'   "LSOA". Has to be one of "lsoa", "msoa", "wd/ward", "lad",
 #'   "cty/county". Case-insensitive.
 #' @param within The name of a geographic area to filter by eg "Swindon",
 #'   "Gloucestershire", "Wales".
@@ -20,10 +20,9 @@
 #'   this will be forced to \code{TRUE}.
 #' @param return_style "tidy" (the default) means all available columns between
 #'   \code{bounds_level} and \code{within_level} will be returned, but with any
-#'   empty columns removed. "all" is as "tidy" except empty columns are
-#'   retained. "simple" means that only the code and name (cd and nm) columns
-#'   for \code{bounds_level} and \code{within_level} are returned - other
-#'   columns are omitted. "minimal" means 'only return the columns for
+#'   empty columns removed. "simple" means that only the code and name (cd and
+#'   nm) columns for \code{bounds_level} and \code{within_level} are returned -
+#'   other columns are omitted. "minimal" means 'only return the columns for
 #'   \code{bounds_level}'.
 #' @param include_welsh_names Only makes a difference when \code{bounds_level} =
 #'   msoa, or when \code{bounds_level} = lsoa and \code{return_style} = "all" or
@@ -92,8 +91,6 @@ create_custom_lookup <- function(
     "wd",       "wd19",
     "ward",     "wd19",
     "lad",      "lad19",
-    "ltla",     "ltla19",
-    "lower",    "ltla19",
     "utla",     "utla19",
     "upper",    "utla19",
     "cty",      "cty19",
@@ -118,24 +115,26 @@ create_custom_lookup <- function(
     "wd",       "rgn",    1,     NULL,
     "wd",       "ctry",   1,     NULL,
     "lad",      "cty",    1,     NULL,
+    "lad",      "utla",   1,     NULL,   # utla needs to be renamed to cty here
     "lad",      "rgn",    1,     NULL,
     "lad",      "ctry",   1,     NULL,
     "cty",      "rgn",    1,     NULL,
     "cty",      "ctry",   1,     NULL,
     "lad",      "cauth",  2,     NULL,
-    "ltla",     "utla",   3,     NULL,
-    "lsoa",     "utla",   4,     NULL,
-    "msoa",     "utla",   4,     NULL,
-    "lsoa",     "wd",     5,     NULL,
-    "lsoa",     "lad",    5,     NULL,
-    "msoa",     "lad",    5,     NULL
+    "lsoa",     "utla",   3,     NULL,
+    "lsoa",     "cty",    3,     NULL,   # cty needs to be renamed to utla here
+    "msoa",     "utla",   3,     NULL,
+    "msoa",     "cty",    3,     NULL,   # cty needs to be renamed to utla here
+    "lsoa",     "wd",     4,     NULL,
+    "lsoa",     "lad",    4,     NULL,
+    "msoa",     "lad",    4,     NULL
     # "utla",   "rgn"     1,     3,
-    # "lsoa",   "cauth"   2,     5,
-    # "msoa",   "cauth"   2,     5,
-    # "lsoa",   "rgn"     1,     5,
-    # "msoa",   "rgn"     1,     5,
-    # "lsoa",   "ctry"    1,     5
-    # "msoa",   "ctry"    1,     5
+    # "lsoa",   "cauth"   2,     4,
+    # "msoa",   "cauth"   2,     4,
+    # "lsoa",   "rgn"     1,     4,
+    # "msoa",   "rgn"     1,     4,
+    # "lsoa",   "ctry"    1,     4
+    # "msoa",   "ctry"    1,     4
   ) %>%
     dplyr::mutate(bounds_level = dplyr::case_when(
       stringr::str_ends(bounds_level, "oa") ~ paste0(bounds_level, "11cd"),
@@ -168,7 +167,7 @@ create_custom_lookup <- function(
 
 
   end_col <- length(fields)
-  return_fields <- "*" # default for return_style = "all" and "tidy"
+  return_fields <- "*" # default for return_style = "tidy"
 
 
   # use return_style to decide how many columns to return
@@ -186,24 +185,25 @@ create_custom_lookup <- function(
   treat_results <- function(df, return_style) {
 
     # check that the parameter is valid
-    if (!return_style %in% c("tidy", "all", "simple", "minimal")) {
+    if (!return_style %in% c("tidy", "simple", "minimal")) {
       usethis::ui_warn("'return_style' parameter not correctly specified.
-                       Options are \"tidy\", \"all\", \"simple\", \"minimal\".
+                       Options are \"tidy\", \"simple\", \"minimal\".
                        Setting to \"tidy\"")
       return_style <- "tidy"
     }
 
-    if (return_style == "all") {
-      df <- df %>%
-        # return all columns between first and last specified fields
-        dplyr::select(!!rlang::sym(fields[1]):!!rlang::sym(fields[end_col])) %>%
-        dplyr::distinct()
-    }
+    # if (return_style == "all") {
+    #   df <- df %>%
+    #     # return all columns between first and last specified fields
+    #     dplyr::select(!!rlang::sym(fields[1]):!!rlang::sym(fields[end_col])) %>%
+    #     dplyr::distinct()
+    # }
 
     # same as "all" but removes any "empty" (all NA) fields
     if (return_style == "tidy") {
       df <- df %>%
         # return all columns between first and last specified fields
+        # dplyr::select(fields[1]:fields[end_col]) %>%
         dplyr::select(!!rlang::sym(fields[1]):!!rlang::sym(fields[end_col])) %>%
         dplyr::distinct() %>%
         janitor::remove_empty("cols")
@@ -214,7 +214,7 @@ create_custom_lookup <- function(
         dplyr::distinct()
     }
 
-    return(df) # return() is never necessary, but just to be clear!
+    df
   }
 
   # create another lookup (if necessary) for automatically looking
@@ -224,7 +224,10 @@ create_custom_lookup <- function(
     table_code_ref = table_code_refs[1],
     within_level = fields[4],
     within = within,
-    fields = return_fields
+    fields = return_fields,
+    # TRUE is the default value, but I'm being explicit about it
+    # for debugging purposes
+    distinct = TRUE
   ) %>%
     extract_lookup() %>%
     treat_results(return_style = return_style)

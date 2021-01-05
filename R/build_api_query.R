@@ -18,6 +18,8 @@
 #'   returned
 #' @param fields The fields of the data to be returned. Defaults to \code{"*"}
 #'   (all); can instead be a set of column names/variables.
+#' @param distinct Boolean. Whether to enable "returnDistinctValues" as part of
+#'   the query. Seems like a good idea for lookups but a problem for boundaries.
 #'
 #' @return a string that should function as a valid API query
 #' @export
@@ -48,7 +50,8 @@ build_api_query <- function(
                             server = "feature",
                             within_level,
                             within = NULL,
-                            fields = "*") {
+                            fields = "*",
+                            distinct = TRUE) {
 
 
   # create a list of codes for the main function.
@@ -63,14 +66,6 @@ build_api_query <- function(
 
     # "https://geoportal.statistics.gov.uk/datasets/local-authority-district-to-combined-authority-december-2019-lookup-in-england",
     "LAD19_CAUTH19_EN_LU",
-
-    # A lookup file of the lower tier local authorities
-    # (local authority districts, unitary authorities, metropolitan districts,
-    # London boroughs) to the upper tier local authorities (counties,
-    # metropolitan counties, inner and outer London, unitary authorities)
-    # in England and Wales
-    # "https://geoportal.statistics.gov.uk/datasets/lower-tier-local-authority-to-upper-tier-local-authority-april-2019-lookup-in-england-and-wales"
-    "LTLA19_UTLA19_EW_LU",
 
     # "https://geoportal.statistics.gov.uk/datasets/lower-layer-super-output-area-2011-to-upper-tier-local-authorities-2019-lookup-in-england-and-wales-"
     "LSOA11_UTLA19_EW_LU",
@@ -231,7 +226,11 @@ build_api_query <- function(
   # in theory there are several other options that could be customised here
   # if it were worth the candle.
   # maybe I should bother to allow that, in order better to replicate the API
-  coda <- "&returnDistinctValues=true&outSR=4326&f=json"
+
+  if (distinct) distinct_val <- "&returnDistinctValues=true"
+  if (!distinct) distinct_val <- ""
+
+  coda <- paste0(distinct_val, "&outSR=4326&f=json")
 
   # create the query
   paste0(

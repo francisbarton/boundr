@@ -18,7 +18,8 @@
 #' geo_get("wd", "Swindon", "lad")
 #' geo_get("msoa", "Swansea", "lad")
 #' geo_get("lsoa", "Zetland", "ward")
-#' geo_get("ltla", "Gloucestershire", "utla", return_style = "minimal")
+#' geo_get("lad", "Gloucestershire", "cty", return_style = "simple")
+#' geo_get("lad", "Derbyshire", "utla", return_style = "minimal")
 #' geo_get("lad", "Greater Manchester", "cauth")
 #' geo_get("cty", "East of England", "rgn", boundaries = FALSE)
 geo_get <- function(
@@ -90,12 +91,12 @@ geo_get <- function(
   table_code_ref_lookup <- dplyr::tribble(
     ~bounds_level, ~table_code_ref, ~type, ~server,
 
-    "lsoa11cd",     6,    "census",   "feature",
-    "msoa11cd",     7,    "census",   "feature",
-    "wd19cd",       8,    "census",   "feature",
-    "lad19cd",      9,    "admin",    "map",
-    "ctyua19cd",   10,    "admin",    "map",
-    "mcty18cd",    11,    "other",    "map"
+    "lsoa11cd",     5,    "census",   "feature",
+    "msoa11cd",     6,    "census",   "feature",
+    "wd19cd",       7,    "census",   "feature",
+    "lad19cd",      8,    "admin",    "map",
+    "ctyua19cd",    9,    "admin",    "map",
+    "mcty18cd",    10,    "other",    "map"
 
     # "ccg",
     # "https://ons-inspire.esriuk.com/arcgis/rest/services/Health_Boundaries/Clinical_Commissioning_Groups_April_2020_EN_BFC_V2/MapServer/1/query?where=1%3D1&outFields=*&outSR=4326&f=json",
@@ -126,7 +127,8 @@ geo_get <- function(
       server = table_code_refs[["server"]],
       within_level = bounds_query_level,
       within = .,
-      fields = return_fields
+      fields = return_fields,
+      distinct = FALSE
     ))
 
   bounds_out <- bounds_queries %>%
