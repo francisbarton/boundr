@@ -54,6 +54,7 @@ build_api_query <- function(
                             within_level,
                             within = NULL,
                             fields = "*",
+                            sr = 4326,
                             distinct = TRUE) {
 
 
@@ -224,6 +225,8 @@ build_api_query <- function(
 
   arcgis_base <- "arcgis/rest/services/"
   query_line <- "query?where="
+  within_open <- "%20("
+  within_close <- ")%20"
   fields_line <- "&outFields="
 
   # in theory there are several other options that could be customised here
@@ -233,7 +236,10 @@ build_api_query <- function(
   if (distinct) distinct_val <- "&returnDistinctValues=true"
   if (!distinct) distinct_val <- ""
 
-  coda <- paste0(distinct_val, "&outSR=4326&f=json")
+  coda <- paste0(distinct_val,
+                 "&outSR=",
+                 sr,
+                 "&f=json")
 
   # create the query
   paste0(
@@ -243,7 +249,9 @@ build_api_query <- function(
     table_code,
     server_line,
     query_line,
+    within_open,
     within,
+    within_close,
     fields_line,
     fields,
     coda

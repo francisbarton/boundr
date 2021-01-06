@@ -15,21 +15,23 @@
 #'   \code{bounds_level} and \code{within_level} make sense or are possible! NB
 #'   "county" includes metropolitan counties such as "Inner London", "Tyne and
 #'   Wear" and "West Midlands".
-#' @param include_msoa If \code{bounds_level} is LSOA, whether to also include
-#'   MSOA columns (in "tidy" or "all" styles). If \code{bounds_level} is MSOA,
-#'   this will be forced to \code{TRUE}.
+#' @param include_msoa If \code{bounds_level} is LSOA and return_style is "tidy",
+#'   whether to also include MSOA columns (in "tidy" return style). If
+#'   \code{bounds_level} is MSOA, this will be forced to \code{TRUE}.
 #' @param return_style "tidy" (the default) means all available columns between
 #'   \code{bounds_level} and \code{within_level} will be returned, but with any
 #'   empty columns removed. "simple" means that only the code and name (cd and
 #'   nm) columns for \code{bounds_level} and \code{within_level} are returned -
 #'   other columns are omitted. "minimal" means 'only return the columns for
 #'   \code{bounds_level}'.
+#' @param spatial_ref The (EPSG) spatial reference of the returned geometry.
+#'   4326 ("WGS 84") by default.
 #' @param include_welsh_names Only makes a difference when \code{bounds_level} =
-#'   msoa, or when \code{bounds_level} = lsoa and \code{return_style} = "all" or
-#'   "tidy". \code{FALSE} returns no Welsh language columns. \code{TRUE}
-#'   attempts to return Welsh language LAD and MSOA names where relevant.
-#'   \code{NULL} (the default) means that an educated decision will be made by
-#'   the program, based on whether any of the areas returned have "^W" codes.
+#'   msoa, or when \code{bounds_level} = lsoa and \code{return_style} = "tidy".
+#'   \code{FALSE} returns no Welsh language columns. \code{TRUE} attempts to
+#'   return Welsh language LAD and MSOA names where relevant. \code{NULL} (the
+#'   default) means that an educated decision will be made by the program,
+#'   based on whether any of the areas returned have "^W" codes.
 #'
 #' @return a data frame (tibble)
 #' @examples
@@ -56,6 +58,7 @@ create_custom_lookup <- function(
                                  within_level,
                                  include_msoa = NULL,
                                  return_style = "tidy",
+                                 spatial_ref = 4326,
                                  include_welsh_names = NULL) {
 
   # when looking up LSOA -> MSOA, retain LSOA cols?
@@ -63,7 +66,7 @@ create_custom_lookup <- function(
 
   # When returning LSOAs but not Wards, and return_style is "tidy" or
   # "full", tend to include MSOA columns, unless overridden by user param
-  if (is.null(include_msoa) && tolower(bounds_level) == "lsoa" && !tolower(within_level) %in% c("wd", "ward") && return_style %in% c("tidy", "full")) {
+  if (is.null(include_msoa) && tolower(bounds_level) == "lsoa" && !tolower(within_level) %in% c("wd", "ward") && return_style == "tidy") {
     include_msoa <- TRUE
   } else if (is.null(include_msoa)) {
     include_msoa <- FALSE
@@ -194,6 +197,7 @@ create_custom_lookup <- function(
       return_style <- "tidy"
     }
 
+    ## removed as negligible advantage over "tidy"
     # if (return_style == "all") {
     #   df <- df %>%
     #     # return all columns between first and last specified fields
@@ -201,7 +205,6 @@ create_custom_lookup <- function(
     #     dplyr::distinct()
     # }
 
-    # same as "all" but removes any "empty" (all NA) fields
     if (return_style == "tidy") {
       df <- df %>%
         # return all columns between first and last specified fields
@@ -227,6 +230,7 @@ create_custom_lookup <- function(
     within_level = fields[4],
     within = within,
     fields = return_fields,
+    sr = spatial_ref,
     # TRUE is the default value, but I'm being explicit about it
     # for debugging purposes
     distinct = TRUE

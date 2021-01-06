@@ -49,10 +49,10 @@ including:
 * the [Open Government Licence v3.0][ogl3]
 
 
-Licensing statement [as stipulated by the ONS][ons-licence]:
-
-* Source: Office for National Statistics licensed under the [Open Government Licence v3.0][ogl3]
-* Contains OS data © Crown copyright and database right 2020.
+> Licensing statement [as stipulated by the ONS][ons-licence]:
+> 
+> * Source: Office for National Statistics licensed under the [Open Government Licence v3.0][ogl3]
+> * Contains OS data © Crown copyright and database right 2020.
 
 
 [ogl3]: https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/

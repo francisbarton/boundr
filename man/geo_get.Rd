@@ -30,9 +30,9 @@ to be one of "wd/ward", "lad", "cty/county", "utla/upper", "rgn/region",
 "county" includes metropolitan counties such as "Inner London", "Tyne and
 Wear" and "West Midlands".}
 
-\item{include_msoa}{If \code{bounds_level} is LSOA, whether to also include
-MSOA columns (in "tidy" or "all" styles). If \code{bounds_level} is MSOA,
-this will be forced to \code{TRUE}.}
+\item{include_msoa}{If \code{bounds_level} is LSOA and return_style is "tidy",
+whether to also include MSOA columns (in "tidy" return style). If
+\code{bounds_level} is MSOA, this will be forced to \code{TRUE}.}
 
 \item{return_style}{"tidy" (the default) means all available columns between
 \code{bounds_level} and \code{within_level} will be returned, but with any
@@ -42,11 +42,11 @@ other columns are omitted. "minimal" means 'only return the columns for
 \code{bounds_level}'.}
 
 \item{include_welsh_names}{Only makes a difference when \code{bounds_level} =
-msoa, or when \code{bounds_level} = lsoa and \code{return_style} = "all" or
-"tidy". \code{FALSE} returns no Welsh language columns. \code{TRUE}
-attempts to return Welsh language LAD and MSOA names where relevant.
-\code{NULL} (the default) means that an educated decision will be made by
-the program, based on whether any of the areas returned have "^W" codes.}
+msoa, or when \code{bounds_level} = lsoa and \code{return_style} = "tidy".
+\code{FALSE} returns no Welsh language columns. \code{TRUE} attempts to
+return Welsh language LAD and MSOA names where relevant. \code{NULL} (the
+default) means that an educated decision will be made by the program,
+based on whether any of the areas returned have "^W" codes.}
 
 \item{boundaries}{whether to retrieve object boundaries data from the API.
 Default \code{TRUE}. If \code{FALSE}, just returns a plain summary df with

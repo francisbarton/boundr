@@ -27,6 +27,7 @@ geo_get <- function(
                     within_level,
                     include_msoa = NULL,
                     return_style = "tidy",
+                    spatial_ref = 4326,
                     include_welsh_names = NULL,
                     boundaries = TRUE) {
 
@@ -39,6 +40,7 @@ geo_get <- function(
     within_level = within_level,
     include_msoa = include_msoa,
     return_style = return_style,
+    spatial_ref = spatial_ref,
     include_welsh_names = include_welsh_names
   )
 
@@ -52,7 +54,8 @@ geo_get <- function(
   bounds_codes <- basic_df %>%
     dplyr::select(dplyr::ends_with("cd")) %>%
     dplyr::pull(1) %>%
-    batch_it_simple() # borrowed from my myrmidon utils package
+    # 25 seems to be ok. Long queries (eg batch size 50) seem to 404.
+    batch_it_simple(batch_size = 25) # borrowed from my myrmidon utils package
 
 
   bounds_query_level <- basic_df %>%
