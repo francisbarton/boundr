@@ -18,6 +18,8 @@
 #'   returned
 #' @param fields The fields of the data to be returned. Defaults to \code{"*"}
 #'   (all); can instead be a set of column names/variables.
+#' @param sr The (EPSG) spatial reference of the returned geometry.
+#'   4326 ("WGS 84") by default. Can be specified as numeric or character.
 #' @param distinct Boolean. Whether to enable "returnDistinctValues" as part of
 #'   the query. Seems like a good idea for lookups but a problem for boundaries.
 #'
