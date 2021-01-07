@@ -24,8 +24,6 @@
 #'   nm) columns for \code{bounds_level} and \code{within_level} are returned -
 #'   other columns are omitted. "minimal" means 'only return the columns for
 #'   \code{bounds_level}'.
-#' @param spatial_ref The (EPSG) spatial reference of the returned geometry.
-#'   4326 ("WGS 84") by default.
 #' @param include_welsh_names Only makes a difference when \code{bounds_level} =
 #'   msoa, or when \code{bounds_level} = lsoa and \code{return_style} = "tidy".
 #'   \code{FALSE} returns no Welsh language columns. \code{TRUE} attempts to
@@ -58,7 +56,6 @@ create_custom_lookup <- function(
                                  within_level,
                                  include_msoa = NULL,
                                  return_style = "tidy",
-                                 spatial_ref = 4326,
                                  include_welsh_names = NULL) {
 
   # when looking up LSOA -> MSOA, retain LSOA cols?
@@ -90,21 +87,21 @@ create_custom_lookup <- function(
 
 
   area_code_lookup <- dplyr::tribble(
-    ~friendly,  ~serious,
-    "lsoa",     "lsoa11",
-    "msoa",     "msoa11",
-    "wd",       "wd19",
-    "ward",     "wd19",
-    "lad",      "lad19",
-    "utla",     "utla19",
-    "upper",    "utla19",
-    "cty",      "cty19",
-    "county",   "cty19",
-    "cauth",    "cauth19",
-    "rgn",      "rgn19",
-    "region",   "rgn19",
-    "ctry",     "ctry19",
-    "country",  "ctry19"
+    ~friendly, ~serious,
+    "lsoa",    "lsoa11",
+    "msoa",    "msoa11",
+    "wd",      "wd19",
+    "ward",    "wd19",
+    "lad",     "lad19",
+    "utla",    "utla19",
+    "upper",   "utla19",
+    "cty",     "cty19",
+    "county",  "cty19",
+    "cauth",   "cauth19",
+    "rgn",     "rgn19",
+    "region",  "rgn19",
+    "ctry",    "ctry19",
+    "country", "ctry19"
   )
 
 
@@ -115,24 +112,24 @@ create_custom_lookup <- function(
   table_code_ref_lookup <- dplyr::tribble(
     ~bounds_level, ~within_level, ~table_code_ref1, ~table_code_ref2,
 
-    "wd",       "lad",    1,     NULL,
-    "wd",       "cty",    1,     NULL,
-    "wd",       "rgn",    1,     NULL,
-    "wd",       "ctry",   1,     NULL,
-    "lad",      "cty",    1,     NULL,
-    "lad",      "utla",   1,     NULL,   # utla needs to be renamed to cty here
-    "lad",      "rgn",    1,     NULL,
-    "lad",      "ctry",   1,     NULL,
-    "cty",      "rgn",    1,     NULL,
-    "cty",      "ctry",   1,     NULL,
-    "lad",      "cauth",  2,     NULL,
-    "lsoa",     "utla",   3,     NULL,
-    "lsoa",     "cty",    3,     NULL,   # cty needs to be renamed to utla here
-    "msoa",     "utla",   3,     NULL,
-    "msoa",     "cty",    3,     NULL,   # cty needs to be renamed to utla here
-    "lsoa",     "wd",     4,     NULL,
-    "lsoa",     "lad",    4,     NULL,
-    "msoa",     "lad",    4,     NULL
+    "wd",     "lad",    1,  NULL,
+    "wd",     "cty",    1,  NULL,
+    "wd",     "rgn",    1,  NULL,
+    "wd",     "ctry",   1,  NULL,
+    "lad",    "cty",    1,  NULL,
+    "lad",    "utla",   1,  NULL, # utla needs to be renamed to cty here
+    "lad",    "rgn",    1,  NULL,
+    "lad",    "ctry",   1,  NULL,
+    "cty",    "rgn",    1,  NULL,
+    "cty",    "ctry",   1,  NULL,
+    "lad",    "cauth",  2,  NULL,
+    "lsoa",   "utla",   3,  NULL,
+    "lsoa",   "cty",    3,  NULL, # cty needs to be renamed to utla here
+    "msoa",   "utla",   3,  NULL,
+    "msoa",   "cty",    3,  NULL, # cty needs to be renamed to utla here
+    "lsoa",   "wd",     4,  NULL,
+    "lsoa",   "lad",    4,  NULL,
+    "msoa",   "lad",    4,  NULL
     # "utla",   "rgn"     1,     3,
     # "lsoa",   "cauth"   2,     4,
     # "msoa",   "cauth"   2,     4,
@@ -224,13 +221,11 @@ create_custom_lookup <- function(
 
   # create another lookup (if necessary) for automatically looking
   # up the type and server parameters required for each table_code
-  # currently assuming that type="census" and server="feature" work for all!?
   df_out <- build_api_query(
     table_code_ref = table_code_refs[1],
     within_level = fields[4],
     within = within,
     fields = return_fields,
-    sr = spatial_ref,
     # TRUE is the default value, but I'm being explicit about it
     # for debugging purposes
     distinct = TRUE

@@ -10,9 +10,10 @@ geo_get(
   within_level,
   include_msoa = NULL,
   return_style = "tidy",
-  spatial_ref = 4326,
   include_welsh_names = NULL,
-  boundaries = TRUE
+  spatial_ref = 4326,
+  return_boundaries = TRUE,
+  return_centroids = FALSE
 )
 }
 \arguments{
@@ -42,9 +43,6 @@ nm) columns for \code{bounds_level} and \code{within_level} are returned -
 other columns are omitted. "minimal" means 'only return the columns for
 \code{bounds_level}'.}
 
-\item{spatial_ref}{The (EPSG) spatial reference of the returned geometry.
-4326 ("WGS 84") by default.}
-
 \item{include_welsh_names}{Only makes a difference when \code{bounds_level} =
 msoa, or when \code{bounds_level} = lsoa and \code{return_style} = "tidy".
 \code{FALSE} returns no Welsh language columns. \code{TRUE} attempts to
@@ -52,12 +50,24 @@ return Welsh language LAD and MSOA names where relevant. \code{NULL} (the
 default) means that an educated decision will be made by the program,
 based on whether any of the areas returned have "^W" codes.}
 
-\item{boundaries}{whether to retrieve object boundaries data from the API.
-Default \code{TRUE}. If \code{FALSE}, just returns a plain summary df with
-area codes and names etc but no geometry.}
+\item{spatial_ref}{The (EPSG) spatial reference of any returned geometry.
+Default value: 4326 ("WGS 84"). This parameter is ignored peacefully if
+no geometry is returned/returnable, eg lookup queries}
+
+\item{return_boundaries}{whether to retrieve object boundaries data from
+the API. Default \code{TRUE}. If \code{return_boundaries} and
+\code{return_centroids} are both \code{FALSE}, a plain summary df
+without geometry will be returned.}
+
+\item{return_centroids}{whether to retrieve area centroids instead of
+boundaries. Default \code{FALSE}. If set to TRUE then it will override
+\code{return_boundaries} whether that was set TRUE or otherwise. If
+\code{return_boundaries} and \code{return_centroids} are both \code{FALSE},
+a plain summary data frame without geometry will be returned.}
 }
 \value{
-an sf (simple features) object (data frame with geometries)
+a data frame or an sf (simple features) object (data frame
+with geometries)
 }
 \description{
 The ONS OpenGeography Portal (\url{https://geoportal.statistics.gov.uk/})
@@ -69,9 +79,9 @@ This program focuses on areas within England and Wales only, initially.
 }
 \examples{
 geo_get("wd", "Swindon", "lad")
-geo_get("msoa", "Swansea", "lad")
-geo_get("lsoa", "Zetland", "ward")
-geo_get("lad", "Gloucestershire", "cty", return_style = "simple")
-geo_get("lad", "Greater Manchester", "cauth")
-geo_get("cty", "East of England", "rgn", boundaries = FALSE)
+geo_get("msoa", "Swansea", "lad", return_centroids = TRUE)
+geo_get("lsoa", "Zetland", "ward", spatial_ref = 3857)
+geo_get(bounds_level = "lad", within = "Gloucestershire",
+  within_level = "cty", return_style = "simple", return_boundaries = FALSE)
+geo_get("county", "East of England", "region", return_boundaries = FALSE)
 }

@@ -1,0 +1,137 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  cache = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+
+# jogger
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/francisbarton/jogger/workflows/R-CMD-check/badge.svg)](https://github.com/francisbarton/jogger/actions)
+[![Codecov test coverage](https://codecov.io/gh/francisbarton/jogger/branch/main/graph/badge.svg)](https://codecov.io/gh/francisbarton/jogger?branch=main)
+<!-- badges: end -->
+
+### Retrieve area boundaries and data from the ONS Open Geography Portal
+
+The main function of this package is to download area lookups and boundaries
+  (in GeoJSON format) using the ONS Open Geography API, for all sub-areas - at a
+  specified level - within a specified area.
+The main script will return a data frame with the sub-area geometry column,
+  as an `sf` object ready to be visualised as a map.
+It's initially just for areas within England and Wales, with a hope to add
+  Scottish geographies at a later date.
+And currently just for the following area levels:
+  LSOA, MSOA, Ward, LAD/LTLA, UTLA, CAUTH, RGN _[subject to change]_
+  
+_Changes since 2019 (currently -- Jan 2021 -- just the change in Buckinghamshire from two-tier to unitary) are not yet incorporated._
+
+## Installation
+
+```
+remotes::install_github("francisbarton/jogger")
+```
+
+## Examples
+
+```{r example-1}
+library(jogger)
+library(tmap)
+
+tmap::tmap_mode("plot")
+
+geo_get("wd", "Swindon", "lad") %>% 
+  tmap::qtm()
+```
+
+
+```{r example-2}
+geo_get("msoa", "Swansea", "lad", return_centroids = TRUE) %>% 
+  tmap::qtm()
+
+```
+
+
+```{r example-3}
+geo_get("lsoa", "Zetland", "ward", spatial_ref = 3857) %>% 
+  tmap::qtm()
+
+```
+
+
+```{r example-4}
+geo_get(bounds_level = "lad",
+        within = "Gloucestershire",
+        within_level = "cty",
+        return_style = "simple",
+        return_boundaries = FALSE)
+
+```
+
+Return a bare API query ready to be run or checked externally:
+
+```{r example-5}
+build_api_query(
+  # currently you just have to know which ref to use - see build_api_query.R
+  table_code_ref = 2, 
+  within_level = "cauth19nm",
+  within = "Greater Manchester"
+)
+
+
+```
+
+
+## Contributing
+
+Suggestions are welcome, preferably posted as an issue on GitHub.
+Contributions as pull requests are also welcome.
+
+You are also welcome to email me with comments or ideas.
+I'd be glad of suggestions for improvement, or extra features.
+
+Improvements to the naming of key functions and their parameters especially welcome.
+
+Contact details are on my GitHub profile.
+
+This project has a Contributor Code of Conduct:
+
+### Code of Conduct
+
+Please note that the `jogger` project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
+
+
+## News
+
+See NEWS.md for version notes
+
+### Licences
+
+The code in this repo is MIT licensed.
+
+The data that the code helps you retrieve is issued under a variety of licences,
+including:
+
+* the [Open Government Licence v3.0][ogl3]
+
+
+> Licensing statement [as stipulated by the ONS][ons-licence]:
+> 
+> * Source: Office for National Statistics licensed under the [Open Government Licence v3.0][ogl3]
+> * Contains OS data © Crown copyright and database right 2021.
+
+
+[ogl3]: https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/
+[ons-licence]: https://www.ons.gov.uk/methodology/geography/licences
+
+

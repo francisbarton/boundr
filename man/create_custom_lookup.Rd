@@ -10,7 +10,6 @@ create_custom_lookup(
   within_level,
   include_msoa = NULL,
   return_style = "tidy",
-  spatial_ref = 4326,
   include_welsh_names = NULL
 )
 }
@@ -40,9 +39,6 @@ empty columns removed. "simple" means that only the code and name (cd and
 nm) columns for \code{bounds_level} and \code{within_level} are returned -
 other columns are omitted. "minimal" means 'only return the columns for
 \code{bounds_level}'.}
-
-\item{spatial_ref}{The (EPSG) spatial reference of the returned geometry.
-4326 ("WGS 84") by default.}
 
 \item{include_welsh_names}{Only makes a difference when \code{bounds_level} =
 msoa, or when \code{bounds_level} = lsoa and \code{return_style} = "tidy".

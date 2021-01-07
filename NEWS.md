@@ -1,3 +1,18 @@
+# jogger 0.2.0
+
+* Added a centroids query option (MSOA only for now) as well as boundaries
+* Added in option to specify spatial reference code eg ESPG 3857
+* Lots of tidying up the code - eg removed return_style = "all" option as
+    unnecessary; create_custom_lookup did not need a spatial_ref option etc
+* Improved function parameter documentation
+* Included new static HoCL MSOA Names URL and removed old version parameter
+* Started writing README.Rmd and included examples
+* Sorted out which functions to @export. Examples in create_custom_lookup.R are now
+    \dontrun as the function is not exported (examples irrelevant now really)
+* Sorted out a batch size issue that was preventing longer queries from succeeding
+* Added GitHub Actions for CMD Check and Github Pages/pkgdown
+* TODO: Write tests for `geo_get`
+
 # jogger 0.1.3
 
 * Further improvements to documentation

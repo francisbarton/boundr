@@ -7,11 +7,14 @@
 lsoa_to_msoa_lookup(df, nmw = TRUE, keep = FALSE)
 }
 \arguments{
-\item{df}{data frame with at least column \code{lsoa11nm} and possibly \code{lsoa11cd}.}
+\item{df}{data frame with at least column \code{lsoa11nm} and possibly
+\code{lsoa11cd}.}
 
-\item{nmw}{whether to keep the Welsh language MSOA names (ONS and HOCL) or not. Boolean. Default TRUE.}
+\item{nmw}{whether to keep the Welsh language MSOA names (ONS and HOCL) or
+not. Boolean. Default TRUE.}
 
-\item{keep}{whether to keep the LSOA column(s) or just return a df starting at MSOA level. Default FALSE.}
+\item{keep}{whether to keep the LSOA column(s) or just return a df starting
+at MSOA level. Default FALSE.}
 }
 \value{
 a data frame (a lookup table)

@@ -1,8 +1,11 @@
 #' Helper Function to Convert LSOA names to MSOA Codes + Names
 #'
-#' @param df data frame with at least column \code{lsoa11nm} and possibly \code{lsoa11cd}.
-#' @param nmw whether to keep the Welsh language MSOA names (ONS and HOCL) or not. Boolean. Default TRUE.
-#' @param keep whether to keep the LSOA column(s) or just return a df starting at MSOA level. Default FALSE.
+#' @param df data frame with at least column \code{lsoa11nm} and possibly
+#'   \code{lsoa11cd}.
+#' @param nmw whether to keep the Welsh language MSOA names (ONS and HOCL) or
+#'   not. Boolean. Default TRUE.
+#' @param keep whether to keep the LSOA column(s) or just return a df starting
+#'   at MSOA level. Default FALSE.
 #'
 #' @return a data frame (a lookup table)
 #'

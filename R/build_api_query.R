@@ -18,14 +18,14 @@
 #'   returned
 #' @param fields The fields of the data to be returned. Defaults to \code{"*"}
 #'   (all); can instead be a set of column names/variables.
-#' @param sr The (EPSG) spatial reference of the returned geometry.
+#' @param sr The (EPSG) spatial reference of any returned geometry.
 #'   4326 ("WGS 84") by default. Can be specified as numeric or character.
 #' @param distinct Boolean. Whether to enable "returnDistinctValues" as part of
 #'   the query. Seems like a good idea for lookups but a problem for boundaries.
 #'
 #' @return a string that should function as a valid API query
+#' @export
 #' @examples
-#' \dontrun{
 #' build_api_query(
 #'   table_code_ref = 2,
 #'   type = "census",
@@ -34,8 +34,6 @@
 #'   within = "Greater Manchester",
 #'   fields = c("lad19cd", "lad19nm", "cauth19cd", "cauth19nm")
 #' )
-#' }
-#' \dontrun{
 #' build_api_query(
 #'   table_code_ref = 9,
 #'   type = "admin",
@@ -48,7 +46,6 @@
 #'   ),
 #'   fields = c("lad19cd", "lad19nm")
 #' )
-#' }
 build_api_query <- function(
                             table_code_ref,
                             type = "census",
@@ -111,7 +108,7 @@ build_api_query <- function(
     # Metropolitan Counties (Full)
     # Metropolitan Counties (December 2018) EN BFC
     # https://geoportal.statistics.gov.uk/datasets/metropolitan-counties-december-2018-en-bfc
-    "Metropolitan_Counties_December_2018_EN_BFC"
+    "Metropolitan_Counties_December_2018_EN_BFC",
 
     # Regions (Generalised) !!! admin
     # Regions (December 2019) Boundaries EN BGC
@@ -128,12 +125,20 @@ build_api_query <- function(
     # "Countries_December_2019_Boundaries_UK_BGC",
     # "admin",
     # "map"
-  )
+
+
+    ### CENTROIDS
+    ########################################################################
+
+    # Middle Layer Super Output Areas (December 2011) Population Weighted Centroids
+    # https://geoportal.statistics.gov.uk/datasets/middle-layer-super-output-areas-december-2011-population-weighted-centroids
+    "Middle_Super_Output_Areas_December_2011_Centroids"
+    )
 
   # not sure why I am including this...
-  assertthat::assert_that(
-    0 <= table_code_ref && table_code_ref <= length(table_codes)
-  )
+  # assertthat::assert_that(
+  #   0 < table_code_ref && table_code_ref <= length(table_codes)
+  # )
 
 
 
@@ -149,9 +154,6 @@ build_api_query <- function(
   table_code <- table_codes[[table_code_ref]]
 
 
-  assertthat::assert_that(type %in% c("census", "admin", "other"))
-
-  # type = "census" or "admin"
   if (type == "census") {
     url_base <- "https://services1.arcgis.com/ESMARspQHYMw9BZ9/"
     admin <- ""
@@ -166,6 +168,12 @@ build_api_query <- function(
     url_base <- "https://ons-inspire.esriuk.com/"
     admin <- "Other_Boundaries/"
   }
+
+  if (type == "centroid") {
+    url_base <- "https://ons-inspire.esriuk.com/"
+    admin <- "Census_Boundaries/"
+  }
+
 
 
   assertthat::assert_that(server %in% c("feature", "map"))
