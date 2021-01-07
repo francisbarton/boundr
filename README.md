@@ -4,10 +4,6 @@
 # jogger
 
 <!-- badges: start -->
-
-[![R-CMD-check](https://github.com/francisbarton/jogger/workflows/R-CMD-check/badge.svg)](https://github.com/francisbarton/jogger/actions)
-[![Codecov test
-coverage](https://codecov.io/gh/francisbarton/jogger/branch/main/graph/badge.svg)](https://codecov.io/gh/francisbarton/jogger?branch=main)
 <!-- badges: end -->
 
 ### Retrieve area boundaries and data from the ONS Open Geography Portal
