@@ -31,7 +31,7 @@ test_that(
         fields = c("msoa11cd", "msoa11nm")
       ),
 
-      "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Middle_Layer_Super_Output_Areas_December_2011_Boundaries_EW_BFC/FeatureServer/0/query?where=%20(MSOA11CD%20%3D%20%27E02006666%27%20OR%20MSOA11CD%20%3D%20%27E02006667%27%20OR%20MSOA11CD%20%3D%20%27E02006668%27)%20&outFields=MSOA11CD,MSOA11NM&returnDistinctValues=true&outSR=4326&f=json"
+      "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Middle_Layer_Super_Output_Areas_December_2011_Boundaries_EW_BFC_V2/FeatureServer/0/query?where=%20(MSOA11CD%20%3D%20%27E02006666%27%20OR%20MSOA11CD%20%3D%20%27E02006667%27%20OR%20MSOA11CD%20%3D%20%27E02006668%27)%20&outFields=MSOA11CD,MSOA11NM&returnDistinctValues=true&outSR=4326&f=json"
     )
   }
 )

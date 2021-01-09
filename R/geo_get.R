@@ -95,11 +95,10 @@ geo_get <- function(
 
   if (bounds_query_level == "ltla19cd") bounds_query_level <- "lad19cd"
 
-  # don't need this actually - the 'cd' field is enough for the join to work
-  # return_fields <- c(
-  #   bounds_query_level,
-  #   stringr::str_replace(bounds_query_level, "cd$", "nm")
-  # )
+  return_fields <- c(
+    bounds_query_level,
+    stringr::str_replace(bounds_query_level, "cd$", "nm")
+  )
 
 
   table_code_ref_lookup <- dplyr::tribble(
@@ -145,7 +144,7 @@ geo_get <- function(
       server = table_code_refs[["server"]],
       within_level = bounds_query_level,
       within = .,
-      fields = bounds_query_level,
+      fields = return_fields,
       sr = spatial_ref,
       distinct = FALSE
     ))

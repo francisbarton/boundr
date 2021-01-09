@@ -5,4 +5,4 @@
 inst/
 docs
 README_cache
-*.Rproj
+.*.Rproj

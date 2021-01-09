@@ -82,11 +82,11 @@ build_api_query <- function(
 
     # Lower Layer Super Output Areas (December 2011) Boundaries EW BFC
     # https://geoportal.statistics.gov.uk/datasets/lower-layer-super-output-areas-december-2011-boundaries-ew-bfc
-    "Lower_Layer_Super_Output_Areas_December_2011_Boundaries_EW_BFC_v3",
+    "Lower_Layer_Super_Output_Areas_December_2011_Boundaries_EW_BFC_V2",
 
     # Middle Layer Super Output Areas (December 2011) Boundaries EW BFC
     # https://geoportal.statistics.gov.uk/datasets/middle-layer-super-output-areas-december-2011-boundaries-ew-bfc-1
-    "Middle_Layer_Super_Output_Areas_December_2011_Boundaries_EW_BFC",
+    "Middle_Layer_Super_Output_Areas_December_2011_Boundaries_EW_BFC_V2",
 
     # Wards (December 2019) Boundaries UK BFC
     # https://geoportal.statistics.gov.uk/datasets/wards-december-2019-boundaries-uk-bfc-1
