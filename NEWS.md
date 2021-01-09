@@ -1,3 +1,10 @@
+# jogger 0.2.1
+
+* Changed codes and boundary URLs to 2020 where possible
+* Many tweaks required to build_api_query.R test!
+* Fix to expand_lookup.R param docs!
+* Add options for returning centroid and shape data fields with boundaries
+
 # jogger 0.2.0
 
 * Added a centroids query option (MSOA only for now) as well as boundaries
