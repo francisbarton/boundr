@@ -10,6 +10,12 @@
 #' @param spatial_ref The (EPSG) spatial reference of any returned geometry.
 #'   Default value: 4326 ("WGS 84"). This parameter is ignored peacefully if
 #'   no geometry is returned/returnable, eg lookup queries
+#' @param centroid_fields Boolean, default FALSE. Whether to include BNG
+#'   eastings, northings, lat and long fields in the return when returning
+#'   boundaries.
+#' @param shape_fields Boolean, default FALSE. Whether to include
+#'   Shape__Area and Shape__Length fields in the return when returning
+#'   boundaries.
 #' @param return_boundaries whether to retrieve object boundaries data from
 #'   the API. Default \code{TRUE}. If \code{return_boundaries} and
 #'   \code{return_centroids} are both \code{FALSE}, a plain summary df
@@ -39,6 +45,8 @@ geo_get <- function(
                     return_style = "tidy",
                     include_welsh_names = NULL,
                     spatial_ref = 4326,
+                    centroid_fields = FALSE,
+                    shape_fields = FALSE,
                     return_boundaries = TRUE,
                     return_centroids = FALSE) {
 
@@ -64,7 +72,8 @@ geo_get <- function(
   bounds_codes <- basic_df %>%
     dplyr::select(dplyr::ends_with("cd")) %>%
     dplyr::pull(1) %>%
-    # 25 seems to be ok. Long queries (eg batch size 50) often return 404.
+    # According to the API docs, 50 is the limit for geo queries.
+    # Excessively long queries return 404.
     batch_it_simple(batch_size = 25) # borrowed from my myrmidon utils package
 
 
@@ -83,7 +92,7 @@ geo_get <- function(
     "Tyne and Wear"
   )
 
-  if (bounds_query_level %in% c("cty19cd", "utla19cd")) {
+  if (bounds_query_level %in% c("cty20cd", "utla20cd")) {
     if (within %in% metro_counties) {
       bounds_query_level <- "mcty18cd"
     } else if (within %in% c("Inner London", "Outer London")) {
@@ -93,11 +102,32 @@ geo_get <- function(
     }
   }
 
-  if (bounds_query_level == "ltla19cd") bounds_query_level <- "lad19cd"
+  if (bounds_query_level == "ltla20cd") bounds_query_level <- "lad20cd"
+
+  centroid_fields_list <- NULL
+  if (centroid_fields) {
+    centroid_fields_list <- c(
+      "BNG_E",
+      "BNG_N",
+      "LONG_",
+      "LAT"
+      )
+  }
+
+
+  shape_fields_list <- NULL
+  if (shape_fields) {
+    shape_fields_list <- c(
+      "Shape__Area",
+      "Shape__Length"
+      )
+  }
 
   return_fields <- c(
     bounds_query_level,
-    stringr::str_replace(bounds_query_level, "cd$", "nm")
+    stringr::str_replace(bounds_query_level, "cd$", "nm"),
+    centroid_fields_list,
+    shape_fields_list
   )
 
 
@@ -106,8 +136,8 @@ geo_get <- function(
 
     "lsoa11cd",     5,    "census",   "feature",    FALSE,
     "msoa11cd",     6,    "census",   "feature",    FALSE,
-    "wd19cd",       7,    "census",   "feature",    FALSE,
-    "lad19cd",      8,    "admin",    "map",        FALSE,
+    "wd20cd",       7,    "census",   "feature",    FALSE,
+    "lad20cd",      8,    "census",   "feature",    FALSE,
     "ctyua19cd",    9,    "admin",    "map",        FALSE,
     "mcty18cd",    10,    "other",    "map",        FALSE,
     "msoa11cd",    11,    "centroid", "map",        TRUE

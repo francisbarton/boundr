@@ -5,13 +5,13 @@ test_that(
         table_code_ref = 2,
         type = "census",
         server = "feature",
-        within_level = "cauth19nm",
+        within_level = "cauth20nm",
         within = "Greater Manchester",
-        fields = c("lad19cd", "lad19nm", "cauth19cd", "cauth19nm")
+        fields = c("lad20cd", "lad20nm", "cauth20cd", "cauth20nm")
       ),
 
       # copied unchanged from query generated on OG site:
-      "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/LAD19_CAUTH19_EN_LU/FeatureServer/0/query?where=%20(CAUTH19NM%20%3D%20%27GREATER%20MANCHESTER%27)%20&outFields=LAD19CD,LAD19NM,CAUTH19CD,CAUTH19NM&returnDistinctValues=true&outSR=4326&f=json"
+      "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/LAD20_CAUTH20_EN_LU/FeatureServer/0/query?where=%20(CAUTH20NM%20%3D%20%27GREATER%20MANCHESTER%27)%20&outFields=LAD20CD,LAD20NM,CAUTH20CD,CAUTH20NM&returnDistinctValues=true&outSR=4326&f=json"
     )
   }
 )
@@ -31,7 +31,7 @@ test_that(
         fields = c("msoa11cd", "msoa11nm")
       ),
 
-      "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Middle_Layer_Super_Output_Areas_December_2011_Boundaries_EW_BFC_V2/FeatureServer/0/query?where=%20(MSOA11CD%20%3D%20%27E02006666%27%20OR%20MSOA11CD%20%3D%20%27E02006667%27%20OR%20MSOA11CD%20%3D%20%27E02006668%27)%20&outFields=MSOA11CD,MSOA11NM&returnDistinctValues=true&outSR=4326&f=json"
+      "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Middle_Layer_Super_Output_Areas_December_2011_EW_BFC_V2/FeatureServer/0/query?where=%20(MSOA11CD%20%3D%20%27E02006666%27%20OR%20MSOA11CD%20%3D%20%27E02006667%27%20OR%20MSOA11CD%20%3D%20%27E02006668%27)%20&outFields=MSOA11CD,MSOA11NM&returnDistinctValues=true&outSR=4326&f=json"
     )
   }
 )
@@ -46,12 +46,12 @@ test_that(
         table_code_ref = 8,
         type = "admin",
         server = "map",
-        within_level = "lad19nm",
+        within_level = "lad20nm",
         within = c("Cheltenham", "Gloucester", "Stroud", "Cotswold", "Tewkesbury", "Forest of Dean"),
-        fields = c("lad19cd", "lad19nm")
+        fields = c("lad20cd", "lad20nm")
       ),
 
-      "https://ons-inspire.esriuk.com/arcgis/rest/services/Administrative_Boundaries/Local_Authority_Districts_December_2019_Boundaries_UK_BGC/MapServer/0/query?where=%20(lad19nm%20%3D%20%27CHELTENHAM%27%20OR%20lad19nm%20%3D%20%27GLOUCESTER%27%20OR%20lad19nm%20%3D%20%27STROUD%27%20OR%20lad19nm%20%3D%20%27COTSWOLD%27%20OR%20lad19nm%20%3D%20%27TEWKESBURY%27%20OR%20lad19nm%20%3D%20%27FOREST%20OF%20DEAN%27)%20&outFields=lad19cd,lad19nm&returnDistinctValues=true&outSR=4326&f=json"
+      "https://ons-inspire.esriuk.com/arcgis/rest/services/Administrative_Boundaries/Local_Authority_Districts_May_2020_Boundaries_UK_BFC_V3/MapServer/0/query?where=%20(lad20nm%20%3D%20%27CHELTENHAM%27%20OR%20lad20nm%20%3D%20%27GLOUCESTER%27%20OR%20lad20nm%20%3D%20%27STROUD%27%20OR%20lad20nm%20%3D%20%27COTSWOLD%27%20OR%20lad20nm%20%3D%20%27TEWKESBURY%27%20OR%20lad20nm%20%3D%20%27FOREST%20OF%20DEAN%27)%20&outFields=lad20cd,lad20nm&returnDistinctValues=true&outSR=4326&f=json"
     )
   }
 )

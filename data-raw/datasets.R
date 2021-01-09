@@ -11,16 +11,16 @@ lsoa11cdnm <- paste0(
 
 # backup local copy of House of Commons Library MSOA names
 
-hocl_msoa_names <- paste0(
-  "https://visual.parliament.uk/msoanames/static/",
-  "MSOA-Names-",
-  "1.8",
-  ".csv"
-) %>%
-  readr::read_csv()
+# hocl_msoa_names <- paste0(
+#   "https://visual.parliament.uk/msoanames/static/",
+#   "MSOA-Names-",
+#   "Latest",
+#   ".csv"
+# ) %>%
+#   readr::read_csv()
 
 
-usethis::use_data(lsoa11cdnm, hocl_msoa_names, internal = TRUE, overwrite = TRUE)
+usethis::use_data(lsoa11cdnm, internal = TRUE, overwrite = TRUE)
 
 # TODO: document datasets
 

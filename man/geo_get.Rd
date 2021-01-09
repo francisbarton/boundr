@@ -12,6 +12,8 @@ geo_get(
   return_style = "tidy",
   include_welsh_names = NULL,
   spatial_ref = 4326,
+  centroid_fields = FALSE,
+  shape_fields = FALSE,
   return_boundaries = TRUE,
   return_centroids = FALSE
 )
@@ -53,6 +55,14 @@ based on whether any of the areas returned have "^W" codes.}
 \item{spatial_ref}{The (EPSG) spatial reference of any returned geometry.
 Default value: 4326 ("WGS 84"). This parameter is ignored peacefully if
 no geometry is returned/returnable, eg lookup queries}
+
+\item{centroid_fields}{Boolean, default FALSE. Whether to include BNG
+eastings, northings, lat and long fields in the return when returning
+boundaries.}
+
+\item{shape_fields}{Boolean, default FALSE. Whether to include
+Shape__Area and Shape__Length fields in the return when returning
+boundaries.}
 
 \item{return_boundaries}{whether to retrieve object boundaries data from
 the API. Default \code{TRUE}. If \code{return_boundaries} and

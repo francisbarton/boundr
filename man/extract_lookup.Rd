@@ -7,7 +7,7 @@
 extract_lookup(x)
 }
 \arguments{
-\item{x}{a JSON return from an API query}
+\item{x}{an API query string (from build_api_query())}
 }
 \value{
 a data frame

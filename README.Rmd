@@ -32,9 +32,8 @@ The main script will return a data frame with the sub-area geometry column,
 It's initially just for areas within England and Wales, with a hope to add
   Scottish geographies at a later date.
 And currently just for the following area levels:
-  LSOA, MSOA, Ward, LAD/LTLA, UTLA, CAUTH, RGN _[subject to change]_
-  
-_Changes since 2019 (currently -- Jan 2021 -- just the change in Buckinghamshire from two-tier to unitary) are not yet incorporated._
+  LSOA, MSOA, Ward, LAD/LTLA, UTLA/CTY, CAUTH, RGN _[subject to change]_
+
 
 ## Installation
 

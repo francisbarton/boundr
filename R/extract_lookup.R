@@ -1,6 +1,6 @@
 #' Helper function
 #'
-#' @param x a JSON return from an API query
+#' @param x an API query string (from build_api_query())
 #' @return a data frame
 extract_lookup <- function(x) {
   x %>%

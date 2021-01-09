@@ -64,17 +64,17 @@ build_api_query <- function(
     ### LOOKUPS
     #########################################################################
 
-    # "https://geoportal.statistics.gov.uk/datasets/ward-to-local-authority-district-to-county-to-region-to-country-december-2019-lookup-in-united-kingdom"
-    "WD19_LAD19_CTY19_OTH_UK_LU",
+    # https://geoportal.statistics.gov.uk/datasets/ward-to-local-authority-district-to-county-to-region-to-country-december-2020-lookup-in-united-kingdom/geoservice
+    "WD20_LAD20_CTY20_OTH_UK_LU",
 
-    # "https://geoportal.statistics.gov.uk/datasets/local-authority-district-to-combined-authority-december-2019-lookup-in-england",
-    "LAD19_CAUTH19_EN_LU",
+    # https://geoportal.statistics.gov.uk/datasets/local-authority-district-to-combined-authority-december-2020-lookup-in-england
+    "LAD20_CAUTH20_EN_LU",
 
-    # "https://geoportal.statistics.gov.uk/datasets/lower-layer-super-output-area-2011-to-upper-tier-local-authorities-2019-lookup-in-england-and-wales-"
-    "LSOA11_UTLA19_EW_LU",
+    # https://geoportal.statistics.gov.uk/datasets/fd6a688548744c0d9ec34b1273b80c20_0/
+    "LSOA11_UTLA20_EW_LU",
 
-    # "https://geoportal.statistics.gov.uk/datasets/lower-layer-super-output-area-2011-to-ward-2019-lookup-in-england-and-wales"
-    "LSOA11_WD19_LAD19_EW_LU",
+    # https://geoportal.statistics.gov.uk/datasets/7a9e4c5e7e8847b8b6a1ac93acd66358_0
+    "LSOA11_WD20_LAD20_EW_LU",
 
 
     ### BOUNDARIES
@@ -86,24 +86,24 @@ build_api_query <- function(
 
     # Middle Layer Super Output Areas (December 2011) Boundaries EW BFC
     # https://geoportal.statistics.gov.uk/datasets/middle-layer-super-output-areas-december-2011-boundaries-ew-bfc-1
-    "Middle_Layer_Super_Output_Areas_December_2011_Boundaries_EW_BFC_V2",
+    "Middle_Layer_Super_Output_Areas_December_2011_EW_BFC_V2",
 
-    # Wards (December 2019) Boundaries UK BFC
-    # https://geoportal.statistics.gov.uk/datasets/wards-december-2019-boundaries-uk-bfc-1
-    "Wards_December_2019_Boundaries_UK_BFC_v2",
+    # Wards (December 2020) Boundaries UK BFC
+    # https://geoportal.statistics.gov.uk/datasets/wards-december-2020-uk-bfc
+    "Wards_December_2020_UK_BFC",
 
-    # Local Authority Districts (December 2019) Boundaries UK BGC
-    # https://geoportal.statistics.gov.uk/datasets/local-authority-districts-december-2019-boundaries-uk-bgc
-    "Local_Authority_Districts_December_2019_Boundaries_UK_BGC",
+    # Local Authority Districts (May 2020) Boundaries UK BFC
+    # https://geoportal.statistics.gov.uk/datasets/local-authority-districts-may-2020-boundaries-uk-bfc-1
+    "Local_Authority_Districts_May_2020_Boundaries_UK_BFC_V3",
 
-    # "Clinical Commissioning Groups (April 2020) Full Clipped Boundaries EN",
+    # Clinical Commissioning Groups (April 2020) Full Clipped Boundaries EN
     # "https://geoportal.statistics.gov.uk/datasets/clinical-commissioning-groups-april-2020-full-clipped-boundaries-en",
     # "https://ons-inspire.esriuk.com/arcgis/rest/services/Health_Boundaries/Clinical_Commissioning_Groups_April_2020_EN_BFC_V2/MapServer/1/query?where=1%3D1&outFields=*&outSR=4326&f=json",
 
-    # Counties and Unitaries (Generalised) !!! admin
-    # Counties and Unitary Authorities (December 2019) Boundaries UK BGC
-    # https://geoportal.statistics.gov.uk/datasets/counties-and-unitary-authorities-december-2019-boundaries-uk-bgc
-    "Counties_and_Unitary_Authorities_December_2019_Boundaries_UK_BGC2",
+    # Counties and Unitaries
+    # https://geoportal.statistics.gov.uk/datasets/counties-and-unitary-authorities-december-2019-boundaries-uk-bfc
+    # Counties and Unitary Authorities (December 2019) Boundaries UK BFC
+    "Counties_and_Unitary_Authorities_December_2019_Boundaries_UK_BFC2",
 
     # Metropolitan Counties (Full)
     # Metropolitan Counties (December 2018) EN BFC
@@ -134,13 +134,6 @@ build_api_query <- function(
     # https://geoportal.statistics.gov.uk/datasets/middle-layer-super-output-areas-december-2011-population-weighted-centroids
     "Middle_Super_Output_Areas_December_2011_Centroids"
     )
-
-  # not sure why I am including this...
-  # assertthat::assert_that(
-  #   0 < table_code_ref && table_code_ref <= length(table_codes)
-  # )
-
-
 
 
   ####################################################################

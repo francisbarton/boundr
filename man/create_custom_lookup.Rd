@@ -70,5 +70,4 @@ create_custom_lookup(
   return_style = "tidy"
 )
 }
-# TODO add in more (and more interesting) examples?
 }

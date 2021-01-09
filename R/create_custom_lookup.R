@@ -49,7 +49,6 @@
 #'   return_style = "tidy"
 #' )
 #' }
-#' # TODO add in more (and more interesting) examples?
 create_custom_lookup <- function(
                                  bounds_level,
                                  within,
@@ -90,18 +89,18 @@ create_custom_lookup <- function(
     ~friendly, ~serious,
     "lsoa",    "lsoa11",
     "msoa",    "msoa11",
-    "wd",      "wd19",
-    "ward",    "wd19",
-    "lad",     "lad19",
-    "utla",    "utla19",
-    "upper",   "utla19",
-    "cty",     "cty19",
-    "county",  "cty19",
-    "cauth",   "cauth19",
-    "rgn",     "rgn19",
-    "region",  "rgn19",
-    "ctry",    "ctry19",
-    "country", "ctry19"
+    "wd",      "wd20",
+    "ward",    "wd20",
+    "lad",     "lad20",
+    "utla",    "utla20",
+    "upper",   "utla20",
+    "cty",     "cty20",
+    "county",  "cty20",
+    "cauth",   "cauth20",
+    "rgn",     "rgn20",
+    "region",  "rgn20",
+    "ctry",    "ctry20",
+    "country", "ctry20"
   )
 
 
@@ -140,9 +139,9 @@ create_custom_lookup <- function(
   ) %>%
     dplyr::mutate(bounds_level = dplyr::case_when(
       stringr::str_ends(bounds_level, "oa") ~ paste0(bounds_level, "11cd"),
-      TRUE ~ paste0(bounds_level, "19cd")
+      TRUE ~ paste0(bounds_level, "20cd")
     )) %>%
-    dplyr::mutate(within_level = paste0(within_level, "19nm"))
+    dplyr::mutate(within_level = paste0(within_level, "20nm"))
 
 
   get_serious <- function(x) {
@@ -194,14 +193,6 @@ create_custom_lookup <- function(
       return_style <- "tidy"
     }
 
-    ## removed as negligible advantage over "tidy"
-    # if (return_style == "all") {
-    #   df <- df %>%
-    #     # return all columns between first and last specified fields
-    #     dplyr::select(!!rlang::sym(fields[1]):!!rlang::sym(fields[end_col])) %>%
-    #     dplyr::distinct()
-    # }
-
     if (return_style == "tidy") {
       df <- df %>%
         # return all columns between first and last specified fields
@@ -219,8 +210,6 @@ create_custom_lookup <- function(
     df
   }
 
-  # create another lookup (if necessary) for automatically looking
-  # up the type and server parameters required for each table_code
   df_out <- build_api_query(
     table_code_ref = table_code_refs[1],
     within_level = fields[4],
@@ -254,15 +243,15 @@ create_custom_lookup <- function(
 
   # add Welsh language LAD names if desired
   # maybe extract to an external helper function in another file?
-  if ("lad19nm" %in% colnames(df_out) && include_welsh_names) {
-    lad19nmw_lookup <- jsonlite::fromJSON("https://opendata.arcgis.com/datasets/35de30c6778b463a8305939216656132_0.geojson") %>%
+  if ("lad20nm" %in% colnames(df_out) && include_welsh_names) {
+    lad20nmw_lookup <- jsonlite::fromJSON("https://opendata.arcgis.com/datasets/4094644cae32481f95fe7030334c8589_0.geojson") %>%
       purrr::pluck("features", "properties") %>%
       janitor::clean_names() %>%
       dplyr::select(-fid)
 
     df_out <- df_out %>%
-      dplyr::left_join(lad19nmw_lookup) %>%
-      dplyr::relocate(lad19nmw, .after = lad19nm)
+      dplyr::left_join(lad20nmw_lookup) %>%
+      dplyr::relocate(lad20nmw, .after = lad20nm)
   }
 
 
