@@ -92,6 +92,7 @@ create_custom_lookup <- function(
     "wd",      "wd20",
     "ward",    "wd20",
     "lad",     "lad20",
+    "ltla",    "ltla20",
     "utla",    "utla20",
     "upper",   "utla20",
     "cty",     "cty20",
