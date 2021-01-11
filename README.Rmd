@@ -18,8 +18,6 @@ knitr::opts_chunk$set(
 # jogger
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/francisbarton/jogger/workflows/R-CMD-check/badge.svg)](https://github.com/francisbarton/jogger/actions)
-[![Codecov test coverage](https://codecov.io/gh/francisbarton/jogger/branch/main/graph/badge.svg)](https://codecov.io/gh/francisbarton/jogger?branch=main)
 <!-- badges: end -->
 
 ### Retrieve area boundaries and data from the ONS Open Geography Portal
@@ -46,6 +44,7 @@ remotes::install_github("francisbarton/jogger")
 ```{r example-1}
 library(jogger)
 library(tmap)
+library(dplyr)
 
 tmap::tmap_mode("plot")
 
@@ -55,15 +54,15 @@ geo_get("wd", "Swindon", "lad") %>%
 
 
 ```{r example-2}
-geo_get("msoa", "Swansea", "lad", return_centroids = TRUE) %>% 
-  tmap::qtm()
+geo_get("msoa", "Swansea", "lad", return_boundaries = FALSE) %>% 
+  dplyr::slice_sample(n = 10)
 
 ```
 
 
 ```{r example-3}
-geo_get("lsoa", "Zetland", "ward", spatial_ref = 3857) %>% 
-  tmap::qtm()
+geo_get("lsoa", "Zetland", "ward", shape_fields = TRUE) %>%
+  dplyr::arrange(desc(shape_area))
 
 ```
 
@@ -73,6 +72,7 @@ geo_get(bounds_level = "lad",
         within = "Gloucestershire",
         within_level = "cty",
         return_style = "simple",
+        centroid_fields = TRUE,
         return_boundaries = FALSE)
 
 ```
@@ -100,7 +100,6 @@ You are also welcome to email me with comments or ideas.
 I'd be glad of suggestions for improvement, or extra features.
 
 Improvements to the naming of key functions and their parameters especially welcome.
-
 Contact details are on my GitHub profile.
 
 This project has a Contributor Code of Conduct:

@@ -32,11 +32,16 @@
 #'
 #' @examples
 #' geo_get("wd", "Swindon", "lad")
-#' geo_get("msoa", "Swansea", "lad", return_centroids = TRUE)
-#' geo_get("lsoa", "Zetland", "ward", spatial_ref = 3857)
-#' geo_get(bounds_level = "lad", within = "Gloucestershire",
-#'   within_level = "cty", return_style = "simple", return_boundaries = FALSE)
-#' geo_get("county", "East of England", "region", return_boundaries = FALSE)
+#' geo_get("msoa", "Swansea", "lad", return_boundaries = FALSE) %>%
+#'   head(10)
+#' geo_get("lsoa", "Zetland", "ward", shape_fields = TRUE) %>%
+#'   dplyr::arrange(desc(shape_area))
+#' geo_get(bounds_level = "lad",
+#'   within = "Gloucestershire",
+#'   within_level = "cty",
+#'   return_style = "simple",
+#'   centroid_fields = TRUE,
+#'   return_boundaries = FALSE)
 geo_get <- function(
                     bounds_level,
                     within,
@@ -69,7 +74,7 @@ geo_get <- function(
   }
 
 
-  bounds_codes <- basic_df %>%
+  area_codes <- basic_df %>%
     dplyr::select(dplyr::ends_with("cd")) %>%
     dplyr::pull(1) %>%
     # According to the API docs, 50 is the limit for geo queries.
@@ -104,85 +109,16 @@ geo_get <- function(
 
   if (bounds_query_level == "ltla20cd") bounds_query_level <- "lad20cd"
 
-  centroid_fields_list <- NULL
-  if (centroid_fields) {
-    centroid_fields_list <- c(
-      "BNG_E",
-      "BNG_N",
-      "LONG_",
-      "LAT"
-      )
-  }
 
 
-  shape_fields_list <- NULL
-  if (shape_fields) {
-    shape_fields_list <- c(
-      "Shape__Area",
-      "Shape__Length"
-      )
-  }
-
-  return_fields <- c(
+  geo_get_bounds(
     bounds_query_level,
-    stringr::str_replace(bounds_query_level, "cd$", "nm"),
-    centroid_fields_list,
-    shape_fields_list
-  )
-
-
-  table_code_ref_lookup <- dplyr::tribble(
-    ~bounds_level, ~table_code_ref, ~type, ~server, ~centroids,
-
-    "lsoa11cd",     5,    "census",   "feature",    FALSE,
-    "msoa11cd",     6,    "census",   "feature",    FALSE,
-    "wd20cd",       7,    "census",   "feature",    FALSE,
-    "lad20cd",      8,    "census",   "feature",    FALSE,
-    "ctyua19cd",    9,    "admin",    "map",        FALSE,
-    "mcty18cd",    10,    "other",    "map",        FALSE,
-    "msoa11cd",    11,    "centroid", "map",        TRUE
-
-    # "ccg",
-    # "https://ons-inspire.esriuk.com/arcgis/rest/services/Health_Boundaries/Clinical_Commissioning_Groups_April_2020_EN_BFC_V2/MapServer/1/query?where=1%3D1&outFields=*&outSR=4326&f=json",
-
-    # Regions (December 2019) Boundaries EN BGC
-    # https://geoportal.statistics.gov.uk/datasets/regions-december-2019-boundaries-en-bgc
-    # "rgn19cd",
-    # "Regions_December_2019_Boundaries_EN_BGC",
-    # "admin",
-    # "map"
-
-    # Countries (December 2019) Boundaries UK BGC
-    # https://geoportal.statistics.gov.uk/datasets/countries-december-2019-boundaries-uk-bgc
-    # "ctry",
-    # "Countries_December_2019_Boundaries_UK_BGC",
-    # "admin",
-    # "map"
-  )
-
-
-  table_code_refs <- table_code_ref_lookup %>%
-    dplyr::filter(bounds_level == bounds_query_level) %>%
-    # centroids is used here to filter, this is why the setting of
-    # return_centroids as TRUE will override the setting of boundaries to TRUE
-    dplyr::filter(centroids == return_centroids)
-
-  bounds_queries <- bounds_codes %>%
-    purrr::map(~ build_api_query(
-      table_code_ref = table_code_refs[["table_code_ref"]],
-      type = table_code_refs[["type"]],
-      server = table_code_refs[["server"]],
-      within_level = bounds_query_level,
-      within = .,
-      fields = return_fields,
-      sr = spatial_ref,
-      distinct = FALSE
-    ))
-
-  bounds_out <- bounds_queries %>%
-    purrr::map_df(sf::st_read) %>%
-    janitor::clean_names()
-
-
-  dplyr::right_join(bounds_out, basic_df)
+    area_codes,
+    return_style,
+    spatial_ref,
+    centroid_fields,
+    shape_fields,
+    return_centroids
+  ) %>%
+  dplyr::right_join(basic_df)
 }

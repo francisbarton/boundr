@@ -3,4 +3,5 @@
 export("%>%")
 export(build_api_query)
 export(geo_get)
+export(geo_get_bounds)
 importFrom(magrittr,"%>%")

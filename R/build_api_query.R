@@ -20,8 +20,6 @@
 #'   (all); can instead be a set of column names/variables.
 #' @param sr The (EPSG) spatial reference of any returned geometry.
 #'   4326 ("WGS 84") by default. Can be specified as numeric or character.
-#' @param distinct Boolean. Whether to enable "returnDistinctValues" as part of
-#'   the query. Seems like a good idea for lookups but a problem for boundaries.
 #'
 #' @return a string that should function as a valid API query
 #' @export
@@ -53,8 +51,7 @@ build_api_query <- function(
                             within_level,
                             within = NULL,
                             fields = "*",
-                            sr = 4326,
-                            distinct = TRUE) {
+                            sr = 4326) {
 
 
   # create a list of codes for the main function.
@@ -72,6 +69,9 @@ build_api_query <- function(
 
     # https://geoportal.statistics.gov.uk/datasets/fd6a688548744c0d9ec34b1273b80c20_0/
     "LSOA11_UTLA20_EW_LU",
+
+    # https://geoportal.statistics.gov.uk/datasets/lower-tier-local-authority-to-upper-tier-local-authority-december-2020-lookup-in-england-and-wales/
+    "LTLA20_UTLA20_EW_LU",
 
     # https://geoportal.statistics.gov.uk/datasets/7a9e4c5e7e8847b8b6a1ac93acd66358_0
     "LSOA11_WD20_LAD20_EW_LU",
@@ -147,29 +147,26 @@ build_api_query <- function(
   table_code <- table_codes[[table_code_ref]]
 
 
+  url_base <- "https://ons-inspire.esriuk.com/"
+
   if (type == "census") {
     url_base <- "https://services1.arcgis.com/ESMARspQHYMw9BZ9/"
     admin <- ""
   }
 
   if (type == "admin") {
-    url_base <- "https://ons-inspire.esriuk.com/"
     admin <- "Administrative_Boundaries/"
   }
 
   if (type == "other") {
-    url_base <- "https://ons-inspire.esriuk.com/"
     admin <- "Other_Boundaries/"
   }
 
   if (type == "centroid") {
-    url_base <- "https://ons-inspire.esriuk.com/"
     admin <- "Census_Boundaries/"
   }
 
 
-
-  assertthat::assert_that(server %in% c("feature", "map"))
 
   # server string in query URL
   if (server == "feature") {
@@ -205,8 +202,10 @@ build_api_query <- function(
       # don't think this is needed but it's what the site itself does
       toupper() %>%
 
+
       # surround each location in ''
-      paste0("%27", ., "%27") %>%
+      # ' seems to be OK without being escaped as %27 in queries
+      paste0("'", ., "'") %>%
       stringr::str_c(
         within_level, # area level code eg WD19CD, CAUTH19NM
         "%3D", # "="
@@ -236,11 +235,7 @@ build_api_query <- function(
   # if it were worth the candle.
   # maybe I should bother to allow that, in order better to replicate the API
 
-  if (distinct) distinct_val <- "&returnDistinctValues=true"
-  if (!distinct) distinct_val <- ""
-
-  coda <- paste0(distinct_val,
-                 "&outSR=",
+  coda <- paste0("&outSR=",
                  sr,
                  "&f=json")
 

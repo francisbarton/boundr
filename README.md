@@ -4,10 +4,6 @@
 # jogger
 
 <!-- badges: start -->
-
-[![R-CMD-check](https://github.com/francisbarton/jogger/workflows/R-CMD-check/badge.svg)](https://github.com/francisbarton/jogger/actions)
-[![Codecov test
-coverage](https://codecov.io/gh/francisbarton/jogger/branch/main/graph/badge.svg)](https://codecov.io/gh/francisbarton/jogger?branch=main)
 <!-- badges: end -->
 
 ### Retrieve area boundaries and data from the ONS Open Geography Portal
@@ -19,10 +15,7 @@ script will return a data frame with the sub-area geometry column, as an
 `sf` object ready to be visualised as a map. It’s initially just for
 areas within England and Wales, with a hope to add Scottish geographies
 at a later date. And currently just for the following area levels: LSOA,
-MSOA, Ward, LAD/LTLA, UTLA, CAUTH, RGN *\[subject to change\]*
-
-*Changes since 2019 (currently – Jan 2021 – just the change in
-Buckinghamshire from two-tier to unitary) are not yet incorporated.*
+MSOA, Ward, LAD/LTLA, UTLA/CTY, CAUTH, RGN *\[subject to change\]*
 
 ## Installation
 
@@ -33,28 +26,36 @@ Buckinghamshire from two-tier to unitary) are not yet incorporated.*
 ``` r
 library(jogger)
 library(tmap)
+library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
 
 tmap::tmap_mode("plot")
 #> tmap mode set to plotting
 
 geo_get("wd", "Swindon", "lad") %>% 
   tmap::qtm()
-#> Reading layer `ESRIJSON' from data source `https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Wards_December_2019_Boundaries_UK_BFC_v2/FeatureServer/0/query?where=%20(WD19CD%20%3D%20%27E05008954%27%20OR%20WD19CD%20%3D%20%27E05008955%27%20OR%20WD19CD%20%3D%20%27E05008956%27%20OR%20WD19CD%20%3D%20%27E05008957%27%20OR%20WD19CD%20%3D%20%27E05008958%27%20OR%20WD19CD%20%3D%20%27E05008960%27%20OR%20WD19CD%20%3D%20%27E05008961%27%20OR%20WD19CD%20%3D%20%27E05008962%27%20OR%20WD19CD%20%3D%20%27E05008963%27%20OR%20WD19CD%20%3D%20%27E05008965%27%20OR%20WD19CD%20%3D%20%27E05008966%27%20OR%20WD19CD%20%3D%20%27E05008967%27%20OR%20WD19CD%20%3D%20%27E05008968%27%20OR%20WD19CD%20%3D%20%27E05008969%27%20OR%20WD19CD%20%3D%20%27E05008970%27%20OR%20WD19CD%20%3D%20%27E05008971%27%20OR%20WD19CD%20%3D%20%27E05008972%27%20OR%20WD19CD%20%3D%20%27E05010755%27%20OR%20WD19CD%20%3D%20%27E05010756%27%20OR%20WD19CD%20%3D%20%27E05010757%27)%20&outFields=WD19CD,WD19NM&outSR=4326&f=json' using driver `ESRIJSON'
+#> Reading layer `ESRIJSON' from data source `https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Wards_December_2020_UK_BFC/FeatureServer/0/query?where=%20(WD20CD%20%3D%20'E05008962'%20OR%20WD20CD%20%3D%20'E05008963'%20OR%20WD20CD%20%3D%20'E05010757'%20OR%20WD20CD%20%3D%20'E05008965'%20OR%20WD20CD%20%3D%20'E05008966'%20OR%20WD20CD%20%3D%20'E05010755'%20OR%20WD20CD%20%3D%20'E05008967'%20OR%20WD20CD%20%3D%20'E05008954'%20OR%20WD20CD%20%3D%20'E05008968'%20OR%20WD20CD%20%3D%20'E05008955'%20OR%20WD20CD%20%3D%20'E05008969'%20OR%20WD20CD%20%3D%20'E05008970'%20OR%20WD20CD%20%3D%20'E05008971'%20OR%20WD20CD%20%3D%20'E05008972'%20OR%20WD20CD%20%3D%20'E05008956'%20OR%20WD20CD%20%3D%20'E05008957'%20OR%20WD20CD%20%3D%20'E05008958'%20OR%20WD20CD%20%3D%20'E05010756'%20OR%20WD20CD%20%3D%20'E05008960'%20OR%20WD20CD%20%3D%20'E05008961')%20&outFields=WD20CD,WD20NM&outSR=4326&f=json' using driver `ESRIJSON'
 #> Simple feature collection with 20 features and 2 fields
 #> geometry type:  POLYGON
 #> dimension:      XY
 #> bbox:           xmin: -1.865128 ymin: 51.48245 xmax: -1.602812 ymax: 51.69271
 #> geographic CRS: WGS 84
-#> Joining, by = c("wd19cd", "wd19nm")
-#> Linking to GEOS 3.8.0, GDAL 3.0.4, PROJ 6.3.1
+#> Joining, by = c("wd20cd", "wd20nm")
 ```
 
 <img src="man/figures/README-example-1-1.png" width="100%" />
 
 ``` r
-geo_get("msoa", "Swansea", "lad", return_centroids = TRUE) %>% 
-  tmap::qtm()
-#> Joining, by = c("lad19cd", "lad19nm")
+geo_get("msoa", "Swansea", "lad", return_boundaries = FALSE) %>% 
+  dplyr::slice_sample(n = 10)
+#> Joining, by = c("lad20cd", "lad20nm")
 #> 
 #> -- Column specification --------------------------------------------------------
 #> cols(
@@ -68,49 +69,79 @@ geo_get("msoa", "Swansea", "lad", return_centroids = TRUE) %>%
 #> Joining, by = "msoa11nm"
 #> Joining, by = c("lsoa11cd", "lsoa11nm")
 #> Joining, by = c("lsoa11cd", "lsoa11nm")
-#> Reading layer `ESRIJSON' from data source `https://ons-inspire.esriuk.com/arcgis/rest/services/Census_Boundaries/Middle_Super_Output_Areas_December_2011_Centroids/MapServer/0/query?where=%20(msoa11cd%20%3D%20%27W02000192%27%20OR%20msoa11cd%20%3D%20%27W02000179%27%20OR%20msoa11cd%20%3D%20%27W02000190%27%20OR%20msoa11cd%20%3D%20%27W02000191%27%20OR%20msoa11cd%20%3D%20%27W02000183%27%20OR%20msoa11cd%20%3D%20%27W02000174%27%20OR%20msoa11cd%20%3D%20%27W02000193%27%20OR%20msoa11cd%20%3D%20%27W02000169%27%20OR%20msoa11cd%20%3D%20%27W02000184%27%20OR%20msoa11cd%20%3D%20%27W02000180%27%20OR%20msoa11cd%20%3D%20%27W02000182%27%20OR%20msoa11cd%20%3D%20%27W02000187%27%20OR%20msoa11cd%20%3D%20%27W02000185%27%20OR%20msoa11cd%20%3D%20%27W02000172%27%20OR%20msoa11cd%20%3D%20%27W02000171%27%20OR%20msoa11cd%20%3D%20%27W02000177%27%20OR%20msoa11cd%20%3D%20%27W02000173%27%20OR%20msoa11cd%20%3D%20%27W02000195%27%20OR%20msoa11cd%20%3D%20%27W02000198%27%20OR%20msoa11cd%20%3D%20%27W02000168%27%20OR%20msoa11cd%20%3D%20%27W02000188%27%20OR%20msoa11cd%20%3D%20%27W02000197%27%20OR%20msoa11cd%20%3D%20%27W02000194%27%20OR%20msoa11cd%20%3D%20%27W02000189%27%20OR%20msoa11cd%20%3D%20%27W02000196%27)%20&outFields=msoa11cd,msoa11nm&outSR=4326&f=json' using driver `ESRIJSON'
-#> Simple feature collection with 25 features and 2 fields
-#> geometry type:  POINT
-#> dimension:      XY
-#> bbox:           xmin: -4.126412 ymin: 51.57293 xmax: -3.877518 ymax: 51.71417
-#> geographic CRS: WGS 84
-#> Reading layer `ESRIJSON' from data source `https://ons-inspire.esriuk.com/arcgis/rest/services/Census_Boundaries/Middle_Super_Output_Areas_December_2011_Centroids/MapServer/0/query?where=%20(msoa11cd%20%3D%20%27W02000181%27%20OR%20msoa11cd%20%3D%20%27W02000170%27%20OR%20msoa11cd%20%3D%20%27W02000175%27%20OR%20msoa11cd%20%3D%20%27W02000176%27%20OR%20msoa11cd%20%3D%20%27W02000178%27%20OR%20msoa11cd%20%3D%20%27W02000186%27)%20&outFields=msoa11cd,msoa11nm&outSR=4326&f=json' using driver `ESRIJSON'
-#> Simple feature collection with 6 features and 2 fields
-#> geometry type:  POINT
-#> dimension:      XY
-#> bbox:           xmin: -3.969916 ymin: 51.6284 xmax: -3.908663 ymax: 51.67981
-#> geographic CRS: WGS 84
-#> Joining, by = c("msoa11cd", "msoa11nm")
+#>     msoa11cd    msoa11nm    msoa11nmw                 msoa11hclnm
+#> 1  W02000185 Swansea 018 Abertawe 018 Llanmorlais & Three Crosses
+#> 2  W02000195 Swansea 028 Abertawe 028         Mayals & Bishopston
+#> 3  W02000178 Swansea 011 Abertawe 011                    Penderry
+#> 4  W02000198 Swansea 031 Abertawe 031            Mumbles & Newton
+#> 5  W02000198 Swansea 031 Abertawe 031            Mumbles & Newton
+#> 6  W02000187 Swansea 020 Abertawe 020      Dunvant & Upper Killay
+#> 7  W02000183 Swansea 016 Abertawe 016                     Landore
+#> 8  W02000179 Swansea 012 Abertawe 012                    Gowerton
+#> 9  W02000180 Swansea 013 Abertawe 013                   Ravenhill
+#> 10 W02000171 Swansea 004 Abertawe 004      Llangyfelach & Tircoed
+#>                   msoa11hclnmw    wd20cd       wd20nm   lad20cd lad20nm
+#> 1        Llanmorlais a'r Crwys W05000974    Penclawdd W06000011 Swansea
+#> 2  Mayals a Llandeilo Ferwallt W05000959   Bishopston W06000011 Swansea
+#> 3                      Penderi W05000975     Penderry W06000011 Swansea
+#> 4             Mwmbwls a Newton W05000538  Oystermouth W06000011 Swansea
+#> 5             Mwmbwls a Newton W05000537       Newton W06000011 Swansea
+#> 6        Dynfant a Chilâ Uchaf W05000965      Dunvant W06000011 Swansea
+#> 7                      Glandwr W05000969      Landore W06000011 Swansea
+#> 8                      Tregwyr W05000525     Gowerton W06000011 Swansea
+#> 9                    Ravenhill W05000963      Cockett W06000011 Swansea
+#> 10     Llangyfelach a Thircoed W05000970 Llangyfelach W06000011 Swansea
+#>    lad20nmw
+#> 1  Abertawe
+#> 2  Abertawe
+#> 3  Abertawe
+#> 4  Abertawe
+#> 5  Abertawe
+#> 6  Abertawe
+#> 7  Abertawe
+#> 8  Abertawe
+#> 9  Abertawe
+#> 10 Abertawe
 ```
-
-<img src="man/figures/README-example-2-1.png" width="100%" />
 
 ``` r
-geo_get("lsoa", "Zetland", "ward", spatial_ref = 3857) %>% 
-  tmap::qtm()
-#> Reading layer `ESRIJSON' from data source `https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Lower_Layer_Super_Output_Areas_December_2011_Boundaries_EW_BFC_V2/FeatureServer/0/query?where=%20(LSOA11CD%20%3D%20%27E01012186%27%20OR%20LSOA11CD%20%3D%20%27E01012185%27%20OR%20LSOA11CD%20%3D%20%27E01012184%27)%20&outFields=LSOA11CD,LSOA11NM&outSR=3857&f=json' using driver `ESRIJSON'
-#> Simple feature collection with 3 features and 2 fields
+geo_get("lsoa", "Zetland", "ward", shape_fields = TRUE) %>%
+  dplyr::arrange(desc(shape_area))
+#> Reading layer `ESRIJSON' from data source `https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Lower_Layer_Super_Output_Areas_December_2011_Boundaries_EW_BFC_V2/FeatureServer/0/query?where=%20(LSOA11CD%20%3D%20'E01012184'%20OR%20LSOA11CD%20%3D%20'E01012185'%20OR%20LSOA11CD%20%3D%20'E01012186')%20&outFields=LSOA11CD,LSOA11NM,SHAPE__AREA,SHAPE__LENGTH&outSR=4326&f=json' using driver `ESRIJSON'
+#> Simple feature collection with 3 features and 4 fields
 #> geometry type:  POLYGON
 #> dimension:      XY
-#> bbox:           xmin: -117993 ymin: 7285060 xmax: -115362.4 ymax: 7288090
-#> projected CRS:  WGS 84 / Pseudo-Mercator
+#> bbox:           xmin: -1.059949 ymin: 54.6023 xmax: -1.036318 ymax: 54.61806
+#> geographic CRS: WGS 84
 #> Joining, by = c("lsoa11cd", "lsoa11nm")
+#> Simple feature collection with 3 features and 6 fields
+#> geometry type:  POLYGON
+#> dimension:      XY
+#> bbox:           xmin: -1.059949 ymin: 54.6023 xmax: -1.036318 ymax: 54.61806
+#> geographic CRS: WGS 84
+#>    lsoa11cd                  lsoa11nm shape_area shape_length    wd20cd  wd20nm
+#> 1 E01012186 Redcar and Cleveland 004G   510045.3     5069.503 E05012460 Zetland
+#> 2 E01012184 Redcar and Cleveland 001D   265580.9     3023.669 E05012460 Zetland
+#> 3 E01012185 Redcar and Cleveland 004F   189456.1     2617.889 E05012460 Zetland
+#>                         geometry
+#> 1 POLYGON ((-1.047691 54.6129...
+#> 2 POLYGON ((-1.053543 54.6166...
+#> 3 POLYGON ((-1.047838 54.6074...
 ```
-
-<img src="man/figures/README-example-3-1.png" width="100%" />
 
 ``` r
 geo_get(bounds_level = "lad",
         within = "Gloucestershire",
         within_level = "cty",
         return_style = "simple",
+        centroid_fields = TRUE,
         return_boundaries = FALSE)
-#>     lad19cd        lad19nm   cty19cd         cty19nm
-#> 1 E07000078     Cheltenham E10000013 Gloucestershire
-#> 2 E07000079       Cotswold E10000013 Gloucestershire
-#> 3 E07000080 Forest of Dean E10000013 Gloucestershire
+#>     lad20cd        lad20nm   cty20cd         cty20nm
+#> 1 E07000082         Stroud E10000013 Gloucestershire
+#> 2 E07000080 Forest of Dean E10000013 Gloucestershire
+#> 3 E07000078     Cheltenham E10000013 Gloucestershire
 #> 4 E07000081     Gloucester E10000013 Gloucestershire
-#> 5 E07000082         Stroud E10000013 Gloucestershire
+#> 5 E07000079       Cotswold E10000013 Gloucestershire
 #> 6 E07000083     Tewkesbury E10000013 Gloucestershire
 ```
 
@@ -135,9 +166,7 @@ You are also welcome to email me with comments or ideas. I’d be glad of
 suggestions for improvement, or extra features.
 
 Improvements to the naming of key functions and their parameters
-especially welcome.
-
-Contact details are on my GitHub profile.
+especially welcome. Contact details are on my GitHub profile.
 
 This project has a Contributor Code of Conduct:
 

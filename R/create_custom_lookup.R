@@ -116,26 +116,23 @@ create_custom_lookup <- function(
     "wd",     "rgn",    1,  NULL,
     "wd",     "ctry",   1,  NULL,
     "lad",    "cty",    1,  NULL,
-    "lad",    "utla",   1,  NULL, # utla needs to be renamed to cty here
     "lad",    "rgn",    1,  NULL,
-    "lad",    "ctry",   1,  NULL,
     "cty",    "rgn",    1,  NULL,
+    "lad",    "ctry",   1,  NULL,
     "cty",    "ctry",   1,  NULL,
     "lad",    "cauth",  2,  NULL,
     "lsoa",   "utla",   3,  NULL,
     "lsoa",   "cty",    3,  NULL, # cty needs to be renamed to utla here
-    "msoa",   "utla",   3,  NULL,
-    "msoa",   "cty",    3,  NULL, # cty needs to be renamed to utla here
-    "lsoa",   "wd",     4,  NULL,
-    "lsoa",   "lad",    4,  NULL,
-    "msoa",   "lad",    4,  NULL
+    "lad",    "utla",   4,  NULL, # lad needs to be renamed to ltla here
+    "ltla",   "utla",   4,  NULL,
+    "lsoa",   "wd",     5,  NULL,
+    "lsoa",   "lad",    5,  NULL,
+    "msoa",   "lad",    5,  NULL
     # "utla",   "rgn"     1,     3,
+    # "utla",   "ctry"    1,     3,
     # "lsoa",   "cauth"   2,     4,
-    # "msoa",   "cauth"   2,     4,
     # "lsoa",   "rgn"     1,     4,
-    # "msoa",   "rgn"     1,     4,
     # "lsoa",   "ctry"    1,     4
-    # "msoa",   "ctry"    1,     4
   ) %>%
     dplyr::mutate(bounds_level = dplyr::case_when(
       stringr::str_ends(bounds_level, "oa") ~ paste0(bounds_level, "11cd"),
@@ -144,11 +141,20 @@ create_custom_lookup <- function(
     dplyr::mutate(within_level = paste0(within_level, "20nm"))
 
 
+  if (bounds_level == "lsoa" & within_level == "cty") {
+    within_level <- "utla"
+  }
+  if (bounds_level == "lad" & within_level == "utla") {
+    bounds_level <- "ltla"
+  }
+
+
   get_serious <- function(x) {
     area_code_lookup %>%
       dplyr::filter(friendly %in% tolower(x)) %>%
       dplyr::pull(serious)
   }
+
 
 
   # create a vector of field codes from the upper and lower levels supplied
@@ -214,10 +220,7 @@ create_custom_lookup <- function(
     table_code_ref = table_code_refs[1],
     within_level = fields[4],
     within = within,
-    fields = return_fields,
-    # TRUE is the default value, but I'm being explicit about it
-    # for debugging purposes
-    distinct = TRUE
+    fields = return_fields
   ) %>%
     extract_lookup() %>%
     treat_results(return_style = return_style)

@@ -11,8 +11,7 @@ build_api_query(
   within_level,
   within = NULL,
   fields = "*",
-  sr = 4326,
-  distinct = TRUE
+  sr = 4326
 )
 }
 \arguments{
@@ -39,9 +38,6 @@ returned}
 
 \item{sr}{The (EPSG) spatial reference of any returned geometry.
 4326 ("WGS 84") by default. Can be specified as numeric or character.}
-
-\item{distinct}{Boolean. Whether to enable "returnDistinctValues" as part of
-the query. Seems like a good idea for lookups but a problem for boundaries.}
 }
 \value{
 a string that should function as a valid API query

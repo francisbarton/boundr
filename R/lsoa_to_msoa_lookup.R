@@ -49,6 +49,7 @@ lsoa_to_msoa_lookup <- function(
 
   df_out <- df %>%
     dplyr::select(dplyr::any_of(c("lsoa11cd", "lsoa11nm"))) %>%
+    dplyr::distinct() %>%
     dplyr::left_join(msoa_lookup) %>%
     dplyr::left_join(df)
 
