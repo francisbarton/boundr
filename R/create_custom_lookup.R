@@ -92,6 +92,7 @@ create_custom_lookup <- function(
     "wd",      "wd20",
     "ward",    "wd20",
     "lad",     "lad20",
+    "ltla",    "ltla20",
     "utla",    "utla20",
     "upper",   "utla20",
     "cty",     "cty20",
@@ -127,7 +128,7 @@ create_custom_lookup <- function(
     "ltla",   "utla",   4,  NULL,
     "lsoa",   "wd",     5,  NULL,
     "lsoa",   "lad",    5,  NULL,
-    "msoa",   "lad",    5,  NULL
+    "lsoa",   "ltla",   5,  NULL  # ltla needs to be renamed to lad here
     # "utla",   "rgn"     1,     3,
     # "utla",   "ctry"    1,     3,
     # "lsoa",   "cauth"   2,     4,
@@ -141,9 +142,15 @@ create_custom_lookup <- function(
     dplyr::mutate(within_level = paste0(within_level, "20nm"))
 
 
-  if (bounds_level == "lsoa" & within_level == "cty") {
-    within_level <- "utla"
+  if (bounds_level == "lsoa") {
+    if (within_level == "cty") {
+      within_level <- "utla"
+    }
+    if (within_level == "ltla") {
+      within_level <- "lad"
+    }
   }
+
   if (bounds_level == "lad" & within_level == "utla") {
     bounds_level <- "ltla"
   }
