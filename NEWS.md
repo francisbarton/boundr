@@ -1,3 +1,10 @@
+# jogger 0.2.2
+
+* Enhance examples in geo_get to better match README
+* Create geo_get_bounds as a separate function and move out of geo_get to sep file
+* Remove distinct option from params
+* Add a few more options for lookups (realised LTLA to UTLA could easily be added)
+
 # jogger 0.2.1
 
 * Changed codes and boundary URLs to 2020 where possible
