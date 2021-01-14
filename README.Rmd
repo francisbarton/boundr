@@ -7,7 +7,7 @@ output: github_document
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  cache = TRUE,
+  cache = FALSE,
   comment = "#>",
   fig.path = "man/figures/README-",
   out.width = "100%"
@@ -43,13 +43,14 @@ remotes::install_github("francisbarton/jogger")
 
 ```{r example-1}
 library(jogger)
-library(tmap)
 library(dplyr)
+library(tmap)
 
 tmap::tmap_mode("plot")
 
 geo_get("wd", "Swindon", "lad") %>% 
-  tmap::qtm()
+  tmap::tm_shape() +
+  tmap::tm_borders()
 ```
 
 

@@ -107,8 +107,12 @@ geo_get <- function(
     }
   }
 
-  if (bounds_query_level == "ltla20cd") bounds_query_level <- "lad20cd"
+  join_by <- purrr::set_names(bounds_query_level, bounds_query_level)
 
+  if (bounds_query_level == "ltla20cd") {
+    bounds_query_level <- "lad20cd"
+    join_by <- c("ltla20cd" = "lad20cd")
+  }
 
 
   geo_get_bounds(
@@ -120,5 +124,5 @@ geo_get <- function(
     shape_fields,
     return_centroids
   ) %>%
-  dplyr::right_join(basic_df)
+  dplyr::left_join(basic_df, by = join_by)
 }
