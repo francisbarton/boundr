@@ -51,7 +51,7 @@ test_that(
         fields = c("lad20cd", "lad20nm")
       ),
 
-      "https://ons-inspire.esriuk.com/arcgis/rest/services/Administrative_Boundaries/Local_Authority_Districts_May_2020_Boundaries_UK_BFC_V3/MapServer/0/query?where=%20(lad20nm%20%3D%20'CHELTENHAM'%20OR%20lad20nm%20%3D%20'GLOUCESTER'%20OR%20lad20nm%20%3D%20'STROUD'%20OR%20lad20nm%20%3D%20'COTSWOLD'%20OR%20lad20nm%20%3D%20'TEWKESBURY'%20OR%20lad20nm%20%3D%20'FOREST%20OF%20DEAN')%20&outFields=lad20cd,lad20nm&outSR=4326&f=json"
+      "https://ons-inspire.esriuk.com/arcgis/rest/services/Administrative_Boundaries/Local_Authority_Districts_May_2020_UK_BFC_V3/MapServer/0/query?where=%20(lad20nm%20%3D%20'CHELTENHAM'%20OR%20lad20nm%20%3D%20'GLOUCESTER'%20OR%20lad20nm%20%3D%20'STROUD'%20OR%20lad20nm%20%3D%20'COTSWOLD'%20OR%20lad20nm%20%3D%20'TEWKESBURY'%20OR%20lad20nm%20%3D%20'FOREST%20OF%20DEAN')%20&outFields=lad20cd,lad20nm&outSR=4326&f=json"
     )
   }
 )

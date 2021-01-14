@@ -39,7 +39,6 @@ geo_get_bounds <- function(bounds_query_level,
 
   return_fields <- c(
     bounds_query_level,
-    stringr::str_replace(bounds_query_level, "cd$", "nm"),
     centroid_fields_list,
     shape_fields_list
   )
@@ -66,6 +65,7 @@ geo_get_bounds <- function(bounds_query_level,
     dplyr::filter(centroids == return_centroids)
 
   bounds_queries <- area_codes %>%
+    batch_it_simple(batch_size = 25) %>%
     purrr::map(~ build_api_query(
       table_code_ref = table_code_refs[["table_code_ref"]],
       type = table_code_refs[["type"]],

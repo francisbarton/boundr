@@ -23,7 +23,7 @@ Imports:
     magrittr,
     purrr,
     readr,
-    rlang,
+    rlang (>= 0.1.2),
     sf,
     stringr,
     usethis,
@@ -33,5 +33,6 @@ Depends:
     R (>= 3.5.0)
 Suggests: 
     testthat (>= 3.0.0),
-    covr
+    covr,
+    roxygen2
 Config/testthat/edition: 3

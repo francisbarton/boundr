@@ -94,7 +94,7 @@ build_api_query <- function(
 
     # Local Authority Districts (May 2020) Boundaries UK BFC
     # https://geoportal.statistics.gov.uk/datasets/local-authority-districts-may-2020-boundaries-uk-bfc-1
-    "Local_Authority_Districts_May_2020_Boundaries_UK_BFC_V3",
+    "Local_Authority_Districts_May_2020_UK_BFC_V3",
 
     # Clinical Commissioning Groups (April 2020) Full Clipped Boundaries EN
     # "https://geoportal.statistics.gov.uk/datasets/clinical-commissioning-groups-april-2020-full-clipped-boundaries-en",

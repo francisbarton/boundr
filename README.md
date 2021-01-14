@@ -25,7 +25,6 @@ MSOA, Ward, LAD/LTLA, UTLA/CTY, CAUTH, RGN *\[subject to change\]*
 
 ``` r
 library(jogger)
-library(tmap)
 library(dplyr)
 #> 
 #> Attaching package: 'dplyr'
@@ -35,19 +34,21 @@ library(dplyr)
 #> The following objects are masked from 'package:base':
 #> 
 #>     intersect, setdiff, setequal, union
+library(tmap)
 
 tmap::tmap_mode("plot")
 #> tmap mode set to plotting
 
 geo_get("wd", "Swindon", "lad") %>% 
-  tmap::qtm()
-#> Reading layer `ESRIJSON' from data source `https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Wards_December_2020_UK_BFC/FeatureServer/0/query?where=%20(WD20CD%20%3D%20'E05008962'%20OR%20WD20CD%20%3D%20'E05008963'%20OR%20WD20CD%20%3D%20'E05010757'%20OR%20WD20CD%20%3D%20'E05008965'%20OR%20WD20CD%20%3D%20'E05008966'%20OR%20WD20CD%20%3D%20'E05010755'%20OR%20WD20CD%20%3D%20'E05008967'%20OR%20WD20CD%20%3D%20'E05008954'%20OR%20WD20CD%20%3D%20'E05008968'%20OR%20WD20CD%20%3D%20'E05008955'%20OR%20WD20CD%20%3D%20'E05008969'%20OR%20WD20CD%20%3D%20'E05008970'%20OR%20WD20CD%20%3D%20'E05008971'%20OR%20WD20CD%20%3D%20'E05008972'%20OR%20WD20CD%20%3D%20'E05008956'%20OR%20WD20CD%20%3D%20'E05008957'%20OR%20WD20CD%20%3D%20'E05008958'%20OR%20WD20CD%20%3D%20'E05010756'%20OR%20WD20CD%20%3D%20'E05008960'%20OR%20WD20CD%20%3D%20'E05008961')%20&outFields=WD20CD,WD20NM&outSR=4326&f=json' using driver `ESRIJSON'
-#> Simple feature collection with 20 features and 2 fields
+  tmap::tm_shape() +
+  tmap::tm_borders()
+#> Reading layer `ESRIJSON' from data source `https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Wards_December_2020_UK_BFC/FeatureServer/0/query?where=%20(WD20CD%20%3D%20'E05008962'%20OR%20WD20CD%20%3D%20'E05008963'%20OR%20WD20CD%20%3D%20'E05010757'%20OR%20WD20CD%20%3D%20'E05008965'%20OR%20WD20CD%20%3D%20'E05008966'%20OR%20WD20CD%20%3D%20'E05010755'%20OR%20WD20CD%20%3D%20'E05008967'%20OR%20WD20CD%20%3D%20'E05008954'%20OR%20WD20CD%20%3D%20'E05008968'%20OR%20WD20CD%20%3D%20'E05008955'%20OR%20WD20CD%20%3D%20'E05008969'%20OR%20WD20CD%20%3D%20'E05008970'%20OR%20WD20CD%20%3D%20'E05008971'%20OR%20WD20CD%20%3D%20'E05008972'%20OR%20WD20CD%20%3D%20'E05008956'%20OR%20WD20CD%20%3D%20'E05008957'%20OR%20WD20CD%20%3D%20'E05008958'%20OR%20WD20CD%20%3D%20'E05010756'%20OR%20WD20CD%20%3D%20'E05008960'%20OR%20WD20CD%20%3D%20'E05008961')%20&outFields=WD20CD&outSR=4326&f=json' using driver `ESRIJSON'
+#> Simple feature collection with 20 features and 1 field
 #> geometry type:  POLYGON
 #> dimension:      XY
 #> bbox:           xmin: -1.865128 ymin: 51.48245 xmax: -1.602812 ymax: 51.69271
 #> geographic CRS: WGS 84
-#> Joining, by = c("wd20cd", "wd20nm")
+#> Linking to GEOS 3.8.0, GDAL 3.0.4, PROJ 6.3.1
 ```
 
 <img src="man/figures/README-example-1-1.png" width="100%" />
@@ -70,59 +71,47 @@ geo_get("msoa", "Swansea", "lad", return_boundaries = FALSE) %>%
 #> Joining, by = c("lsoa11cd", "lsoa11nm")
 #> Joining, by = c("lsoa11cd", "lsoa11nm")
 #>     msoa11cd    msoa11nm    msoa11nmw                 msoa11hclnm
-#> 1  W02000185 Swansea 018 Abertawe 018 Llanmorlais & Three Crosses
-#> 2  W02000195 Swansea 028 Abertawe 028         Mayals & Bishopston
-#> 3  W02000178 Swansea 011 Abertawe 011                    Penderry
-#> 4  W02000198 Swansea 031 Abertawe 031            Mumbles & Newton
-#> 5  W02000198 Swansea 031 Abertawe 031            Mumbles & Newton
-#> 6  W02000187 Swansea 020 Abertawe 020      Dunvant & Upper Killay
-#> 7  W02000183 Swansea 016 Abertawe 016                     Landore
-#> 8  W02000179 Swansea 012 Abertawe 012                    Gowerton
-#> 9  W02000180 Swansea 013 Abertawe 013                   Ravenhill
-#> 10 W02000171 Swansea 004 Abertawe 004      Llangyfelach & Tircoed
-#>                   msoa11hclnmw    wd20cd       wd20nm   lad20cd lad20nm
-#> 1        Llanmorlais a'r Crwys W05000974    Penclawdd W06000011 Swansea
-#> 2  Mayals a Llandeilo Ferwallt W05000959   Bishopston W06000011 Swansea
-#> 3                      Penderi W05000975     Penderry W06000011 Swansea
-#> 4             Mwmbwls a Newton W05000538  Oystermouth W06000011 Swansea
-#> 5             Mwmbwls a Newton W05000537       Newton W06000011 Swansea
-#> 6        Dynfant a Chilâ Uchaf W05000965      Dunvant W06000011 Swansea
-#> 7                      Glandwr W05000969      Landore W06000011 Swansea
-#> 8                      Tregwyr W05000525     Gowerton W06000011 Swansea
-#> 9                    Ravenhill W05000963      Cockett W06000011 Swansea
-#> 10     Llangyfelach a Thircoed W05000970 Llangyfelach W06000011 Swansea
-#>    lad20nmw
-#> 1  Abertawe
-#> 2  Abertawe
-#> 3  Abertawe
-#> 4  Abertawe
-#> 5  Abertawe
-#> 6  Abertawe
-#> 7  Abertawe
-#> 8  Abertawe
-#> 9  Abertawe
-#> 10 Abertawe
+#> 1  W02000194 Swansea 027 Abertawe 027                      Sketty
+#> 2  W02000179 Swansea 012 Abertawe 012                    Gowerton
+#> 3  W02000171 Swansea 004 Abertawe 004      Llangyfelach & Tircoed
+#> 4  W02000186 Swansea 019 Abertawe 019                    Townhill
+#> 5  W02000174 Swansea 007 Abertawe 007                     Loughor
+#> 6  W02000184 Swansea 017 Abertawe 017                     Cockett
+#> 7  W02000176 Swansea 009 Abertawe 009                 Mynydd-bach
+#> 8  W02000189 Swansea 022 Abertawe 022                     Ty-coch
+#> 9  W02000185 Swansea 018 Abertawe 018 Llanmorlais & Three Crosses
+#> 10 W02000178 Swansea 011 Abertawe 011                    Penderry
+#>               msoa11hclnmw   lad20cd lad20nm lad20nmw
+#> 1                    Sgeti W06000011 Swansea Abertawe
+#> 2                  Tregwyr W06000011 Swansea Abertawe
+#> 3  Llangyfelach a Thircoed W06000011 Swansea Abertawe
+#> 4                 Townhill W06000011 Swansea Abertawe
+#> 5               Casllwchwr W06000011 Swansea Abertawe
+#> 6                  Y Cocyd W06000011 Swansea Abertawe
+#> 7              Mynydd-bach W06000011 Swansea Abertawe
+#> 8                  Ty-coch W06000011 Swansea Abertawe
+#> 9    Llanmorlais a'r Crwys W06000011 Swansea Abertawe
+#> 10                 Penderi W06000011 Swansea Abertawe
 ```
 
 ``` r
 geo_get("lsoa", "Zetland", "ward", shape_fields = TRUE) %>%
   dplyr::arrange(desc(shape_area))
-#> Reading layer `ESRIJSON' from data source `https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Lower_Layer_Super_Output_Areas_December_2011_Boundaries_EW_BFC_V2/FeatureServer/0/query?where=%20(LSOA11CD%20%3D%20'E01012184'%20OR%20LSOA11CD%20%3D%20'E01012185'%20OR%20LSOA11CD%20%3D%20'E01012186')%20&outFields=LSOA11CD,LSOA11NM,SHAPE__AREA,SHAPE__LENGTH&outSR=4326&f=json' using driver `ESRIJSON'
-#> Simple feature collection with 3 features and 4 fields
+#> Reading layer `ESRIJSON' from data source `https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Lower_Layer_Super_Output_Areas_December_2011_Boundaries_EW_BFC_V2/FeatureServer/0/query?where=%20(LSOA11CD%20%3D%20'E01012184'%20OR%20LSOA11CD%20%3D%20'E01012185'%20OR%20LSOA11CD%20%3D%20'E01012186')%20&outFields=LSOA11CD,SHAPE__AREA,SHAPE__LENGTH&outSR=4326&f=json' using driver `ESRIJSON'
+#> Simple feature collection with 3 features and 3 fields
 #> geometry type:  POLYGON
 #> dimension:      XY
 #> bbox:           xmin: -1.059949 ymin: 54.6023 xmax: -1.036318 ymax: 54.61806
 #> geographic CRS: WGS 84
-#> Joining, by = c("lsoa11cd", "lsoa11nm")
 #> Simple feature collection with 3 features and 6 fields
 #> geometry type:  POLYGON
 #> dimension:      XY
 #> bbox:           xmin: -1.059949 ymin: 54.6023 xmax: -1.036318 ymax: 54.61806
 #> geographic CRS: WGS 84
-#>    lsoa11cd                  lsoa11nm shape_area shape_length    wd20cd  wd20nm
-#> 1 E01012186 Redcar and Cleveland 004G   510045.3     5069.503 E05012460 Zetland
-#> 2 E01012184 Redcar and Cleveland 001D   265580.9     3023.669 E05012460 Zetland
-#> 3 E01012185 Redcar and Cleveland 004F   189456.1     2617.889 E05012460 Zetland
+#>    lsoa11cd shape_area shape_length                  lsoa11nm    wd20cd  wd20nm
+#> 1 E01012186   510045.3     5069.503 Redcar and Cleveland 004G E05012460 Zetland
+#> 2 E01012184   265580.9     3023.669 Redcar and Cleveland 001D E05012460 Zetland
+#> 3 E01012185   189456.1     2617.889 Redcar and Cleveland 004F E05012460 Zetland
 #>                         geometry
 #> 1 POLYGON ((-1.047691 54.6129...
 #> 2 POLYGON ((-1.053543 54.6166...
@@ -154,7 +143,7 @@ build_api_query(
   within_level = "cauth19nm",
   within = "Greater Manchester"
 )
-#> [1] "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/LAD19_CAUTH19_EN_LU/FeatureServer/0/query?where=%20(CAUTH19NM%20%3D%20%27GREATER%20MANCHESTER%27)%20&outFields=*&returnDistinctValues=true&outSR=4326&f=json"
+#> [1] "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/LAD20_CAUTH20_EN_LU/FeatureServer/0/query?where=%20(CAUTH19NM%20%3D%20'GREATER%20MANCHESTER')%20&outFields=*&outSR=4326&f=json"
 ```
 
 ## Contributing
