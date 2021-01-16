@@ -111,11 +111,7 @@ geo_get <- function(
 
   if (bounds_query_level == "ltla20cd") {
     bounds_query_level <- "lad20cd"
-<<<<<<< HEAD
     join_by <- c("lad20cd" = "ltla20cd")
-=======
-    join_by <- c("ltla20cd" = "lad20cd")
->>>>>>> 15d89d7f83b8bb3f4841661c025e049fd089cc50
   }
 
 
