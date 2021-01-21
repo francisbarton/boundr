@@ -113,6 +113,14 @@ geo_get <- function(
     bounds_query_level <- "lad20cd"
     join_by <- c("lad20cd" = "ltla20cd")
   }
+  if (bounds_query_level == "rgn20cd") {
+    bounds_query_level <- "rgn19cd"
+    join_by <- c("rgn19cd" = "rgn20cd")
+  }
+  if (bounds_query_level == "ctry20cd") {
+    bounds_query_level <- "ctry19cd"
+    join_by <- c("ctry19cd" = "ctry20cd")
+  }
 
 
   geo_get_bounds(

@@ -54,7 +54,9 @@ geo_get_bounds <- function(bounds_query_level,
     "lad20cd",    9,    "census",     "feature",   FALSE,
     "ctyua19cd", 10,    "admin",      "map",       FALSE,
     "mcty18cd",  11,    "other",      "map",       FALSE,
-    "msoa11cd",  12,    "centroid",   "map",       TRUE
+    "rgn19cd",   12,    "admin",      "map",       FALSE,
+    "ctry19cd",  13,    "admin",      "map",       FALSE,
+    "msoa11cd",  14,    "centroid",   "map",       TRUE
   )
 
 

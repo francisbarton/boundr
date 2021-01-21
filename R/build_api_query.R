@@ -61,7 +61,7 @@ build_api_query <- function(
     ### LOOKUPS
     #########################################################################
 
-    # https://geoportal.statistics.gov.uk/datasets/ward-to-local-authority-district-to-county-to-region-to-country-december-2020-lookup-in-united-kingdom/geoservice
+    # https://geoportal.statistics.gov.uk/datasets/ward-to-local-authority-district-to-county-to-region-to-country-december-2020-lookup-in-united-kingdom
     "WD20_LAD20_CTY20_OTH_UK_LU",
 
     # https://geoportal.statistics.gov.uk/datasets/local-authority-district-to-combined-authority-december-2020-lookup-in-england
@@ -114,7 +114,7 @@ build_api_query <- function(
     # Regions (December 2019) Boundaries EN BGC
     # https://geoportal.statistics.gov.uk/datasets/regions-december-2019-boundaries-en-bgc
     # "rgn19cd",
-    # "Regions_December_2019_Boundaries_EN_BGC",
+    "Regions_December_2019_Boundaries_EN_BGC",
     # "admin",
     # "map"
 
@@ -122,7 +122,7 @@ build_api_query <- function(
     # Countries (December 2019) Boundaries UK BGC
     # https://geoportal.statistics.gov.uk/datasets/countries-december-2019-boundaries-uk-bgc
     # "ctry",
-    # "Countries_December_2019_Boundaries_UK_BGC",
+    "Countries_December_2019_Boundaries_UK_BGC",
     # "admin",
     # "map"
 

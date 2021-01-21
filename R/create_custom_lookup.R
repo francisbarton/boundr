@@ -121,6 +121,7 @@ create_custom_lookup <- function(
     "cty",    "rgn",    1,  NULL,
     "lad",    "ctry",   1,  NULL,
     "cty",    "ctry",   1,  NULL,
+    "rgn",    "ctry",   1,  NULL,
     "lad",    "cauth",  2,  NULL,
     "lsoa",   "utla",   3,  NULL,
     "lsoa",   "cty",    3,  NULL, # cty needs to be renamed to utla here
