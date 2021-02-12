@@ -48,6 +48,7 @@ geo_get <- function(
                     within_level,
                     include_msoa = NULL,
                     return_style = "tidy",
+                    within_cd = FALSE,
                     include_welsh_names = NULL,
                     spatial_ref = 4326,
                     centroid_fields = FALSE,
@@ -62,6 +63,7 @@ geo_get <- function(
     bounds_level = bounds_level,
     within = within,
     within_level = within_level,
+    within_cd = within_cd,
     include_msoa = include_msoa,
     return_style = return_style,
     include_welsh_names = include_welsh_names

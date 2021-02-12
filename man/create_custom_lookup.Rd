@@ -10,6 +10,7 @@ create_custom_lookup(
   within_level,
   include_msoa = NULL,
   return_style = "tidy",
+  within_cd = FALSE,
   include_welsh_names = NULL
 )
 }
@@ -39,6 +40,12 @@ empty columns removed. "simple" means that only the code and name (cd and
 nm) columns for \code{bounds_level} and \code{within_level} are returned -
 other columns are omitted. "minimal" means 'only return the columns for
 \code{bounds_level}'.}
+
+\item{within_cd}{Usually you'll build the query with a place name to search
+within. But sometimes you may wish to pass in a vector of area codes
+instead (if that's all you have, or more likely if you are querying within
+wards, which don't have unique names (there's a lot of Abbey wards in
+England!)). If you're passing in area codes not names, set this to TRUE.}
 
 \item{include_welsh_names}{Only makes a difference when \code{bounds_level} =
 msoa, or when \code{bounds_level} = lsoa and \code{return_style} = "tidy".

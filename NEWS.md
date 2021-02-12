@@ -1,7 +1,11 @@
 # jogger 0.2.4
 
 * Added OA:Ward lookup capability
+* Fixed OA:Ward lookup capability that I thought I'd added
+* Enabled passing in a vector of codes -- or names -- as the `within` parameter to `geo_get()`. If you're passing in *codes*, set `within_cd = TRUE`
 * Enabled HoCL MSOA Names inclusion when doing an OA-level query
+* First steps towards enabling 2-step lookups
+* OA:LAD lookup now defaults to returning OA-Ward-LAD rather than OA-LSOA-MSOA-LAD
 
 # jogger 0.2.3
 
