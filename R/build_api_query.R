@@ -61,7 +61,7 @@ build_api_query <- function(
   # Source URLs are included as comments.
   table_codes <- c(
 
-    ### LOOKUPS
+    ### LOOKUPS (1 - 5)
     #########################################################################
 
     # https://geoportal.statistics.gov.uk/datasets/ward-to-local-authority-district-to-county-to-region-to-country-december-2020-lookup-in-united-kingdom
@@ -80,7 +80,7 @@ build_api_query <- function(
     "LSOA11_WD20_LAD20_EW_LU_v2",
 
 
-    ### BOUNDARIES
+    ### BOUNDARIES (6 - 13)
     ########################################################################
 
     # Lower Layer Super Output Areas (December 2011) Boundaries EW BFC
@@ -129,12 +129,17 @@ build_api_query <- function(
     # "admin",
     # "map"
 
-    ### ADDING IN OUTPUT AREAS, GULP
+    ### ADDING IN OUTPUT AREAS, GULP (14 - 16)
     ### ##############################################################
 
-    # LOOKUP
+    # LOOKUPS
     # https://geoportal.statistics.gov.uk/datasets/output-area-to-lower-layer-super-output-area-to-middle-layer-super-output-area-to-local-authority-district-december-2020-lookup-in-england-and-wales
     "OA11_LSOA11_MSOA11_LAD20_RGN20_EW_LU",
+
+
+    # https://geoportal.statistics.gov.uk/datasets/output-area-to-ward-to-local-authority-district-december-2020-lookup-in-england-and-wales-v2
+    "OA11_WD20_LAD20_EW_LU_v2",
+
 
     # BOUNDARIES
     # Output Areas (EW) (Full!)
@@ -143,7 +148,9 @@ build_api_query <- function(
     "Output_Areas_December_2011_Boundaries_EW_BFC",
 
 
-    ### CENTROIDS
+
+
+    ### CENTROIDS (17)
     ##################################################################
 
     # Middle Layer Super Output Areas (December 2011) Population Weighted Centroids

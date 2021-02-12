@@ -1,3 +1,8 @@
+# jogger 0.2.4
+
+* Added OA:Ward lookup capability
+* Enabled HoCL MSOA Names inclusion when doing an OA-level query
+
 # jogger 0.2.3
 
 * Added (top secret!) capacity for Output Area queries

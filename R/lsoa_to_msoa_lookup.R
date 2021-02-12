@@ -2,7 +2,7 @@
 #'
 #' @param df data frame with at least column \code{lsoa11nm} and possibly
 #'   \code{lsoa11cd}.
-#' @param nmw whether to keep the Welsh language MSOA names (ONS and HOCL) or
+#' @param nmw whether to keep the Welsh language MSOA names (ONS and HoCL) or
 #'   not. Boolean. Default TRUE.
 #' @param keep whether to keep the LSOA column(s) or just return a df starting
 #'   at MSOA level. Default FALSE.
@@ -22,7 +22,7 @@ lsoa_to_msoa_lookup <- function(
       # don't include Welsh language names (codes ending "nmw")
       if (!nmw) msoa_cols <- c(1:2, 4)
 
-      # HoC Library friendly MSOA names
+      # The House of Commons Library's friendly MSOA names
       # https://visual.parliament.uk/msoanames
       paste0(
         "https://visual.parliament.uk/msoanames/static/",
@@ -48,7 +48,7 @@ lsoa_to_msoa_lookup <- function(
 
 
   df_out <- df %>%
-    dplyr::select(dplyr::any_of(c("lsoa11cd", "lsoa11nm"))) %>%
+    dplyr::select(dplyr::any_of(c("oa11cd", "lsoa11cd", "lsoa11nm"))) %>%
     dplyr::distinct() %>%
     dplyr::left_join(msoa_lookup) %>%
     dplyr::left_join(df)
@@ -58,7 +58,7 @@ lsoa_to_msoa_lookup <- function(
   } else {
     df_out %>%
       dplyr::select(
-        !dplyr::any_of(c("lsoa11cd", "lsoa11nm", "wd19cd", "wd19nm"))
+        !dplyr::any_of(c("oa11cd", "lsoa11cd", "lsoa11nm", "wd19cd", "wd19nm"))
         ) %>%
       dplyr::distinct()
   }

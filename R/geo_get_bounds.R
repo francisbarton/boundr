@@ -48,6 +48,7 @@ geo_get_bounds <- function(bounds_query_level,
   table_code_ref_lookup <- dplyr::tribble(
     ~bounds_level, ~table_code_ref, ~type, ~server, ~centroids,
 
+    "oa11cd",    16,    "census",     "feature",   FALSE,
     "lsoa11cd",   6,    "census",     "feature",   FALSE,
     "msoa11cd",   7,    "census",     "feature",   FALSE,
     "wd20cd",     8,    "census",     "feature",   FALSE,
@@ -56,8 +57,7 @@ geo_get_bounds <- function(bounds_query_level,
     "mcty18cd",  11,    "other",      "map",       FALSE,
     "rgn19cd",   12,    "admin",      "map",       FALSE,
     "ctry19cd",  13,    "admin",      "map",       FALSE,
-    "oa11cd",    15,    "census",     "feature",   FALSE,
-    "msoa11cd",  16,    "centroid",   "map",       TRUE
+    "msoa11cd",  17,    "centroid",   "map",       TRUE
   )
 
 
