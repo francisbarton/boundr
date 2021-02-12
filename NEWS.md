@@ -1,3 +1,14 @@
+# jogger 0.2.3
+
+* Added (top secret!) capacity for Output Area queries
+* By accident this also enabled (I think) LSOA/MSOA:RGN queries
+* I discovered that the ONS query doesn't mind if you ask for duplicate field names in your query (as specifically requested return_fields) - it just gives you one of them. Very nicely behaved. (Why does this matter? Because there's no oa11nm and it would have been a real hassle to rejig my code to deal with e.g. three return fields instead of four - but instead I can just request oa11cd twice and it's fine.)
+* In connection with the previous point, I also discovered that dplyr::select() is similarly well-behaved and doesn't mind if you pass it duplicate column names such as, I don't know, two lots of oa11cd for example. Presumably it just goes with the first one and ignores subsequent dupes
+* Updated a few other query lookup URLs
+* I still haven't written proper formal tests for many of the features
+* Sprinkled a few TODO notes in the code for future work
+* I also did a little bit more commenting. Need to do loads more.
+
 # jogger 0.2.2
 
 * Enhance examples in geo_get to better match README

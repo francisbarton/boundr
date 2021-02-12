@@ -107,8 +107,17 @@ geo_get <- function(
     }
   }
 
+  # Set it up so that we can stipulate the join fields as 'cd' only, rather than
+  # letting dplyr::left_join try to match on multiple fields as it does by
+  # default.
+  # The reason this matters is that if the ONS makes a small change to the
+  # spelling of an area name ('nm') this can mess up the join; but the cd
+  # shouldn't change unless there's a fundamental change in the area.
+
+  # create a length 1 named vector ( c(x = x) )
   join_by <- purrr::set_names(bounds_query_level, bounds_query_level)
 
+  # and some exceptions:
   if (bounds_query_level == "ltla20cd") {
     bounds_query_level <- "lad20cd"
     join_by <- c("lad20cd" = "ltla20cd")

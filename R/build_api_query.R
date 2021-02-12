@@ -54,6 +54,9 @@ build_api_query <- function(
                             sr = 4326) {
 
 
+  # TODO: set up a test/check for all URLs here, to auto-flag if the specific
+  # code has changed (if ONS have updated and versioned their data).
+
   # create a list of codes for the main function.
   # Source URLs are included as comments.
   table_codes <- c(
@@ -74,7 +77,7 @@ build_api_query <- function(
     "LTLA20_UTLA20_EW_LU",
 
     # https://geoportal.statistics.gov.uk/datasets/7a9e4c5e7e8847b8b6a1ac93acd66358_0
-    "LSOA11_WD20_LAD20_EW_LU",
+    "LSOA11_WD20_LAD20_EW_LU_v2",
 
 
     ### BOUNDARIES
@@ -90,7 +93,7 @@ build_api_query <- function(
 
     # Wards (December 2020) Boundaries UK BFC
     # https://geoportal.statistics.gov.uk/datasets/wards-december-2020-uk-bfc
-    "Wards_December_2020_UK_BFC",
+    "Wards_December_2020_UK_BFC_V2",
 
     # Local Authority Districts (May 2020) Boundaries UK BFC
     # https://geoportal.statistics.gov.uk/datasets/local-authority-districts-may-2020-boundaries-uk-bfc-1
@@ -126,9 +129,22 @@ build_api_query <- function(
     # "admin",
     # "map"
 
+    ### ADDING IN OUTPUT AREAS, GULP
+    ### ##############################################################
+
+    # LOOKUP
+    # https://geoportal.statistics.gov.uk/datasets/output-area-to-lower-layer-super-output-area-to-middle-layer-super-output-area-to-local-authority-district-december-2020-lookup-in-england-and-wales
+    "OA11_LSOA11_MSOA11_LAD20_RGN20_EW_LU",
+
+    # BOUNDARIES
+    # Output Areas (EW) (Full!)
+    # Output Areas (December 2011) Boundaries EW BFC
+    # https://geoportal.statistics.gov.uk/datasets/output-areas-december-2011-boundaries-ew-bfc/
+    "Output_Areas_December_2011_Boundaries_EW_BFC",
+
 
     ### CENTROIDS
-    ########################################################################
+    ##################################################################
 
     # Middle Layer Super Output Areas (December 2011) Population Weighted Centroids
     # https://geoportal.statistics.gov.uk/datasets/middle-layer-super-output-areas-december-2011-population-weighted-centroids

@@ -101,7 +101,8 @@ create_custom_lookup <- function(
     "rgn",     "rgn20",
     "region",  "rgn20",
     "ctry",    "ctry20",
-    "country", "ctry20"
+    "country", "ctry20",
+    "oa",      "oa11"
   )
 
 
@@ -129,11 +130,15 @@ create_custom_lookup <- function(
     "ltla",   "utla",   4,  NULL,
     "lsoa",   "wd",     5,  NULL,
     "lsoa",   "lad",    5,  NULL,
-    "lsoa",   "ltla",   5,  NULL  # ltla needs to be renamed to lad here
+    "lsoa",   "ltla",   5,  NULL, # ltla needs to be renamed to lad here
+    "oa",     "lsoa",  14,  NULL,
+    "oa",     "msoa",  14,  NULL,
+    "oa",     "lad",   14,  NULL,
+    "oa",     "rgn",   14,  NULL,
+    "lsoa",   "rgn",   14,  NULL
     # "utla",   "rgn"     1,     3,
     # "utla",   "ctry"    1,     3,
     # "lsoa",   "cauth"   2,     4,
-    # "lsoa",   "rgn"     1,     4,
     # "lsoa",   "ctry"    1,     4
   ) %>%
     dplyr::mutate(bounds_level = dplyr::case_when(
@@ -172,6 +177,17 @@ create_custom_lookup <- function(
     paste0(c("cd", "nm"))
 
 
+  # oa11nm doesn't exist but you can cheekily get away with requesting
+  # oa11cd twice and it seems not to mind, just returning a single oa11cd
+  # column.
+  # dplyr::select doesn't mind if you pass a duplicated column name to it,
+  # either... BRILLIANT! </fast_show>
+  if (bounds_level == "oa") fields[2] <- "oa11cd"
+
+
+  # TODO: write some tests for OA queries
+
+
   table_code_refs <- table_code_ref_lookup %>%
     dplyr::filter(bounds_level == fields[1]) %>%
     dplyr::filter(within_level == fields[4]) %>%
@@ -185,6 +201,10 @@ create_custom_lookup <- function(
   return_fields <- "*" # default for return_style = "tidy"
 
 
+  # I think I did this to avoid getting wards and MSOAs? Things get messy
+  # if you do that because the lookups are all overlapped and you get more
+  # than one row per LSOA, and end up downloading a load of duplicate
+  # boundaries. That makes sense, but I can't remember exactly.
   if (return_style == "tidy" &
       bounds_level == "lsoa" &
       within_level == "lad"
@@ -207,6 +227,7 @@ create_custom_lookup <- function(
   treat_results <- function(df, return_style) {
 
     # check that the parameter is valid
+    # TODO: I think I should do this with match.args() or sth
     if (!return_style %in% c("tidy", "simple", "minimal")) {
       usethis::ui_warn("'return_style' parameter not correctly specified.
                        Options are \"tidy\", \"simple\", \"minimal\".
