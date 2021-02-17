@@ -7,11 +7,11 @@
 geo_get_bounds(
   bounds_query_level,
   area_codes,
-  return_style = "tidy",
   spatial_ref = 4326,
   centroid_fields = FALSE,
   shape_fields = FALSE,
-  return_centroids = FALSE
+  return_centroids = FALSE,
+  quiet_read = TRUE
 )
 }
 \arguments{
@@ -21,13 +21,6 @@ be the full code not an abbreviation such as "lsoa"}
 \item{area_codes}{a vector of codes that match the level of
 bounds_query_level. Probably to be supplied from a column pulled from a
 lookup df or similar.}
-
-\item{return_style}{"tidy" (the default) means all available columns between
-\code{bounds_level} and \code{within_level} will be returned, but with any
-empty columns removed. "simple" means that only the code and name (cd and
-nm) columns for \code{bounds_level} and \code{within_level} are returned -
-other columns are omitted. "minimal" means 'only return the columns for
-\code{bounds_level}'.}
 
 \item{spatial_ref}{The (EPSG) spatial reference of any returned geometry.
 Default value: 4326 ("WGS 84"). This parameter is ignored peacefully if
@@ -46,6 +39,8 @@ boundaries. Default \code{FALSE}. If set to TRUE then it will override
 \code{return_boundaries} whether that was set TRUE or otherwise. If
 \code{return_boundaries} and \code{return_centroids} are both \code{FALSE},
 a plain summary data frame without geometry will be returned.}
+
+\item{quiet_read}{Controls quiet parameter to sf::st_read}
 }
 \value{
 an sf object

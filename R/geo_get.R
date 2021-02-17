@@ -25,6 +25,7 @@
 #'   \code{return_boundaries} whether that was set TRUE or otherwise. If
 #'   \code{return_boundaries} and \code{return_centroids} are both \code{FALSE},
 #'   a plain summary data frame without geometry will be returned.
+#' @param quiet_read Controls quiet parameter to sf::st_read
 #'
 #' @return a data frame or an sf (simple features) object (data frame
 #'   with geometries)
@@ -45,7 +46,7 @@
 geo_get <- function(
                     bounds_level,
                     within,
-                    within_level,
+                    within_level = NULL,
                     include_msoa = NULL,
                     return_style = "tidy",
                     within_cd = FALSE,
@@ -54,7 +55,23 @@ geo_get <- function(
                     centroid_fields = FALSE,
                     shape_fields = FALSE,
                     return_boundaries = TRUE,
-                    return_centroids = FALSE) {
+                    return_centroids = FALSE,
+                    quiet_read = TRUE) {
+
+
+  if (within_cd) {
+
+    geo_get_bounds(
+      bounds_query_level = bounds_level,
+      area_codes = within,
+      spatial_ref = spatial_ref,
+      centroid_fields = centroid_fields,
+      shape_fields = shape_fields,
+      return_centroids = return_centroids,
+      quiet_read = quiet_read
+    )
+
+  } else {
 
 
   # get the basic lookup table
@@ -68,6 +85,7 @@ geo_get <- function(
     return_style = return_style,
     include_welsh_names = include_welsh_names
   )
+
 
 
   # if the user sets 'return_boundaries' FALSE then just return a summary table
@@ -137,11 +155,11 @@ geo_get <- function(
   geo_get_bounds(
     bounds_query_level,
     area_codes,
-    return_style,
     spatial_ref,
     centroid_fields,
     shape_fields,
     return_centroids
   ) %>%
   dplyr::left_join(basic_df, by = join_by)
+  }
 }

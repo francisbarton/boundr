@@ -70,14 +70,18 @@ create_custom_lookup <- function(
 
   # When returning LSOAs but not Wards, and return_style is "tidy" or
   # "full", tend to include MSOA columns, unless overridden by user param
-  if (is.null(include_msoa) & tolower(bounds_level) %in% c("oa", "coa", "lsoa") & !tolower(within_level) %in% c("wd", "ward") & return_style == "tidy") {
+  if (is.null(include_msoa) &
+      tolower(bounds_level) %in% c("oa", "coa", "lsoa") &
+      !tolower(within_level) %in% c("wd", "ward") &
+      return_style == "tidy") {
     include_msoa <- TRUE
   } else if (is.null(include_msoa)) {
     include_msoa <- FALSE
   }
 
   # notify if 'include_msoa' is set where it doesn't make any sense to
-  if (include_msoa & !tolower(bounds_level) %in% c("oa", "lsoa", "msoa")) {
+  if (include_msoa &
+      !tolower(bounds_level) %in% c("oa", "lsoa", "msoa")) {
     usethis::ui_oops(
       "'include_msoa' is set to TRUE but you are not retrieving data
       at a 'bounds_level' of OA, LSOA or MSOA, so this will not work.

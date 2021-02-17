@@ -11,11 +11,11 @@
 #' @export
 geo_get_bounds <- function(bounds_query_level,
                            area_codes,
-                           return_style = "tidy",
                            spatial_ref = 4326,
                            centroid_fields = FALSE,
                            shape_fields = FALSE,
-                           return_centroids = FALSE) {
+                           return_centroids = FALSE,
+                           quiet_read = TRUE) {
 
   centroid_fields_list <- NULL
   if (centroid_fields) {
@@ -80,6 +80,6 @@ geo_get_bounds <- function(bounds_query_level,
     ))
 
   bounds_queries %>%
-    purrr::map_df(sf::st_read) %>%
+    purrr::map_df(~ sf::st_read(., quiet = quiet_read)) %>%
     janitor::clean_names()
 }

@@ -7,15 +7,17 @@
 geo_get(
   bounds_level,
   within,
-  within_level,
+  within_level = NULL,
   include_msoa = NULL,
   return_style = "tidy",
+  within_cd = FALSE,
   include_welsh_names = NULL,
   spatial_ref = 4326,
   centroid_fields = FALSE,
   shape_fields = FALSE,
   return_boundaries = TRUE,
-  return_centroids = FALSE
+  return_centroids = FALSE,
+  quiet_read = TRUE
 )
 }
 \arguments{
@@ -44,6 +46,12 @@ empty columns removed. "simple" means that only the code and name (cd and
 nm) columns for \code{bounds_level} and \code{within_level} are returned -
 other columns are omitted. "minimal" means 'only return the columns for
 \code{bounds_level}'.}
+
+\item{within_cd}{Usually you'll build the query with a place name to search
+within. But sometimes you may wish to pass in a vector of area codes
+instead (if that's all you have, or more likely if you are querying within
+wards, which don't have unique names (there's a lot of Abbey wards in
+England!)). If you're passing in area codes not names, set this to TRUE.}
 
 \item{include_welsh_names}{Only makes a difference when \code{bounds_level} =
 msoa, or when \code{bounds_level} = lsoa and \code{return_style} = "tidy".
@@ -74,6 +82,8 @@ boundaries. Default \code{FALSE}. If set to TRUE then it will override
 \code{return_boundaries} whether that was set TRUE or otherwise. If
 \code{return_boundaries} and \code{return_centroids} are both \code{FALSE},
 a plain summary data frame without geometry will be returned.}
+
+\item{quiet_read}{Controls quiet parameter to sf::st_read}
 }
 \value{
 a data frame or an sf (simple features) object (data frame
