@@ -1,3 +1,7 @@
+# jogger 0.2.5
+
+* Updated several URL details to latest on ONS OpenGeography
+
 # jogger 0.2.4
 
 * Added OA:Ward lookup capability

@@ -61,8 +61,14 @@ build_api_query <- function(
   # Source URLs are included as comments.
   table_codes <- c(
 
-    ### LOOKUPS (1 - 5)
+    ### LOOKUPS (1 - 7)
     #########################################################################
+
+    # https://geoportal.statistics.gov.uk/datasets/output-area-to-lower-layer-super-output-area-to-middle-layer-super-output-area-to-local-authority-district-december-2020-lookup-in-england-and-wales
+    "OA11_LSOA11_MSOA11_LAD20_RGN20_EW_LU",
+
+    # https://geoportal.statistics.gov.uk/datasets/output-area-to-ward-to-local-authority-district-december-2020-lookup-in-england-and-wales-v2
+    "OA11_WD20_LAD20_EW_LU_v2",
 
     # https://geoportal.statistics.gov.uk/datasets/ward-to-local-authority-district-to-county-to-region-to-country-december-2020-lookup-in-united-kingdom
     "WD20_LAD20_CTY20_OTH_UK_LU",
@@ -70,87 +76,72 @@ build_api_query <- function(
     # https://geoportal.statistics.gov.uk/datasets/local-authority-district-to-combined-authority-december-2020-lookup-in-england
     "LAD20_CAUTH20_EN_LU",
 
-    # https://geoportal.statistics.gov.uk/datasets/fd6a688548744c0d9ec34b1273b80c20_0/
-    "LSOA11_UTLA20_EW_LU",
+    # https://geoportal.statistics.gov.uk/datasets/ons::lower-layer-super-output-area-2011-to-upper-tier-local-authorities-2021-lookup-in-england-and-wales-/
+    "LSOA11_UTLA21_EW_LU",
 
-    # https://geoportal.statistics.gov.uk/datasets/lower-tier-local-authority-to-upper-tier-local-authority-december-2020-lookup-in-england-and-wales/
-    "LTLA20_UTLA20_EW_LU",
+    # Lower Tier Local Authority to Upper Tier Local Authority (April 2021) Lookup in England and Wales
+    # https://geoportal.statistics.gov.uk/datasets/ons::lower-tier-local-authority-to-upper-tier-local-authority-april-2021-lookup-in-england-and-wales
+    "LTLA21_UTLA21_EW_LU",
 
     # https://geoportal.statistics.gov.uk/datasets/7a9e4c5e7e8847b8b6a1ac93acd66358_0
     "LSOA11_WD20_LAD20_EW_LU_v2",
 
 
-    ### BOUNDARIES (6 - 13)
+    ### BOUNDARIES (8 - 15)
     ########################################################################
 
-    # Lower Layer Super Output Areas (December 2011) Boundaries EW BFC
-    # https://geoportal.statistics.gov.uk/datasets/lower-layer-super-output-areas-december-2011-boundaries-ew-bfc
+    # Output Areas (EW) (Full!)
+    # Output Areas (December 2011) Boundaries EW BFC
+    # https://geoportal.statistics.gov.uk/datasets/output-areas-december-2011-boundaries-ew-bfc/
+    "Output_Areas_December_2011_Boundaries_EW_BFC",
+
+    # Lower Layer Super Output Areas (December 2011) Boundaries Full Clipped (BFC) EW V3
+    # https://geoportal.statistics.gov.uk/datasets/ons::lower-layer-super-output-areas-december-2011-boundaries-full-clipped-bfc-ew-v3
     "Lower_Layer_Super_Output_Areas_December_2011_Boundaries_EW_BFC_V2",
 
-    # Middle Layer Super Output Areas (December 2011) Boundaries EW BFC
-    # https://geoportal.statistics.gov.uk/datasets/middle-layer-super-output-areas-december-2011-boundaries-ew-bfc-1
+    # Middle Layer Super Output Areas (December 2011) Boundaries Full Clipped (BFC) EW V3
+    # https://geoportal.statistics.gov.uk/datasets/ons::middle-layer-super-output-areas-december-2011-boundaries-full-clipped-bfc-ew-v3
     "Middle_Layer_Super_Output_Areas_December_2011_EW_BFC_V2",
 
     # Wards (December 2020) Boundaries UK BFC
     # https://geoportal.statistics.gov.uk/datasets/wards-december-2020-uk-bfc
-    "Wards_December_2020_UK_BFC_V2",
+    "Wards_December_2020_UK_BFC_V3",
 
-    # Local Authority Districts (May 2020) Boundaries UK BFC
-    # https://geoportal.statistics.gov.uk/datasets/local-authority-districts-may-2020-boundaries-uk-bfc-1
-    "Local_Authority_Districts_May_2020_UK_BFC_V3",
+    # Local Authority Districts (December 2020) Boundaries UK BFC
+    # https://geoportal.statistics.gov.uk/datasets/ons::local-authority-districts-december-2020-uk-bfc
+    "Local_Authority_Districts_December_2020_UK_BFC",
 
     # Clinical Commissioning Groups (April 2020) Full Clipped Boundaries EN
     # "https://geoportal.statistics.gov.uk/datasets/clinical-commissioning-groups-april-2020-full-clipped-boundaries-en",
     # "https://ons-inspire.esriuk.com/arcgis/rest/services/Health_Boundaries/Clinical_Commissioning_Groups_April_2020_EN_BFC_V2/MapServer/1/query?where=1%3D1&outFields=*&outSR=4326&f=json",
 
     # Counties and Unitaries
-    # https://geoportal.statistics.gov.uk/datasets/counties-and-unitary-authorities-december-2019-boundaries-uk-bfc
-    # Counties and Unitary Authorities (December 2019) Boundaries UK BFC
-    "Counties_and_Unitary_Authorities_December_2019_Boundaries_UK_BFC2",
+    # https://geoportal.statistics.gov.uk/datasets/ons::counties-and-unitary-authorities-december-2020-uk-bfc
+    # Counties and Unitary Authorities (December 2020) UK BFC
+    "Counties_and_Unitary_Authorities_December_2020_UK_BFC_V2",
 
-    # Metropolitan Counties (Full)
-    # Metropolitan Counties (December 2018) EN BFC
-    # https://geoportal.statistics.gov.uk/datasets/metropolitan-counties-december-2018-en-bfc
-    "Metropolitan_Counties_December_2018_EN_BFC",
-
-    # Regions (Generalised) !!! admin
-    # Regions (December 2019) Boundaries EN BGC
-    # https://geoportal.statistics.gov.uk/datasets/regions-december-2019-boundaries-en-bgc
+    # Regions
+    # Regions (December 2020) EN BFC
+    # https://geoportal.statistics.gov.uk/datasets/ons::regions-december-2020-en-bfc
     # "rgn19cd",
-    "Regions_December_2019_Boundaries_EN_BGC",
+    "Regions_December_2020_EN_BFC_V2",
     # "admin",
     # "map"
 
-    # Countries (UK) (Generalised) !!! admin
-    # Countries (December 2019) Boundaries UK BGC
-    # https://geoportal.statistics.gov.uk/datasets/countries-december-2019-boundaries-uk-bgc
+    # Countries (UK) !!! admin
+    # Countries (December 2020) UK BFC
+    # https://geoportal.statistics.gov.uk/datasets/ons::countries-december-2020-uk-bfc
     # "ctry",
-    "Countries_December_2019_Boundaries_UK_BGC",
+    "Countries_December_2020_UK_BFC_V2",
     # "admin",
     # "map"
 
-    ### ADDING IN OUTPUT AREAS, GULP (14 - 16)
-    ### ##############################################################
-
-    # LOOKUPS
-    # https://geoportal.statistics.gov.uk/datasets/output-area-to-lower-layer-super-output-area-to-middle-layer-super-output-area-to-local-authority-district-december-2020-lookup-in-england-and-wales
-    "OA11_LSOA11_MSOA11_LAD20_RGN20_EW_LU",
-
-
-    # https://geoportal.statistics.gov.uk/datasets/output-area-to-ward-to-local-authority-district-december-2020-lookup-in-england-and-wales-v2
-    "OA11_WD20_LAD20_EW_LU_v2",
-
-
-    # BOUNDARIES
-    # Output Areas (EW) (Full!)
-    # Output Areas (December 2011) Boundaries EW BFC
-    # https://geoportal.statistics.gov.uk/datasets/output-areas-december-2011-boundaries-ew-bfc/
-    "Output_Areas_December_2011_Boundaries_EW_BFC",
 
 
 
 
-    ### CENTROIDS (17)
+
+    ### CENTROIDS (16)
     ##################################################################
 
     # Middle Layer Super Output Areas (December 2011) Population Weighted Centroids

@@ -110,9 +110,9 @@ create_custom_lookup <- function(
     "wd",      "wd20",
     "ward",    "wd20",
     "lad",     "lad20",
-    "ltla",    "ltla20",
-    "utla",    "utla20",
-    "upper",   "utla20",
+    "ltla",    "ltla21",
+    "utla",    "utla21",
+    "upper",   "utla21",
     "cty",     "cty20",
     "county",  "cty20",
     "cauth",   "cauth20",
@@ -130,30 +130,30 @@ create_custom_lookup <- function(
   table_code_ref_lookup <- dplyr::tribble(
     ~bounds_level, ~within_level, ~table_code_ref1, ~table_code_ref2,
 
-    "wd",     "lad",    1,  NULL,
-    "wd",     "cty",    1,  NULL,
-    "wd",     "rgn",    1,  NULL,
-    "wd",     "ctry",   1,  NULL,
-    "lad",    "cty",    1,  NULL,
-    "lad",    "rgn",    1,  NULL,
-    "cty",    "rgn",    1,  NULL,
-    "lad",    "ctry",   1,  NULL,
-    "cty",    "ctry",   1,  NULL,
-    "rgn",    "ctry",   1,  NULL,
-    "lad",    "cauth",  2,  NULL,
-    "lsoa",   "utla",   3,  NULL,
-    "lsoa",   "cty",    3,  NULL, # cty needs to be renamed to utla here
-    "lad",    "utla",   4,  NULL, # lad needs to be renamed to ltla here
-    "ltla",   "utla",   4,  NULL,
-    "lsoa",   "wd",     5,  NULL,
-    "lsoa",   "lad",    5,  NULL,
-    "lsoa",   "ltla",   5,  NULL, # ltla needs to be renamed to lad here
-    "oa",     "lsoa",  14,  NULL,
-    "oa",     "msoa",  14,  NULL,
-    "oa",     "rgn",   14,  NULL,
-    "lsoa",   "rgn",   14,  NULL,
-    "oa",     "lad",   15,  NULL, # 14 would work: returns MSOAs; 15 retns Wards
-    "oa",     "wd",    15,  NULL
+    "oa",     "lsoa",   1,  NULL,
+    "oa",     "msoa",   1,  NULL,
+    "oa",     "rgn",    1,  NULL,
+    "lsoa",   "rgn",    1,  NULL,
+    "oa",     "lad",    2,  NULL, # 1 would work: returns MSOAs; 2 retns Wards
+    "oa",     "wd",     2,  NULL,
+    "wd",     "lad",    3,  NULL,
+    "wd",     "cty",    3,  NULL,
+    "wd",     "rgn",    3,  NULL,
+    "wd",     "ctry",   3,  NULL,
+    "lad",    "cty",    3,  NULL,
+    "lad",    "rgn",    3,  NULL,
+    "cty",    "rgn",    3,  NULL,
+    "lad",    "ctry",   3,  NULL,
+    "cty",    "ctry",   3,  NULL,
+    "rgn",    "ctry",   3,  NULL,
+    "lad",    "cauth",  4,  NULL,
+    "lsoa",   "utla",   5,  NULL,
+    "lsoa",   "cty",    5,  NULL, # cty needs to be renamed to utla here
+    "lad",    "utla",   6,  NULL, # lad needs to be renamed to ltla here
+    "ltla",   "utla",   6,  NULL,
+    "lsoa",   "wd",     7,  NULL,
+    "lsoa",   "lad",    7,  NULL,
+    "lsoa",   "ltla",   7,  NULL  # ltla needs to be renamed to lad here
     # "utla",   "rgn"     1,     3,
     # "utla",   "ctry"    1,     3,
     # "lsoa",   "cauth"   2,     4,
@@ -161,10 +161,12 @@ create_custom_lookup <- function(
   ) %>%
     dplyr::mutate(bounds_level = dplyr::case_when(
       stringr::str_ends(bounds_level, "oa") ~ paste0(bounds_level, "11cd"),
+      stringr::str_ends(bounds_level, "la") ~ paste0(bounds_level, "21cd"),
       TRUE ~ paste0(bounds_level, "20cd")
     )) %>%
     dplyr::mutate(within_level = dplyr::case_when(
       stringr::str_ends(within_level, "oa") ~ paste0(within_level, "11nm"),
+      stringr::str_ends(within_level, "la") ~ paste0(within_level, "21nm"),
       TRUE ~ paste0(within_level, "20nm")
     ))
 
@@ -179,9 +181,6 @@ create_custom_lookup <- function(
     }
 
   }
-
-
-
 
   if (bounds_level == "lad" & within_level == "utla") {
     bounds_level <- "ltla"
@@ -210,8 +209,8 @@ create_custom_lookup <- function(
   # requesting oa11cd twice and it seems not to mind, just returning a single
   # oa11cd column.
   # dplyr::select() doesn't mind if you pass a duplicated column name to it,
-  # either... BRILLIANT! </fast_show>
-  if (bounds_level == "oa") fields[2] <- "oa11cd"
+  # either... BRILLIANT!
+  if (bounds_level == "oa") fields[2] <- "oa11cd" # cheeky
 
   if (bounds_level == "oa" & within_level %in% c("wd", "ward")) {
     return_style <- "tidy"
@@ -233,7 +232,7 @@ create_custom_lookup <- function(
   return_fields <- "*" # default for return_style = "tidy"
 
 
-  # I think I did this to avoid getting wards and MSOAs? Things get messy
+  # I think I did this to avoid getting both Wards and MSOAs? Things get messy
   # if you do that because the lookups are all overlapped and you get more
   # than one row per LSOA, and end up downloading a load of duplicate
   # boundaries. That makes sense, but I can't remember exactly.

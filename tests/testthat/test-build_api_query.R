@@ -2,7 +2,7 @@ test_that(
   "Place names with spaces in get processed correctly", {
     expect_identical(
       build_api_query(
-        table_code_ref = 2,
+        table_code_ref = 4,
         type = "census",
         server = "feature",
         within_level = "cauth20nm",
@@ -23,7 +23,7 @@ test_that(
 
     expect_identical(
       build_api_query(
-        table_code_ref = 7,
+        table_code_ref = 10,
         type = "census",
         server = "feature",
         within_level = "msoa11cd",
@@ -43,7 +43,7 @@ test_that(
 
     expect_identical(
       build_api_query(
-        table_code_ref = 9,
+        table_code_ref = 12,
         type = "admin",
         server = "map",
         within_level = "lad20nm",
@@ -51,7 +51,7 @@ test_that(
         fields = c("lad20cd", "lad20nm")
       ),
 
-      "https://ons-inspire.esriuk.com/arcgis/rest/services/Administrative_Boundaries/Local_Authority_Districts_May_2020_UK_BFC_V3/MapServer/0/query?where=%20(lad20nm%20%3D%20'CHELTENHAM'%20OR%20lad20nm%20%3D%20'GLOUCESTER'%20OR%20lad20nm%20%3D%20'STROUD'%20OR%20lad20nm%20%3D%20'COTSWOLD'%20OR%20lad20nm%20%3D%20'TEWKESBURY'%20OR%20lad20nm%20%3D%20'FOREST%20OF%20DEAN')%20&outFields=lad20cd,lad20nm&outSR=4326&f=json"
+      "https://ons-inspire.esriuk.com/arcgis/rest/services/Administrative_Boundaries/Local_Authority_Districts_December_2020_UK_BFC/MapServer/0/query?where=%20(lad20nm%20%3D%20'CHELTENHAM'%20OR%20lad20nm%20%3D%20'GLOUCESTER'%20OR%20lad20nm%20%3D%20'STROUD'%20OR%20lad20nm%20%3D%20'COTSWOLD'%20OR%20lad20nm%20%3D%20'TEWKESBURY'%20OR%20lad20nm%20%3D%20'FOREST%20OF%20DEAN')%20&outFields=lad20cd,lad20nm&outSR=4326&f=json"
     )
   }
 )
