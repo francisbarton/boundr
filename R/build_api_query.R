@@ -70,8 +70,8 @@ build_api_query <- function(
     # https://geoportal.statistics.gov.uk/datasets/output-area-to-ward-to-local-authority-district-december-2020-lookup-in-england-and-wales-v2
     "OA11_WD20_LAD20_EW_LU_v2",
 
-    # https://geoportal.statistics.gov.uk/datasets/ward-to-local-authority-district-to-county-to-region-to-country-december-2020-lookup-in-united-kingdom
-    "WD20_LAD20_CTY20_OTH_UK_LU",
+    # https://geoportal.statistics.gov.uk/datasets/ons::ward-to-local-authority-district-to-county-to-region-to-country-december-2020-lookup-in-united-kingdom-v2
+    "WD20_LAD20_CTY20_OTH_UK_LU_v2",
 
     # https://geoportal.statistics.gov.uk/datasets/local-authority-district-to-combined-authority-december-2020-lookup-in-england
     "LAD20_CAUTH20_EN_LU",
@@ -90,54 +90,29 @@ build_api_query <- function(
     ### BOUNDARIES (8 - 15)
     ########################################################################
 
-    # Output Areas (EW) (Full!)
     # Output Areas (December 2011) Boundaries EW BFC
-    # https://geoportal.statistics.gov.uk/datasets/output-areas-december-2011-boundaries-ew-bfc/
     "Output_Areas_December_2011_Boundaries_EW_BFC",
 
     # Lower Layer Super Output Areas (December 2011) Boundaries Full Clipped (BFC) EW V3
-    # https://geoportal.statistics.gov.uk/datasets/ons::lower-layer-super-output-areas-december-2011-boundaries-full-clipped-bfc-ew-v3
     "Lower_Layer_Super_Output_Areas_December_2011_Boundaries_EW_BFC_V2",
 
     # Middle Layer Super Output Areas (December 2011) Boundaries Full Clipped (BFC) EW V3
-    # https://geoportal.statistics.gov.uk/datasets/ons::middle-layer-super-output-areas-december-2011-boundaries-full-clipped-bfc-ew-v3
     "Middle_Layer_Super_Output_Areas_December_2011_EW_BFC_V2",
 
     # Wards (December 2020) Boundaries UK BFC
-    # https://geoportal.statistics.gov.uk/datasets/wards-december-2020-uk-bfc
     "Wards_December_2020_UK_BFC_V3",
 
     # Local Authority Districts (December 2020) Boundaries UK BFC
-    # https://geoportal.statistics.gov.uk/datasets/ons::local-authority-districts-december-2020-uk-bfc
     "Local_Authority_Districts_December_2020_UK_BFC",
 
-    # Clinical Commissioning Groups (April 2020) Full Clipped Boundaries EN
-    # "https://geoportal.statistics.gov.uk/datasets/clinical-commissioning-groups-april-2020-full-clipped-boundaries-en",
-    # "https://ons-inspire.esriuk.com/arcgis/rest/services/Health_Boundaries/Clinical_Commissioning_Groups_April_2020_EN_BFC_V2/MapServer/1/query?where=1%3D1&outFields=*&outSR=4326&f=json",
-
     # Counties and Unitaries
-    # https://geoportal.statistics.gov.uk/datasets/ons::counties-and-unitary-authorities-december-2020-uk-bfc
-    # Counties and Unitary Authorities (December 2020) UK BFC
-    "Counties_and_Unitary_Authorities_December_2020_UK_BFC_V2",
+    "Counties_and_Unitary_Authorities_December_2020_UK_BGC_V2",
 
-    # Regions
-    # Regions (December 2020) EN BFC
-    # https://geoportal.statistics.gov.uk/datasets/ons::regions-december-2020-en-bfc
-    # "rgn19cd",
-    "Regions_December_2020_EN_BFC_V2",
-    # "admin",
-    # "map"
+    # Regions (December 2020) UK BUC
+    "Regions_December_2020_EN_BUC_V2",
 
-    # Countries (UK) !!! admin
-    # Countries (December 2020) UK BFC
-    # https://geoportal.statistics.gov.uk/datasets/ons::countries-december-2020-uk-bfc
-    # "ctry",
-    "Countries_December_2020_UK_BFC_V2",
-    # "admin",
-    # "map"
-
-
-
+    # Countries (December 2020) UK BUC
+    "Countries_December_2020_UK_BUC_V3",
 
 
 
@@ -190,7 +165,6 @@ build_api_query <- function(
   if (server == "map") {
     server_line <- "/MapServer/0/"
   }
-
 
   # upper or lower case field names? it seems to depend on the server, or
   # maybe the type, haven't managed to check yet.
@@ -251,7 +225,8 @@ build_api_query <- function(
 
   coda <- paste0("&outSR=",
                  sr,
-                 "&f=json")
+                 "&f=json",
+                 "&returnDistinctValues=true")
 
   # create the query
   paste0(

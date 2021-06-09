@@ -1,3 +1,14 @@
+# jogger 0.2.7
+
+* Further query string updates, to incorp changes at OpenGeography
+* (All query URLs are Feature Server now; no more Admin, as some were)
+* Add returnDistinctValues=TRUE to standard query string (reduces d/loads?)
+* Further tidying up of data in build_api_query.R
+
+# jogger 0.2.6
+
+* just some minor fixes (out of date rgn19 and ctry19 in geo_get.R)
+
 # jogger 0.2.5
 
 * Updated several URL details to latest on ONS OpenGeography
