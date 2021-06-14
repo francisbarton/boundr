@@ -17,6 +17,49 @@ geo_get_bounds <- function(bounds_query_level,
                            return_centroids = FALSE,
                            quiet_read = TRUE) {
 
+
+  area_code_lookup <- dplyr::tribble(
+    ~friendly, ~serious,
+    "oa",      "oa11",
+    "coa",     "oa11",
+    "lsoa",    "lsoa11",
+    "msoa",    "msoa11",
+    "wd",      "wd20",
+    "ward",    "wd20",
+    "lad",     "lad20",
+    "ltla",    "ltla21",
+    "utla",    "utla21",
+    "upper",   "utla21",
+    "cty",     "cty20",
+    "county",  "cty20",
+    "cauth",   "cauth20",
+    "rgn",     "rgn20",
+    "region",  "rgn20",
+    "ctry",    "ctry20",
+    "country", "ctry20"
+  )
+
+
+  get_serious <- function(x) {
+    area_code_lookup %>%
+      dplyr::filter(friendly %in% tolower(x)) %>%
+      dplyr::pull(serious)
+  }
+
+
+  # create a vector of field codes from the query level supplied
+
+  if (bounds_query_level %in% area_code_lookup$friendly) {
+
+    cd_field <- bounds_query_level %>%
+      get_serious() %>%
+      paste0("cd")
+  } else {
+    cd_field <- bounds_query_level
+
+  }
+
+
   centroid_fields_list <- NULL
   if (centroid_fields) {
     centroid_fields_list <- c(
@@ -38,7 +81,7 @@ geo_get_bounds <- function(bounds_query_level,
 
 
   return_fields <- c(
-    bounds_query_level,
+    cd_field,
     centroid_fields_list,
     shape_fields_list
   )
@@ -56,12 +99,12 @@ geo_get_bounds <- function(bounds_query_level,
     "ctyua20cd",  13,    "census",     "feature",   FALSE,
     "rgn20cd",    14,    "census",     "feature",   FALSE,
     "ctry20cd",   15,    "census",     "feature",   FALSE,
-    "msoa11cd",   16,    "centroid",   "map",       TRUE
+    "msoa11cd",   16,    "centroid",   "feature",   TRUE
   )
 
 
   table_code_refs <- table_code_ref_lookup %>%
-    dplyr::filter(bounds_level == bounds_query_level) %>%
+    dplyr::filter(bounds_level == cd_field) %>%
     # centroids is used here to filter, this is why the setting of
     # return_centroids as TRUE will override the setting of boundaries to TRUE
     dplyr::filter(centroids == return_centroids)
@@ -72,7 +115,7 @@ geo_get_bounds <- function(bounds_query_level,
       table_code_ref = table_code_refs[["table_code_ref"]],
       type = table_code_refs[["type"]],
       server = table_code_refs[["server"]],
-      within_level = bounds_query_level,
+      within_level = cd_field,
       within = .,
       fields = return_fields,
       sr = spatial_ref

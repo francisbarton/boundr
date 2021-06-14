@@ -1,3 +1,8 @@
+# jogger 0.2.8
+
+* Trying to fix lookup for MSOA centroids
+* Reported [issue](https://github.com/francisbarton/jogger/issues/2) relating to different return_styles
+
 # jogger 0.2.7
 
 * Further query string updates, to incorp changes at OpenGeography

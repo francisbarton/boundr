@@ -59,6 +59,11 @@ geo_get <- function(
                     quiet_read = TRUE) {
 
 
+  # centroids query doesn't include any higher level fields
+  if (return_centroids) {
+    return_style <- "minimal"
+  }
+
   if (within_cd) {
 
     geo_get_bounds(
@@ -89,7 +94,7 @@ geo_get <- function(
 
 
   # if the user sets 'return_boundaries' FALSE then just return a summary table
-  if (!return_boundaries && !return_centroids) {
+  if (!return_boundaries & !return_centroids) {
     return(basic_df)
   }
 

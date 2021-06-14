@@ -135,6 +135,7 @@ build_api_query <- function(
   # pull table code from list above
   table_code <- table_codes[[table_code_ref]]
 
+  distinct <- "&returnDistinctValues=true"
 
   url_base <- "https://ons-inspire.esriuk.com/"
 
@@ -153,6 +154,7 @@ build_api_query <- function(
 
   if (type == "centroid") {
     admin <- "Census_Boundaries/"
+    distinct <- ""
   }
 
 
@@ -225,8 +227,8 @@ build_api_query <- function(
 
   coda <- paste0("&outSR=",
                  sr,
-                 "&f=json",
-                 "&returnDistinctValues=true")
+                 "&f=json"
+                 )
 
   # create the query
   paste0(
@@ -241,6 +243,7 @@ build_api_query <- function(
     within_close,
     fields_line,
     fields,
-    coda
+    coda,
+    distinct
   )
 }
