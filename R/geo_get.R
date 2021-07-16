@@ -91,13 +91,13 @@ geo_get <- function(bounds_level,
 
     # get the basic lookup table
     basic_df <- create_custom_lookup(
-      bounds_level = bounds_level,
-      within = within,
-      within_level = within_level,
-      within_cd = within_cd,
-      include_msoa = include_msoa,
-      return_style = return_style,
-      include_welsh_names = include_welsh_names
+      bounds_level,
+      within,
+      within_level,
+      within_cd,
+      include_msoa,
+      return_style,
+      include_welsh_names
     )
   }
 
@@ -108,10 +108,12 @@ geo_get <- function(bounds_level,
     basic_df # return
   } else {
 
-    bounds_query_level <- basic_df %>%
+    bounds_query_level_orig <- basic_df %>%
       dplyr::select(dplyr::ends_with("cd")) %>%
       dplyr::select(1) %>%
       colnames()
+
+    bounds_query_level_new <- bounds_query_level_orig
 
     metro_counties <- c(
       "Greater Manchester",
@@ -122,16 +124,21 @@ geo_get <- function(bounds_level,
       "Tyne and Wear"
     )
 
-    if (bounds_query_level %in% c("cty20cd", "utla21cd")) {
+    if (bounds_query_level_orig %in% c("cty20cd", "utla21cd")) {
       if (within %in% metro_counties) {
-        bounds_query_level <- "mcty18"
+        bounds_query_level_new <- "mcty18cd"
       } else if (within %in% c("Inner London", "Outer London")) {
         usethis::ui_stop(
           "Sorry, but boundaries are not available for Inner and Outer London")
       } else {
-        bounds_query_level <- "ctyua"
+        bounds_query_level_new <- "ctyua20cd"
       }
     }
+
+    if (bounds_query_level_orig == "ltla21cd") {
+      bounds_query_level_new <- "lad20cd"
+    }
+
 
     if (!within_cd) {
       within <- basic_df %>%
@@ -148,25 +155,22 @@ geo_get <- function(bounds_level,
     # shouldn't change unless there's a fundamental change in the area.
 
     # create a length 1 named vector ( c(x = x) )
-    join_by <- purrr::set_names(bounds_query_level, bounds_query_level)
+    # join_by <- purrr::set_names(bounds_query_level_new, bounds_query_level_orig)
 
     # and some exceptions:
-    if (bounds_query_level == "ltla21cd") {
-      bounds_query_level <- "lad20cd"
-      join_by <- c("lad20cd" = "ltla21cd")
-    }
 
 
     geo_get_bounds(
-      bounds_query_level = bounds_level,
+      bounds_query_level = bounds_query_level_new,
       area_codes = within,
-      return_centroids = return_centroids,
-      centroid_fields = centroid_fields,
-      shape_fields = shape_fields,
-      spatial_ref = spatial_ref,
-      quiet_read = quiet_read
+      # return_centroids,
+      # centroid_fields,
+      # shape_fields,
+      # spatial_ref,
+      # quiet_read
     ) %>%
-      dplyr::left_join(basic_df, by = join_by) %>%
+      dplyr::rename(!!bounds_query_level_orig := 1) %>%
+      dplyr::left_join(basic_df) %>%
       dplyr::relocate(names(basic_df))
   }
 }

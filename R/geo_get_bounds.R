@@ -33,11 +33,6 @@ geo_get_bounds <- function(bounds_query_level,
 
 
 
-  # create a vector of field codes from the query level supplied
-  cd_field <- bounds_query_level %>%
-    get_serious() %>%
-    paste0("cd")
-
   # TODO allow customising which fields user wants
   centroid_fields_list <- NULL
   if (centroid_fields & return_centroids) {
@@ -59,7 +54,7 @@ geo_get_bounds <- function(bounds_query_level,
   }
 
   return_fields <- c(
-    cd_field,
+    bounds_query_level,
     centroid_fields_list,
     shape_fields_list
   )
@@ -82,7 +77,7 @@ geo_get_bounds <- function(bounds_query_level,
 
 
   ref <- ref_lookup %>%
-    dplyr::filter(bounds_level == cd_field) %>%
+    dplyr::filter(bounds_level == bounds_query_level) %>%
     # centroids is used here to filter, this is why the setting of
     # return_centroids as TRUE will override the setting of boundaries to TRUE
     dplyr::filter(centroids == return_centroids) %>%
@@ -96,13 +91,12 @@ geo_get_bounds <- function(bounds_query_level,
 
   bounds_queries <- area_codes %>%
     # According to the API docs, 50 is the limit for geo queries.
-    # Playing safe with batches of 25 (in list form).
     # Excessively long queries return 404.
-    batch_it_simple(batch_size = 25) %>% # borrowed from my myrmidon utils pkg
+    batch_it_simple(batch_size = 50) %>% # borrowed from my myrmidon utils pkg
     purrr::map(~ build_api_query(
       ref = ref,
       type = type,
-      within_level = cd_field,
+      within_level = bounds_query_level,
       within = .,
       fields = return_fields,
       sr = spatial_ref
