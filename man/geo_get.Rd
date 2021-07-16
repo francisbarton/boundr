@@ -8,15 +8,15 @@ geo_get(
   bounds_level,
   within,
   within_level = NULL,
+  within_cd = FALSE,
   include_msoa = NULL,
   return_style = "tidy",
-  within_cd = FALSE,
   include_welsh_names = NULL,
-  spatial_ref = 4326,
-  centroid_fields = FALSE,
-  shape_fields = FALSE,
   return_boundaries = TRUE,
   return_centroids = FALSE,
+  centroid_fields = FALSE,
+  shape_fields = FALSE,
+  spatial_ref = 4326,
   quiet_read = TRUE
 )
 }
@@ -36,7 +36,13 @@ to be one of "wd/ward", "lad", "cty/county", "utla/upper", "rgn/region",
 "county" includes metropolitan counties such as "Inner London", "Tyne and
 Wear" and "West Midlands".}
 
-\item{include_msoa}{If \code{bounds_level} is LSOA and return_style is "tidy",
+\item{within_cd}{Usually you'll build the query with a place name to search
+within. But sometimes you may wish to pass in a vector of area codes
+instead (if that's all you have, or more likely if you are querying within
+wards, which don't have unique names (there's a lot of Abbey wards in
+England!)). If you're passing in area codes not names, set this to TRUE.}
+
+\item{include_msoa}{If \code{bounds_level} = LSOA and return_style is "tidy",
 whether to also include MSOA columns (in "tidy" return style). If
 \code{bounds_level} is MSOA, this will be forced to \code{TRUE}.}
 
@@ -47,30 +53,12 @@ nm) columns for \code{bounds_level} and \code{within_level} are returned -
 other columns are omitted. "minimal" means 'only return the columns for
 \code{bounds_level}'.}
 
-\item{within_cd}{Usually you'll build the query with a place name to search
-within. But sometimes you may wish to pass in a vector of area codes
-instead (if that's all you have, or more likely if you are querying within
-wards, which don't have unique names (there's a lot of Abbey wards in
-England!)). If you're passing in area codes not names, set this to TRUE.}
-
 \item{include_welsh_names}{Only makes a difference when \code{bounds_level} =
 msoa, or when \code{bounds_level} = lsoa and \code{return_style} = "tidy".
 \code{FALSE} returns no Welsh language columns. \code{TRUE} attempts to
 return Welsh language LAD and MSOA names where relevant. \code{NULL} (the
 default) means that an educated decision will be made by the program,
 based on whether any of the areas returned have "^W" codes.}
-
-\item{spatial_ref}{The (EPSG) spatial reference of any returned geometry.
-Default value: 4326 ("WGS 84"). This parameter is ignored peacefully if
-no geometry is returned/returnable, eg lookup queries}
-
-\item{centroid_fields}{Boolean, default FALSE. Whether to include BNG
-eastings, northings, lat and long fields in the return when returning
-boundaries.}
-
-\item{shape_fields}{Boolean, default FALSE. Whether to include
-Shape__Area and Shape__Length fields in the return when returning
-boundaries.}
 
 \item{return_boundaries}{whether to retrieve object boundaries data from
 the API. Default \code{TRUE}. If \code{return_boundaries} and
@@ -82,6 +70,18 @@ boundaries. Default \code{FALSE}. If set to TRUE then it will override
 \code{return_boundaries} whether that was set TRUE or otherwise. If
 \code{return_boundaries} and \code{return_centroids} are both \code{FALSE},
 a plain summary data frame without geometry will be returned.}
+
+\item{centroid_fields}{Boolean, default FALSE. Whether to include BNG
+eastings, northings, lat and long fields in the return when returning
+boundaries.}
+
+\item{shape_fields}{Boolean, default FALSE. Whether to include
+Shape__Area and Shape__Length fields in the return when returning
+boundaries.}
+
+\item{spatial_ref}{The (EPSG) spatial reference of any returned geometry.
+Default value: 4326 ("WGS 84"). This parameter is ignored peacefully if
+no geometry is returned/returnable, eg lookup queries}
 
 \item{quiet_read}{Controls quiet parameter to sf::st_read}
 }

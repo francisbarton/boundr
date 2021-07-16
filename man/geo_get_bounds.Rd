@@ -7,10 +7,10 @@
 geo_get_bounds(
   bounds_query_level,
   area_codes,
-  spatial_ref = 4326,
+  return_centroids = FALSE,
   centroid_fields = FALSE,
   shape_fields = FALSE,
-  return_centroids = FALSE,
+  spatial_ref = 4326,
   quiet_read = TRUE
 )
 }
@@ -22,9 +22,11 @@ be the full code not an abbreviation such as "lsoa"}
 bounds_query_level. Probably to be supplied from a column pulled from a
 lookup df or similar.}
 
-\item{spatial_ref}{The (EPSG) spatial reference of any returned geometry.
-Default value: 4326 ("WGS 84"). This parameter is ignored peacefully if
-no geometry is returned/returnable, eg lookup queries}
+\item{return_centroids}{whether to retrieve area centroids instead of
+boundaries. Default \code{FALSE}. If set to TRUE then it will override
+\code{return_boundaries} whether that was set TRUE or otherwise. If
+\code{return_boundaries} and \code{return_centroids} are both \code{FALSE},
+a plain summary data frame without geometry will be returned.}
 
 \item{centroid_fields}{Boolean, default FALSE. Whether to include BNG
 eastings, northings, lat and long fields in the return when returning
@@ -34,11 +36,9 @@ boundaries.}
 Shape__Area and Shape__Length fields in the return when returning
 boundaries.}
 
-\item{return_centroids}{whether to retrieve area centroids instead of
-boundaries. Default \code{FALSE}. If set to TRUE then it will override
-\code{return_boundaries} whether that was set TRUE or otherwise. If
-\code{return_boundaries} and \code{return_centroids} are both \code{FALSE},
-a plain summary data frame without geometry will be returned.}
+\item{spatial_ref}{The (EPSG) spatial reference of any returned geometry.
+Default value: 4326 ("WGS 84"). This parameter is ignored peacefully if
+no geometry is returned/returnable, eg lookup queries}
 
 \item{quiet_read}{Controls quiet parameter to sf::st_read}
 }

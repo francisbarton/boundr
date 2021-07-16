@@ -3,14 +3,11 @@
 #' A function called by create_custom_lookup.R and geo_get.R to build a
 #' valid query
 #'
-#' @param table_code_ref an integer, passed by the calling function, that
-#'   indicates which table_code to use
+#' @param ref an integer, passed by the calling function, that
+#'   indicates which url_string to use
 #' @param type geographies can be listed as various types. Here we are just
 #'   using Census geographies and Administrative geographies. This affects the
-#'   beginning of the query URL. "census" is the default, but "admin" or "other"
-#'   can be passed instead where necessary.
-#' @param server Some API queries (lookup tables) require the Feature server,
-#'   others (boundaries) require the Map server
+#'   beginning of the query URL. "census" is the default.
 #' @param within_level The area level variable name associated with the
 #'   locations filter. e.g. \code{"cty19nm"} or \code{"rgn19nm"}
 #' @param within A place name, or list of place names or codes, to filter the
@@ -24,18 +21,14 @@
 #' @return a string that should function as a valid API query
 #' @export
 #' @examples
-#' build_api_query(
-#'   table_code_ref = 2,
+#' build_api_query(ref = 2,
 #'   type = "census",
-#'   server = "feature",
 #'   within_level = "cauth19nm",
 #'   within = "Greater Manchester",
 #'   fields = c("lad19cd", "lad19nm", "cauth19cd", "cauth19nm")
 #' )
-#' build_api_query(
-#'   table_code_ref = 9,
-#'   type = "admin",
-#'   server = "map",
+#' build_api_query(ref = 9,
+#'   type = "census",
 #'   within_level = "lad19nm",
 #'   within = c(
 #'     "Cheltenham", "Gloucester",
@@ -44,10 +37,8 @@
 #'   ),
 #'   fields = c("lad19cd", "lad19nm")
 #' )
-build_api_query <- function(
-                            table_code_ref,
+build_api_query <- function(ref,
                             type = "census",
-                            server = "feature",
                             within_level,
                             within = NULL,
                             fields = "*",
@@ -59,7 +50,7 @@ build_api_query <- function(
 
   # create a list of codes for the main function.
   # Source URLs are included as comments.
-  table_codes <- c(
+  url_strings <- c(
 
     ### LOOKUPS (1 - 7)
     #########################################################################
@@ -132,7 +123,7 @@ build_api_query <- function(
 
 
   # pull table code from list above
-  table_code <- table_codes[[table_code_ref]]
+  url_string <- url_strings[[ref]]
 
   distinct <- "&returnDistinctValues=true"
 
@@ -144,38 +135,38 @@ build_api_query <- function(
   }
 
   if (type == "admin") {
-    admin <- "Administrative_Boundaries/"
+    admin <- "Administrative_Boundaries"
   }
 
   if (type == "other") {
-    admin <- "Other_Boundaries/"
+    admin <- "Other_Boundaries"
   }
 
   if (type == "centroid") {
-    admin <- "Census_Boundaries/"
+    admin <- "Census_Boundaries"
     distinct <- ""
   }
 
 
 
   # server string in query URL
-  if (server == "feature") {
-    server_line <- "/FeatureServer/0/"
-  }
-
-  if (server == "map") {
-    server_line <- "/MapServer/0/"
-  }
+  # if (server == "feature") {
+  #   server_line <- "/FeatureServer/0/"
+  # }
+  #
+  # if (server == "map") {
+  #   server_line <- "/MapServer/0/"
+  # }
 
   # upper or lower case field names? it seems to depend on the server, or
   # maybe the type, haven't managed to check yet.
   # NB the queries seem to actually work fine either way, I am just going
   # for 100% fidelity for the sake of the function tests!
 
-  if (server == "feature") {
-    fields <- toupper(fields)
-    within_level <- toupper(within_level)
-  }
+  # if (server == "feature") {
+  fields <- toupper(fields)
+  within_level <- toupper(within_level)
+  # }
 
   # format 'locations' correctly
   # I'm manually putting in percent-encoded strings instead of calling
@@ -215,6 +206,7 @@ build_api_query <- function(
 
 
   arcgis_base <- "arcgis/rest/services/"
+  server_line <- "/FeatureServer/0/"    # they all seem to be this nowadays
   query_line <- "query?where="
   within_open <- "%20("
   within_close <- ")%20"
@@ -234,7 +226,7 @@ build_api_query <- function(
     url_base,
     arcgis_base,
     admin,
-    table_code,
+    url_string,
     server_line,
     query_line,
     within_open,

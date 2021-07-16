@@ -1,3 +1,9 @@
+# jogger 0.2.9.1
+
+* Bit of a refactor, remove duplications
+* Move helper function get_serious to its own file
+* Reorganised geo_get and geo_get_bounds, slimmed down & restructured
+
 # jogger 0.2.9
 
 * Finally removed the code that was there for 2-stage lookups - not going to happen

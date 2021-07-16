@@ -5,9 +5,8 @@
 \title{Helper Function to Build Queries to the Open Geography API}
 \usage{
 build_api_query(
-  table_code_ref,
+  ref,
   type = "census",
-  server = "feature",
   within_level,
   within = NULL,
   fields = "*",
@@ -15,16 +14,12 @@ build_api_query(
 )
 }
 \arguments{
-\item{table_code_ref}{an integer, passed by the calling function, that
-indicates which table_code to use}
+\item{ref}{an integer, passed by the calling function, that
+indicates which url_string to use}
 
 \item{type}{geographies can be listed as various types. Here we are just
 using Census geographies and Administrative geographies. This affects the
-beginning of the query URL. "census" is the default, but "admin" or "other"
-can be passed instead where necessary.}
-
-\item{server}{Some API queries (lookup tables) require the Feature server,
-others (boundaries) require the Map server}
+beginning of the query URL. "census" is the default.}
 
 \item{within_level}{The area level variable name associated with the
 locations filter. e.g. \code{"cty19nm"} or \code{"rgn19nm"}}
@@ -47,18 +42,14 @@ A function called by create_custom_lookup.R and geo_get.R to build a
 valid query
 }
 \examples{
-build_api_query(
-  table_code_ref = 2,
+build_api_query(ref = 2,
   type = "census",
-  server = "feature",
   within_level = "cauth19nm",
   within = "Greater Manchester",
   fields = c("lad19cd", "lad19nm", "cauth19cd", "cauth19nm")
 )
-build_api_query(
-  table_code_ref = 9,
-  type = "admin",
-  server = "map",
+build_api_query(ref = 9,
+  type = "census",
   within_level = "lad19nm",
   within = c(
     "Cheltenham", "Gloucester",

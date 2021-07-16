@@ -2,9 +2,8 @@ test_that(
   "Place names with spaces in get processed correctly", {
     expect_identical(
       build_api_query(
-        table_code_ref = 4,
+        ref = 4,
         type = "census",
-        server = "feature",
         within_level = "cauth20nm",
         within = "Greater Manchester",
         fields = c("lad20cd", "lad20nm", "cauth20cd", "cauth20nm")
@@ -22,9 +21,8 @@ test_that(
 
     expect_identical(
       build_api_query(
-        table_code_ref = 10,
+        ref = 10,
         type = "census",
-        server = "feature",
         within_level = "msoa11cd",
         within = c("E02006666", "E02006667", "E02006668"),
         fields = c("msoa11cd", "msoa11nm")
@@ -42,9 +40,8 @@ test_that(
 
     expect_identical(
       build_api_query(
-        table_code_ref = 12,
+        ref = 12,
         type = "census",
-        server = "feature",
         within_level = "lad20nm",
         within = c("Cheltenham", "Gloucester", "Stroud", "Cotswold", "Tewkesbury", "Forest of Dean"),
         fields = c("lad20cd", "lad20nm")

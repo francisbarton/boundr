@@ -7,25 +7,44 @@
 #' \emph{I want a better name for this function! Suggestions welcome...}
 #'
 #' @inheritParams create_custom_lookup
-#' @param spatial_ref The (EPSG) spatial reference of any returned geometry.
-#'   Default value: 4326 ("WGS 84"). This parameter is ignored peacefully if
-#'   no geometry is returned/returnable, eg lookup queries
-#' @param centroid_fields Boolean, default FALSE. Whether to include BNG
-#'   eastings, northings, lat and long fields in the return when returning
-#'   boundaries.
-#' @param shape_fields Boolean, default FALSE. Whether to include
-#'   Shape__Area and Shape__Length fields in the return when returning
-#'   boundaries.
+#' @inheritParams geo_get_bounds
+#'
+#' @param bounds_level The lowest level at which to return codes and names, eg
+#'   "LSOA". Has to be one of "lsoa", "msoa", "wd/ward", "lad",
+#'   "cty/county". Case-insensitive.
+#' @param within The name of a geographic area to filter by eg "Swindon",
+#'   "Gloucestershire", "Wales".
+#' @param within_level Upper geographic level to filter at. eg if filtering to
+#'   find all LSOAs in a local authority, \code{within_level} will be "lad". Has
+#'   to be one of "wd/ward", "lad", "cty/county", "utla/upper", "rgn/region",
+#'   "cauth" or "ctry/country". Case-insensitive. Not all combinations of
+#'   \code{bounds_level} and \code{within_level} make sense or are possible! NB
+#'   "county" includes metropolitan counties such as "Inner London", "Tyne and
+#'   Wear" and "West Midlands".
+#' @param within_cd Usually you'll build the query with a place name to search
+#'   within. But sometimes you may wish to pass in a vector of area codes
+#'   instead (if that's all you have, or more likely if you are querying within
+#'   wards, which don't have unique names (there's a lot of Abbey wards in
+#'   England!)). If you're passing in area codes not names, set this to TRUE.
+#' @param include_msoa If \code{bounds_level} = LSOA and return_style is "tidy",
+#'   whether to also include MSOA columns (in "tidy" return style). If
+#'   \code{bounds_level} is MSOA, this will be forced to \code{TRUE}.
+#' @param return_style "tidy" (the default) means all available columns between
+#'   \code{bounds_level} and \code{within_level} will be returned, but with any
+#'   empty columns removed. "simple" means that only the code and name (cd and
+#'   nm) columns for \code{bounds_level} and \code{within_level} are returned -
+#'   other columns are omitted. "minimal" means 'only return the columns for
+#'   \code{bounds_level}'.
+#' @param include_welsh_names Only makes a difference when \code{bounds_level} =
+#'   msoa, or when \code{bounds_level} = lsoa and \code{return_style} = "tidy".
+#'   \code{FALSE} returns no Welsh language columns. \code{TRUE} attempts to
+#'   return Welsh language LAD and MSOA names where relevant. \code{NULL} (the
+#'   default) means that an educated decision will be made by the program,
+#'   based on whether any of the areas returned have "^W" codes.
 #' @param return_boundaries whether to retrieve object boundaries data from
 #'   the API. Default \code{TRUE}. If \code{return_boundaries} and
 #'   \code{return_centroids} are both \code{FALSE}, a plain summary df
 #'   without geometry will be returned.
-#' @param return_centroids whether to retrieve area centroids instead of
-#'   boundaries. Default \code{FALSE}. If set to TRUE then it will override
-#'   \code{return_boundaries} whether that was set TRUE or otherwise. If
-#'   \code{return_boundaries} and \code{return_centroids} are both \code{FALSE},
-#'   a plain summary data frame without geometry will be returned.
-#' @param quiet_read Controls quiet parameter to sf::st_read
 #'
 #' @return a data frame or an sf (simple features) object (data frame
 #'   with geometries)
@@ -43,75 +62,58 @@
 #'   return_style = "simple",
 #'   centroid_fields = TRUE,
 #'   return_boundaries = FALSE)
-geo_get <- function(
-                    bounds_level,
+geo_get <- function(bounds_level,
                     within,
                     within_level = NULL,
+                    within_cd = FALSE,
                     include_msoa = NULL,
                     return_style = "tidy",
-                    within_cd = FALSE,
                     include_welsh_names = NULL,
-                    spatial_ref = 4326,
-                    centroid_fields = FALSE,
-                    shape_fields = FALSE,
                     return_boundaries = TRUE,
                     return_centroids = FALSE,
+                    centroid_fields = FALSE,
+                    shape_fields = FALSE,
+                    spatial_ref = 4326,
                     quiet_read = TRUE) {
 
 
   # centroids query doesn't include any higher level fields
   if (return_centroids) {
+    return_boundaries <- FALSE
     return_style <- "minimal"
   }
 
+
+
   if (within_cd) {
 
-    geo_get_bounds(
-      bounds_query_level = bounds_level,
-      area_codes = within,
-      spatial_ref = spatial_ref,
-      centroid_fields = centroid_fields,
-      shape_fields = shape_fields,
-      return_centroids = return_centroids,
-      quiet_read = quiet_read
-    )
+    basic_df <- dplyr::as_tibble(!!bounds_level := within)
 
   } else {
 
-
-  # get the basic lookup table
-  # create_custom_lookup() just inherits its params here from geo_get()
-  basic_df <- create_custom_lookup(
-    bounds_level = bounds_level,
-    within = within,
-    within_level = within_level,
-    within_cd = within_cd,
-    include_msoa = include_msoa,
-    return_style = return_style,
-    include_welsh_names = include_welsh_names
-  )
+    # get the basic lookup table
+    basic_df <- create_custom_lookup(
+      bounds_level = bounds_level,
+      within = within,
+      within_level = within_level,
+      within_cd = within_cd,
+      include_msoa = include_msoa,
+      return_style = return_style,
+      include_welsh_names = include_welsh_names
+    )
+  }
 
 
 
   # if the user sets 'return_boundaries' FALSE then just return a summary table
   if (!return_boundaries & !return_centroids) {
-    return(basic_df)
+    basic_df # return
   }
-
-
-  area_codes <- basic_df %>%
-    dplyr::select(dplyr::ends_with("cd")) %>%
-    dplyr::pull(1) %>%
-    # According to the API docs, 50 is the limit for geo queries.
-    # Excessively long queries return 404.
-    batch_it_simple(batch_size = 25) # borrowed from my myrmidon utils package
-
 
   bounds_query_level <- basic_df %>%
     dplyr::select(dplyr::ends_with("cd")) %>%
     dplyr::select(1) %>%
     colnames()
-
 
   metro_counties <- c(
     "Greater Manchester",
@@ -122,15 +124,23 @@ geo_get <- function(
     "Tyne and Wear"
   )
 
-  if (bounds_query_level %in% c("cty20cd", "utla20cd")) {
+  if (bounds_query_level %in% c("cty20cd", "utla21cd")) {
     if (within %in% metro_counties) {
-      bounds_query_level <- "mcty18cd"
+      bounds_query_level <- "mcty18"
     } else if (within %in% c("Inner London", "Outer London")) {
-      usethis::ui_stop("Sorry but boundaries are not available for Inner London and Outer London")
+      usethis::ui_stop(
+        "Sorry, but boundaries are not available for Inner and Outer London")
     } else {
-      bounds_query_level <- "ctyua20cd"
+      bounds_query_level <- "ctyua"
     }
   }
+
+  if (!within_cd) {
+    within <- basic_df %>%
+      dplyr::select(dplyr::ends_with("cd")) %>%
+      dplyr::pull(1)
+  }
+
 
   # Set it up so that we can stipulate the join fields as 'cd' only, rather than
   # letting dplyr::left_join try to match on multiple fields as it does by
@@ -143,28 +153,21 @@ geo_get <- function(
   join_by <- purrr::set_names(bounds_query_level, bounds_query_level)
 
   # and some exceptions:
-  if (bounds_query_level == "ltla20cd") {
+  if (bounds_query_level == "ltla21cd") {
     bounds_query_level <- "lad20cd"
-    join_by <- c("lad20cd" = "ltla20cd")
+    join_by <- c("lad20cd" = "ltla21cd")
   }
-  # if (bounds_query_level == "rgn20cd") {
-  #   bounds_query_level <- "rgn19cd"
-  #   join_by <- c("rgn19cd" = "rgn20cd")
-  # }
-  # if (bounds_query_level == "ctry20cd") {
-  #   bounds_query_level <- "ctry19cd"
-  #   join_by <- c("ctry19cd" = "ctry20cd")
-  # }
 
 
   geo_get_bounds(
-    bounds_query_level,
-    area_codes,
-    spatial_ref,
-    centroid_fields,
-    shape_fields,
-    return_centroids
+    bounds_query_level = bounds_level,
+    area_codes = within,
+    return_centroids = return_centroids,
+    centroid_fields = centroid_fields,
+    shape_fields = shape_fields,
+    spatial_ref = spatial_ref,
+    quiet_read = quiet_read
   ) %>%
-  dplyr::left_join(basic_df, by = join_by)
-  }
+    dplyr::left_join(basic_df, by = join_by)
+
 }

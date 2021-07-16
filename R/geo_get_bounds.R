@@ -1,67 +1,46 @@
 #' Return boundary geometries for supplied list of area codes
 #'
-#' @inheritParams create_custom_lookup
-#' @inheritParams geo_get
 #' @param bounds_query_level area level to query for, e.g. "lsoa11cd". Needs to
 #'   be the full code not an abbreviation such as "lsoa"
 #' @param area_codes a vector of codes that match the level of
 #'   bounds_query_level. Probably to be supplied from a column pulled from a
 #'   lookup df or similar.
+#' @param return_centroids whether to retrieve area centroids instead of
+#'   boundaries. Default \code{FALSE}. If set to TRUE then it will override
+#'   \code{return_boundaries} whether that was set TRUE or otherwise. If
+#'   \code{return_boundaries} and \code{return_centroids} are both \code{FALSE},
+#'   a plain summary data frame without geometry will be returned.
+#' @param centroid_fields Boolean, default FALSE. Whether to include BNG
+#'   eastings, northings, lat and long fields in the return when returning
+#'   boundaries.
+#' @param shape_fields Boolean, default FALSE. Whether to include
+#'   Shape__Area and Shape__Length fields in the return when returning
+#'   boundaries.
+#' @param spatial_ref The (EPSG) spatial reference of any returned geometry.
+#'   Default value: 4326 ("WGS 84"). This parameter is ignored peacefully if
+#'   no geometry is returned/returnable, eg lookup queries
+#' @param quiet_read Controls quiet parameter to sf::st_read
+#'
 #' @return an sf object
 #' @export
 geo_get_bounds <- function(bounds_query_level,
                            area_codes,
-                           spatial_ref = 4326,
+                           return_centroids = FALSE,
                            centroid_fields = FALSE,
                            shape_fields = FALSE,
-                           return_centroids = FALSE,
+                           spatial_ref = 4326,
                            quiet_read = TRUE) {
 
 
-  area_code_lookup <- dplyr::tribble(
-    ~friendly, ~serious,
-    "oa",      "oa11",
-    "coa",     "oa11",
-    "lsoa",    "lsoa11",
-    "msoa",    "msoa11",
-    "wd",      "wd20",
-    "ward",    "wd20",
-    "lad",     "lad20",
-    "ltla",    "ltla21",
-    "utla",    "utla21",
-    "upper",   "utla21",
-    "cty",     "cty20",
-    "county",  "cty20",
-    "cauth",   "cauth20",
-    "rgn",     "rgn20",
-    "region",  "rgn20",
-    "ctry",    "ctry20",
-    "country", "ctry20"
-  )
-
-
-  get_serious <- function(x) {
-    area_code_lookup %>%
-      dplyr::filter(friendly %in% tolower(x)) %>%
-      dplyr::pull(serious)
-  }
-
 
   # create a vector of field codes from the query level supplied
+  cd_field <- bounds_query_level %>%
+    get_serious() %>%
+    paste0("cd")
 
-  if (bounds_query_level %in% area_code_lookup$friendly) {
-
-    cd_field <- bounds_query_level %>%
-      get_serious() %>%
-      paste0("cd")
-  } else {
-    cd_field <- bounds_query_level
-
-  }
-
-
+  # TODO allow customising which fields user wants
   centroid_fields_list <- NULL
-  if (centroid_fields) {
+  if (centroid_fields & return_centroids) {
     centroid_fields_list <- c(
       "BNG_E",
       "BNG_N",
@@ -70,7 +49,7 @@ geo_get_bounds <- function(bounds_query_level,
     )
   }
 
-
+  # TODO allow customising which fields user wants
   shape_fields_list <- NULL
   if (shape_fields) {
     shape_fields_list <- c(
@@ -78,7 +57,6 @@ geo_get_bounds <- function(bounds_query_level,
       "Shape__Length"
     )
   }
-
 
   return_fields <- c(
     cd_field,
@@ -88,33 +66,42 @@ geo_get_bounds <- function(bounds_query_level,
 
 
 
-  table_code_ref_lookup <- dplyr::tribble(
-    ~bounds_level, ~table_code_ref, ~type, ~server, ~centroids,
+  ref_lookup <- dplyr::tribble(
+    ~bounds_level, ~ref, ~centroids,
 
-    "oa11cd",      8,    "census",     "feature",   FALSE,
-    "lsoa11cd",    9,    "census",     "feature",   FALSE,
-    "msoa11cd",   10,    "census",     "feature",   FALSE,
-    "wd20cd",     11,    "census",     "feature",   FALSE,
-    "lad20cd",    12,    "census",     "feature",   FALSE,
-    "ctyua20cd",  13,    "census",     "feature",   FALSE,
-    "rgn20cd",    14,    "census",     "feature",   FALSE,
-    "ctry20cd",   15,    "census",     "feature",   FALSE,
-    "msoa11cd",   16,    "centroid",   "feature",   TRUE
+    "oa11cd",      8,     FALSE,
+    "lsoa11cd",    9,     FALSE,
+    "msoa11cd",   10,     FALSE,
+    "wd20cd",     11,     FALSE,
+    "lad20cd",    12,     FALSE,
+    "ctyua20cd",  13,     FALSE,
+    "rgn20cd",    14,     FALSE,
+    "ctry20cd",   15,     FALSE,
+    "msoa11cd",   16,     TRUE
   )
 
 
-  table_code_refs <- table_code_ref_lookup %>%
+  ref <- ref_lookup %>%
     dplyr::filter(bounds_level == cd_field) %>%
     # centroids is used here to filter, this is why the setting of
     # return_centroids as TRUE will override the setting of boundaries to TRUE
-    dplyr::filter(centroids == return_centroids)
+    dplyr::filter(centroids == return_centroids) %>%
+    dplyr::pull(ref)
+
+
+  type <- "census"
+  if (return_centroids) {
+    type <- "centroid"
+  }
 
   bounds_queries <- area_codes %>%
-    batch_it_simple(batch_size = 25) %>%
+    # According to the API docs, 50 is the limit for geo queries.
+    # Playing safe with batches of 25 (in list form).
+    # Excessively long queries return 404.
+    batch_it_simple(batch_size = 25) %>% # borrowed from my myrmidon utils pkg
     purrr::map(~ build_api_query(
-      table_code_ref = table_code_refs[["table_code_ref"]],
-      type = table_code_refs[["type"]],
-      server = table_code_refs[["server"]],
+      ref = ref,
+      type = type,
       within_level = cd_field,
       within = .,
       fields = return_fields,

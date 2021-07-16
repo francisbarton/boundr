@@ -7,11 +7,11 @@
 #' }
 "lsoa11cdnm"
 
-lsoa11cdnm <- paste0(
-  "https://opendata.arcgis.com/",
-  "datasets/",
-  "3ce71e53d9254a73b3e887a506b82f63_0.csv"
-) %>%
-  readr::read_csv() %>%
-  janitor::clean_names() %>%
-  dplyr::select(1:2)
+# lsoa11cdnm <- paste0(
+#   "https://opendata.arcgis.com/",
+#   "datasets/",
+#   "3ce71e53d9254a73b3e887a506b82f63_0.csv"
+# ) %>%
+#   readr::read_csv() %>%
+#   janitor::clean_names() %>%
+#   dplyr::select(1:2)

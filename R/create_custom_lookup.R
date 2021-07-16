@@ -15,6 +15,11 @@
 #'   \code{bounds_level} and \code{within_level} make sense or are possible! NB
 #'   "county" includes metropolitan counties such as "Inner London", "Tyne and
 #'   Wear" and "West Midlands".
+#' @param within_cd Usually you'll build the query with a place name to search
+#'   within. But sometimes you may wish to pass in a vector of area codes
+#'   instead (if that's all you have, or more likely if you are querying within
+#'   wards, which don't have unique names (there's a lot of Abbey wards in
+#'   England!)). If you're passing in area codes not names, set this to TRUE.
 #' @param include_msoa If \code{bounds_level} is LSOA and return_style is "tidy",
 #'   whether to also include MSOA columns (in "tidy" return style). If
 #'   \code{bounds_level} is MSOA, this will be forced to \code{TRUE}.
@@ -24,11 +29,6 @@
 #'   nm) columns for \code{bounds_level} and \code{within_level} are returned -
 #'   other columns are omitted. "minimal" means 'only return the columns for
 #'   \code{bounds_level}'.
-#' @param within_cd Usually you'll build the query with a place name to search
-#'   within. But sometimes you may wish to pass in a vector of area codes
-#'   instead (if that's all you have, or more likely if you are querying within
-#'   wards, which don't have unique names (there's a lot of Abbey wards in
-#'   England!)). If you're passing in area codes not names, set this to TRUE.
 #' @param include_welsh_names Only makes a difference when \code{bounds_level} =
 #'   msoa, or when \code{bounds_level} = lsoa and \code{return_style} = "tidy".
 #'   \code{FALSE} returns no Welsh language columns. \code{TRUE} attempts to
@@ -54,13 +54,12 @@
 #'   return_style = "tidy"
 #' )
 #' }
-create_custom_lookup <- function(
-                                 bounds_level,
+create_custom_lookup <- function(bounds_level,
                                  within,
                                  within_level,
+                                 within_cd = FALSE,
                                  include_msoa = NULL,
                                  return_style = "tidy",
-                                 within_cd = FALSE,
                                  include_welsh_names = NULL) {
 
 
@@ -97,32 +96,6 @@ create_custom_lookup <- function(
   }
 
 
-  # the order of these really matters! bounds_level has to be higher in the
-  # table than within_level :-) :-O Due to the way the 'fields' vector works.
-  # Which all makes sense, it just means you can't add extra options willy-nilly
-  # at the bottom. Don't ask how I know this.
-  area_code_lookup <- dplyr::tribble(
-    ~friendly, ~serious,
-    "oa",      "oa11",
-    "coa",     "oa11",
-    "lsoa",    "lsoa11",
-    "msoa",    "msoa11",
-    "wd",      "wd20",
-    "ward",    "wd20",
-    "lad",     "lad20",
-    "ltla",    "ltla21",
-    "utla",    "utla21",
-    "upper",   "utla21",
-    "cty",     "cty20",
-    "county",  "cty20",
-    "cauth",   "cauth20",
-    "rgn",     "rgn20",
-    "region",  "rgn20",
-    "ctry",    "ctry20",
-    "country", "ctry20"
-  )
-
-
 
   # can only work with a single ref currently - ideally I will enable it
   # to work with two (or more?) refs for two-step lookups
@@ -154,8 +127,6 @@ create_custom_lookup <- function(
     "lsoa",   "wd",     7,
     "lsoa",   "lad",    7,
     "lsoa",   "ltla",   7  # ltla needs to be renamed to lad here
-    # "utla",   "rgn",   99,  NULL
-    # "utla",   "ctry",    1,     3,
     # "lsoa",   "cauth",   2,     4,
     # "lsoa",   "ctry",    1,     4
   ) %>%
@@ -172,30 +143,17 @@ create_custom_lookup <- function(
 
 
   if (bounds_level == "lsoa") {
-
     if (within_level == "cty") {
       within_level <- "utla"
     }
     if (within_level == "ltla") {
       within_level <- "lad"
     }
-
   }
 
   if (bounds_level == "lad" & within_level == "utla") {
     bounds_level <- "ltla"
   }
-
-
-
-
-  # filter the area_code_lookup table above to get formal field codes
-  get_serious <- function(x) {
-    area_code_lookup %>%
-      dplyr::filter(friendly %in% tolower(x)) %>%
-      dplyr::pull(serious)
-  }
-
 
 
   # create a vector of field codes from the upper and lower levels supplied
@@ -216,16 +174,6 @@ create_custom_lookup <- function(
     return_style <- "tidy"
   }
 
-  # TODO: write some tests for OA queries
-
-
-  # table_code_refs <- table_code_ref_lookup %>%
-  #   dplyr::filter(bounds_level == fields[1]) %>%
-  #   dplyr::filter(within_level == fields[4]) %>%
-  #   dplyr::select(3:dplyr::last_col()) %>%
-  #   unlist() %>%
-  #   unname() %>%
-  #   c(recursive = TRUE)
 
   table_code_ref <- table_code_ref_lookup %>%
     dplyr::filter(bounds_level == fields[1]) %>%
@@ -242,7 +190,7 @@ create_custom_lookup <- function(
   # boundaries. That makes sense, but I can't remember exactly.
   if (return_style == "tidy" &
       bounds_level == "lsoa" &
-      within_level == "lad"    # I don't think I need to cater for "ltla" here
+      within_level %in% c("lad", "ltla")
   ) {
     return_style <- "simple"
   }
@@ -271,20 +219,17 @@ create_custom_lookup <- function(
     }
 
     if (return_style == "tidy") {
-      df <- df %>%
+      df %>%
         # return all columns between first and last specified fields
         # dplyr::select(fields[1]:fields[end_col]) %>%
         dplyr::select(!!rlang::sym(fields[1]):!!rlang::sym(fields[end_col])) %>%
         dplyr::distinct() %>%
         janitor::remove_empty("cols")
-    }
-
-    if (return_style %in% c("simple", "minimal")) {
-      df <- df %>%
+    } else {
+    # if (return_style %in% c("simple", "minimal"))
+      df %>%
         dplyr::distinct()
     }
-
-    df
   }
 
 
@@ -292,21 +237,6 @@ create_custom_lookup <- function(
   nth_field <- -1
   if (within_cd) nth_field <- -2
 
-
-  # An attempt to enable using more than one table_code -> 2-stage lookup.
-  # But not there yet: would need to extend `fields` and manipulate it so that
-  # the first query uses fields[1:4] and the second query uses [3:6] or whatever
-  # df_out <- table_code_refs %>%
-  #   purrr::map( ~ build_api_query(
-  #     table_code_ref = .,
-  #     within_level = dplyr::nth(fields, nth_field),
-  #     within = within,
-  #     fields = return_fields
-  #     ) %>%
-  #     extract_lookup() %>%
-  #     treat_results(return_style = return_style)
-  #   ) %>%
-  #   purrr::reduce(dplyr::left_join)
 
   # no available ONS API lookup for UTLA:RGN, so use our built-in table:
   if (bounds_level %in% c("upper", "utla") & within_level %in% c("region", "rgn")) {
@@ -318,9 +248,9 @@ create_custom_lookup <- function(
       dplyr::select(!(c(rgn21cd, rgn21nm))) %>%
       dplyr::filter(ctry21nm %in% within)
   } else {
-    # and for other things use the API
+    # and for other things use the API as usual:
     df_out <- build_api_query(
-      table_code_ref = table_code_ref,
+      ref = table_code_ref,
       within_level = dplyr::nth(fields, nth_field),
       within = within,
       fields = return_fields
