@@ -99,14 +99,12 @@ This program focuses on areas within England and Wales only, initially.
 }
 \examples{
 geo_get("wd", "Swindon", "lad")
-geo_get("msoa", "Swansea", "lad", return_boundaries = FALSE) \%>\%
+geo_get("msoa", "Swansea", "lad", centroid_fields = TRUE) \%>\%
   head(10)
-geo_get("lsoa", "Zetland", "ward", shape_fields = TRUE) \%>\%
-  dplyr::arrange(desc(shape_area))
+geo_get("lsoa", "Zetland", "ward", shape_fields = TRUE, return_boundaries = FALSE)
 geo_get(bounds_level = "lad",
   within = "Gloucestershire",
   within_level = "cty",
   return_style = "simple",
-  centroid_fields = TRUE,
   return_boundaries = FALSE)
 }

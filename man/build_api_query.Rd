@@ -42,20 +42,18 @@ A function called by create_custom_lookup.R and geo_get.R to build a
 valid query
 }
 \examples{
-build_api_query(ref = 2,
-  type = "census",
-  within_level = "cauth19nm",
+build_api_query(ref = 4,
+  within_level = "cauth20nm",
   within = "Greater Manchester",
-  fields = c("lad19cd", "lad19nm", "cauth19cd", "cauth19nm")
+  fields = c("lad20cd", "lad20nm", "cauth20cd", "cauth20nm")
 )
-build_api_query(ref = 9,
-  type = "census",
-  within_level = "lad19nm",
+build_api_query(ref = 12,
+  within_level = "lad20nm",
   within = c(
     "Cheltenham", "Gloucester",
     "Stroud", "Cotswold",
     "Tewkesbury", "Forest of Dean"
   ),
-  fields = c("lad19cd", "lad19nm")
+  fields = c("lad20cd", "lad20nm")
 )
 }

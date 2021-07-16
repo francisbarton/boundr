@@ -1,3 +1,8 @@
+# 0.2.9.2
+
+* update and fix examples
+* update and re-knit README.Rmd
+
 # jogger 0.2.9.1
 
 * Bit of a refactor, remove duplications
