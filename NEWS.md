@@ -1,3 +1,9 @@
+# jogger 0.2.9
+
+* Finally removed the code that was there for 2-stage lookups - not going to happen
+* Added in a self-built lookup for UTLA:RGN and UTLA:CTRY as ONS doesn't have these
+* Finally did documentation of the internal datasets
+
 # jogger 0.2.8
 
 * Trying to fix lookup for MSOA centroids

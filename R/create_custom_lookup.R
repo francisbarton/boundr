@@ -128,36 +128,36 @@ create_custom_lookup <- function(
   # to work with two (or more?) refs for two-step lookups
   # eg MSOA to region (via LAD)
   table_code_ref_lookup <- dplyr::tribble(
-    ~bounds_level, ~within_level, ~table_code_ref1, ~table_code_ref2,
+    ~bounds_level, ~within_level, ~table_code_ref,
 
-    "oa",     "lsoa",   1,  NULL,
-    "oa",     "msoa",   1,  NULL,
-    "oa",     "rgn",    1,  NULL,
-    "lsoa",   "rgn",    1,  NULL,
-    "oa",     "lad",    2,  NULL, # 1 would work: returns MSOAs; 2 retns Wards
-    "oa",     "wd",     2,  NULL,
-    "wd",     "lad",    3,  NULL,
-    "wd",     "cty",    3,  NULL,
-    "wd",     "rgn",    3,  NULL,
-    "wd",     "ctry",   3,  NULL,
-    "lad",    "cty",    3,  NULL,
-    "lad",    "rgn",    3,  NULL,
-    "cty",    "rgn",    3,  NULL,
-    "lad",    "ctry",   3,  NULL,
-    "cty",    "ctry",   3,  NULL,
-    "rgn",    "ctry",   3,  NULL,
-    "lad",    "cauth",  4,  NULL,
-    "lsoa",   "utla",   5,  NULL,
-    "lsoa",   "cty",    5,  NULL, # cty needs to be renamed to utla here
-    "lad",    "utla",   6,  NULL, # lad needs to be renamed to ltla here
-    "ltla",   "utla",   6,  NULL,
-    "lsoa",   "wd",     7,  NULL,
-    "lsoa",   "lad",    7,  NULL,
-    "lsoa",   "ltla",   7,  NULL  # ltla needs to be renamed to lad here
-    # "utla",   "rgn"     1,     3,
-    # "utla",   "ctry"    1,     3,
-    # "lsoa",   "cauth"   2,     4,
-    # "lsoa",   "ctry"    1,     4
+    "oa",     "lsoa",   1,
+    "oa",     "msoa",   1,
+    "oa",     "rgn",    1,
+    "lsoa",   "rgn",    1,
+    "oa",     "lad",    2, # 1 would work: returns MSOAs; 2 retns Wards
+    "oa",     "wd",     2,
+    "wd",     "lad",    3,
+    "wd",     "cty",    3,
+    "wd",     "rgn",    3,
+    "wd",     "ctry",   3,
+    "lad",    "cty",    3,
+    "lad",    "rgn",    3,
+    "lad",    "ctry",   3,
+    "cty",    "rgn",    3,
+    "cty",    "ctry",   3,
+    "rgn",    "ctry",   3,
+    "lad",    "cauth",  4,
+    "lsoa",   "utla",   5,
+    "lsoa",   "cty",    5, # cty needs to be renamed to utla here
+    "lad",    "utla",   6, # lad needs to be renamed to ltla here
+    "ltla",   "utla",   6,
+    "lsoa",   "wd",     7,
+    "lsoa",   "lad",    7,
+    "lsoa",   "ltla",   7  # ltla needs to be renamed to lad here
+    # "utla",   "rgn",   99,  NULL
+    # "utla",   "ctry",    1,     3,
+    # "lsoa",   "cauth",   2,     4,
+    # "lsoa",   "ctry",    1,     4
   ) %>%
     dplyr::mutate(bounds_level = dplyr::case_when(
       stringr::str_ends(bounds_level, "oa") ~ paste0(bounds_level, "11cd"),
@@ -219,14 +219,18 @@ create_custom_lookup <- function(
   # TODO: write some tests for OA queries
 
 
-  table_code_refs <- table_code_ref_lookup %>%
+  # table_code_refs <- table_code_ref_lookup %>%
+  #   dplyr::filter(bounds_level == fields[1]) %>%
+  #   dplyr::filter(within_level == fields[4]) %>%
+  #   dplyr::select(3:dplyr::last_col()) %>%
+  #   unlist() %>%
+  #   unname() %>%
+  #   c(recursive = TRUE)
+
+  table_code_ref <- table_code_ref_lookup %>%
     dplyr::filter(bounds_level == fields[1]) %>%
     dplyr::filter(within_level == fields[4]) %>%
-    dplyr::select(3:dplyr::last_col()) %>%
-    unlist() %>%
-    unname() %>%
-    c(recursive = TRUE)
-
+    dplyr::pull(3)
 
   end_col <- length(fields)
   return_fields <- "*" # default for return_style = "tidy"
@@ -292,17 +296,38 @@ create_custom_lookup <- function(
   # An attempt to enable using more than one table_code -> 2-stage lookup.
   # But not there yet: would need to extend `fields` and manipulate it so that
   # the first query uses fields[1:4] and the second query uses [3:6] or whatever
-  df_out <- table_code_refs %>%
-    purrr::map( ~ build_api_query(
-      table_code_ref = .,
+  # df_out <- table_code_refs %>%
+  #   purrr::map( ~ build_api_query(
+  #     table_code_ref = .,
+  #     within_level = dplyr::nth(fields, nth_field),
+  #     within = within,
+  #     fields = return_fields
+  #     ) %>%
+  #     extract_lookup() %>%
+  #     treat_results(return_style = return_style)
+  #   ) %>%
+  #   purrr::reduce(dplyr::left_join)
+
+  # no available ONS API lookup for UTLA:RGN, so use our built-in table:
+  if (bounds_level %in% c("upper", "utla") & within_level %in% c("region", "rgn")) {
+    df_out <- upper_tier_region_ctry_lookup %>%
+      dplyr::select(!(c(ctry21cd, ctry21nm))) %>%
+      dplyr::filter(rgn21nm %in% within)
+  } else if (bounds_level %in% c("upper", "utla") & within_level %in% c("country", "ctry")) {
+    df_out <- upper_tier_region_ctry_lookup %>%
+      dplyr::select(!(c(rgn21cd, rgn21nm))) %>%
+      dplyr::filter(ctry21nm %in% within)
+  } else {
+    # and for other things use the API
+    df_out <- build_api_query(
+      table_code_ref = table_code_ref,
       within_level = dplyr::nth(fields, nth_field),
       within = within,
       fields = return_fields
-      ) %>%
-      extract_lookup() %>%
-      treat_results(return_style = return_style)
     ) %>%
-    purrr::reduce(dplyr::left_join)
+    extract_lookup() %>%
+    treat_results(return_style = return_style)
+  }
 
 
   # if not specified by the user, make an educated decision about
@@ -325,15 +350,19 @@ create_custom_lookup <- function(
 
   # add Welsh language LAD names if desired
   # maybe extract to an external helper function in another file?
-  if ("lad20nm" %in% colnames(df_out) && include_welsh_names) {
-    lad20nmw_lookup <- jsonlite::fromJSON("https://opendata.arcgis.com/datasets/4094644cae32481f95fe7030334c8589_0.geojson") %>%
+  if ("lad21nm" %in% colnames(df_out) & include_welsh_names) {
+    lad21nmw_lookup <- jsonlite::fromJSON(
+      # "https://opendata.arcgis.com/datasets/4094644cae32481f95fe7030334c8589_0.geojson" # old (2020)
+      # https://geoportal.statistics.gov.uk/datasets/local-authority-districts-april-2021-names-and-codes-in-the-united-kingdom/
+      "https://opendata.arcgis.com/datasets/c02975a3618b46db958369ff7204d1bf_0.geojson" # 2021
+      ) %>%
       purrr::pluck("features", "properties") %>%
       janitor::clean_names() %>%
       dplyr::select(-fid)
 
     df_out <- df_out %>%
-      dplyr::left_join(lad20nmw_lookup) %>%
-      dplyr::relocate(lad20nmw, .after = lad20nm)
+      dplyr::left_join(lad21nmw_lookup) %>%
+      dplyr::relocate(lad21nmw, .after = lad21nm)
   }
 
 

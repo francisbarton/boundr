@@ -76,14 +76,13 @@ build_api_query <- function(
     # https://geoportal.statistics.gov.uk/datasets/local-authority-district-to-combined-authority-december-2020-lookup-in-england
     "LAD20_CAUTH20_EN_LU",
 
-    # https://geoportal.statistics.gov.uk/datasets/ons::lower-layer-super-output-area-2011-to-upper-tier-local-authorities-2021-lookup-in-england-and-wales-/
+    # https://geoportal.statistics.gov.uk/datasets/ons::lower-layer-super-output-area-2011-to-upper-tier-local-authorities-2021-lookup-in-england-and-wales-
     "LSOA11_UTLA21_EW_LU",
 
-    # Lower Tier Local Authority to Upper Tier Local Authority (April 2021) Lookup in England and Wales
     # https://geoportal.statistics.gov.uk/datasets/ons::lower-tier-local-authority-to-upper-tier-local-authority-april-2021-lookup-in-england-and-wales
     "LTLA21_UTLA21_EW_LU",
 
-    # https://geoportal.statistics.gov.uk/datasets/7a9e4c5e7e8847b8b6a1ac93acd66358_0
+    # https://geoportal.statistics.gov.uk/datasets/ons::lower-layer-super-output-area-2011-to-ward-2020-lookup-in-england-and-wales
     "LSOA11_WD20_LAD20_EW_LU_v2",
 
 

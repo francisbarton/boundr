@@ -33,8 +33,6 @@ lsoa_to_msoa_lookup <- function(
 
     # see data-raw/datasets.R for source
     lsoa11cdnm %>%
-      janitor::clean_names() %>%
-      dplyr::select(1:2) %>%
       dplyr::mutate(
         msoa11nm = stringr::str_remove(lsoa11nm, "[A-Z]{1}$")
       ) %>%
