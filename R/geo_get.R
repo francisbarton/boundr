@@ -96,7 +96,7 @@ geo_get <- function(bounds_level,
 
 
   # if the user sets 'return_boundaries' FALSE then just return a summary table
-  if (!return_boundaries & !return_centroids) {
+  if (!return_boundaries && !return_centroids) {
     basic_df # return
   } else {
 
@@ -155,11 +155,11 @@ geo_get <- function(bounds_level,
     geo_get_bounds(
       bounds_query_level = bounds_query_level_new,
       area_codes = within,
-      # return_centroids,
-      # centroid_fields,
-      # shape_fields,
-      # spatial_ref,
-      # quiet_read
+      return_centroids,
+      centroid_fields,
+      shape_fields,
+      spatial_ref,
+      quiet_read
     ) %>%
       dplyr::rename(!!bounds_query_level_orig := 1) %>%
       dplyr::left_join(basic_df) %>%

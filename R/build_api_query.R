@@ -71,7 +71,7 @@ build_api_query <- function(ref,
     # https://geoportal.statistics.gov.uk/datasets/ons::lower-tier-local-authority-to-upper-tier-local-authority-april-2021-lookup-in-england-and-wales
     "LTLA21_UTLA21_EW_LU",
 
-    # https://geoportal.statistics.gov.uk/datasets/ons::lower-layer-super-output-area-2011-to-ward-2020-lookup-in-england-and-wales
+    # https://geoportal.statistics.gov.uk/datasets/lower-layer-super-output-area-2011-to-ward-2020-to-lad-2020-lookup-in-england-and-wales-v2/
     "LSOA11_WD20_LAD20_EW_LU_v2",
 
 

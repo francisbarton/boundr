@@ -1,3 +1,8 @@
+# 0.2.10
+
+* adds the ability to retrieve lookups and geometries at a single level, i.e. where `bounds_level` and `within_level` are the same.
+
+
 # 0.2.9.5
 
 * tweaks to make the `within_cd` parameter actually work (I don't think I had tested this properly before).

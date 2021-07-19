@@ -69,9 +69,9 @@ create_custom_lookup <- function(bounds_level,
 
   # When returning LSOAs but not Wards, and return_style is "tidy" or
   # "full", tend to include MSOA columns, unless overridden by user param
-  if (is.null(include_msoa) &
-      tolower(bounds_level) %in% c("oa", "coa", "lsoa") &
-      !tolower(within_level) %in% c("wd", "ward", "lad") &
+  if (is.null(include_msoa) &&
+      tolower(bounds_level) %in% c("oa", "coa", "lsoa") &&
+      !tolower(within_level) %in% c("wd", "ward", "lad") &&
       return_style == "tidy") {
     include_msoa <- TRUE
   } else if (is.null(include_msoa)) {
@@ -79,7 +79,7 @@ create_custom_lookup <- function(bounds_level,
   }
 
   # notify if 'include_msoa' is set where it doesn't make any sense to
-  if (include_msoa &
+  if (include_msoa &&
       !tolower(bounds_level) %in% c("oa", "lsoa", "msoa")) {
     usethis::ui_oops(
       "'include_msoa' is set to TRUE but you are not retrieving data
@@ -103,12 +103,16 @@ create_custom_lookup <- function(bounds_level,
   table_code_ref_lookup <- dplyr::tribble(
     ~bounds_level, ~within_level, ~table_code_ref,
 
+    "oa",     "oa",     1,
     "oa",     "lsoa",   1,
+    "lsoa",   "lsoa",   1,
     "oa",     "msoa",   1,
+    "msoa",   "msoa",   1,
     "oa",     "rgn",    1,
     "lsoa",   "rgn",    1,
     "oa",     "lad",    2, # 1 would work: returns MSOAs; 2 retns Wards
     "oa",     "wd",     2,
+    "wd",     "wd",     3,
     "wd",     "lad",    3,
     "wd",     "cty",    3,
     "wd",     "rgn",    3,
@@ -124,9 +128,11 @@ create_custom_lookup <- function(bounds_level,
     "lsoa",   "cty",    5, # cty needs to be renamed to utla here
     "lad",    "utla",   6, # lad needs to be renamed to ltla here
     "ltla",   "utla",   6,
-    "lsoa",   "wd",     7,
+    "lsoa",   "wd",     7, # important to keep this best-fit lookup, not to reverse-engineer from an OA:WD lookup (eg ref 2)
     "lsoa",   "lad",    7,
-    "lsoa",   "ltla",   7  # ltla needs to be renamed to lad here
+    "lsoa",   "ltla",   7,  # ltla needs to be renamed to lad here
+    "lad",    "lad",    7,
+    "rgn",    "rgn",    7
     # "lsoa",   "cauth",   2,     4,
     # "lsoa",   "ctry",    1,     4
   ) %>%
@@ -151,7 +157,7 @@ create_custom_lookup <- function(bounds_level,
     }
   }
 
-  if (bounds_level == "lad" & within_level == "utla") {
+  if (bounds_level == "lad" && within_level == "utla") {
     bounds_level <- "ltla"
   }
 
@@ -162,47 +168,38 @@ create_custom_lookup <- function(bounds_level,
     rep(each = 2) %>%
     paste0(c("cd", "nm"))
 
+  end_col <- length(fields)
 
-  # oa11nm doesn't exist of course, but you can cheekily get away with
+  # "oa11nm" doesn't exist, of course, but you can cheekily get away with
   # requesting oa11cd twice and it seems not to mind, just returning a single
   # oa11cd column.
   # dplyr::select() doesn't mind if you pass a duplicated column name to it,
   # either... BRILLIANT!
   if (bounds_level == "oa") fields[2] <- "oa11cd" # cheeky
 
-  if (bounds_level == "oa" & within_level %in% c("wd", "ward")) {
+  if (bounds_level == "oa" && within_level %in% c("wd", "ward")) {
     return_style <- "tidy"
   }
 
-
+  if (fields[2] == fields[end_col]) {
+    return_style <- "minimal"
+  }
 
 
   table_code_ref <- table_code_ref_lookup %>%
     dplyr::filter(bounds_level == fields[1]) %>%
-    dplyr::filter(within_level == fields[4]) %>%
+    dplyr::filter(within_level == fields[end_col]) %>%
     dplyr::pull(3)
 
   # A special case where we want MSOAs not Wards back with OA:LAD lookup.
   # Requires include_msoa = TRUE to be explicitly passed.
-  # (if include_msoa is NULL|FALSE then ref will be 2 and wards returned)
-  if (bounds_level == "oa" & within_level == "lad" & include_msoa) {
+  # (if include_msoa is NULL|FALSE then ref will be 2, and wards returned)
+  if (bounds_level == "oa" && within_level == "lad" && include_msoa) {
     table_code_ref <- 1
   }
 
-  end_col <- length(fields)
   return_fields <- "*" # default for return_style = "tidy"
 
-
-  # I think I did this to avoid getting both Wards and MSOAs? Things get messy
-  # if you do that because the lookups are all overlapped and you get more
-  # than one row per LSOA, and end up downloading a load of duplicate
-  # boundaries. That makes sense, but I can't remember exactly.
-  if (return_style == "tidy" &
-      bounds_level == "lsoa" &
-      within_level %in% c("lad", "ltla")
-  ) {
-    return_style <- "simple"
-  }
 
   # use return_style to decide how many columns to return
   if (return_style == "simple") {
@@ -227,18 +224,11 @@ create_custom_lookup <- function(bounds_level,
       return_style <- "tidy"
     }
 
-    if (return_style == "tidy") {
-      df %>%
-        # return all columns between first and last specified fields
-        # dplyr::select(fields[1]:fields[end_col]) %>%
-        dplyr::select(!!rlang::sym(fields[1]):!!rlang::sym(fields[end_col])) %>%
-        dplyr::distinct() %>%
-        janitor::remove_empty("cols")
-    } else {
-    # if (return_style %in% c("simple", "minimal"))
-      df %>%
-        dplyr::distinct()
-    }
+    df %>%
+      # return all columns between first and last specified fields
+      dplyr::select(!!rlang::sym(fields[1]):!!rlang::sym(fields[end_col])) %>%
+      dplyr::distinct() %>%
+      janitor::remove_empty("cols")
   }
 
 
@@ -248,11 +238,11 @@ create_custom_lookup <- function(bounds_level,
 
 
   # no available ONS API lookup for UTLA:RGN, so use our built-in table:
-  if (bounds_level %in% c("upper", "utla") & within_level %in% c("region", "rgn")) {
+  if (bounds_level %in% c("upper", "utla") && within_level %in% c("region", "rgn")) {
     df_out <- upper_tier_region_ctry_lookup %>%
       dplyr::select(!(c(ctry21cd, ctry21nm))) %>%
       dplyr::filter(rgn21nm %in% within)
-  } else if (bounds_level %in% c("upper", "utla") & within_level %in% c("country", "ctry")) {
+  } else if (bounds_level %in% c("upper", "utla") && within_level %in% c("country", "ctry")) {
     df_out <- upper_tier_region_ctry_lookup %>%
       dplyr::select(!(c(rgn21cd, rgn21nm))) %>%
       dplyr::filter(ctry21nm %in% within)
@@ -289,7 +279,7 @@ create_custom_lookup <- function(bounds_level,
 
   # add Welsh language LAD names if desired
   # maybe extract to an external helper function in another file?
-  if ("lad21nm" %in% colnames(df_out) & include_welsh_names) {
+  if ("lad21nm" %in% colnames(df_out) && include_welsh_names) {
     lad21nmw_lookup <- jsonlite::fromJSON(
       # "https://opendata.arcgis.com/datasets/4094644cae32481f95fe7030334c8589_0.geojson" # old (2020)
       # https://geoportal.statistics.gov.uk/datasets/local-authority-districts-april-2021-names-and-codes-in-the-united-kingdom/

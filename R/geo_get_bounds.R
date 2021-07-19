@@ -35,7 +35,7 @@ geo_get_bounds <- function(bounds_query_level,
 
   # TODO allow customising which fields user wants
   centroid_fields_list <- NULL
-  if (centroid_fields & return_centroids) {
+  if (centroid_fields && return_centroids) {
     centroid_fields_list <- c(
       "BNG_E",
       "BNG_N",
