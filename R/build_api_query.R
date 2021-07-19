@@ -187,9 +187,8 @@ build_api_query <- function(ref,
         "=", # trying this instead of %3D doesn't seem to matter
         .,     # vector of 'within'
         # using "+" instead of a space also seems to be good for the API
-        # sep = "%20", # Open Geog website puts spaces in, so so will I
-        sep = " ", # Open Geog website puts spaces in, so so will I
-        collapse = " OR " # collapse multiple locations with an " OR "
+        sep = "%20", # Open Geog website puts spaces in, so so will I
+        collapse = "%20OR%20" # collapse multiple locations with an " OR "
       )
   }
 

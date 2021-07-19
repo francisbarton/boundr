@@ -1,7 +1,7 @@
 # 0.2.9.5
 
 * tweaks to make the `within_cd` parameter actually work (I don't think I had tested this properly before).
-* some tweaks to how the query URL string is built, replacing `%3D` with plain `-` and `%20` with plain spaces. In attempt to simplify error-hunting. But worried that this may not work with all endpoints. Had to do some tweaking to get OA:WD lookup to work.
+* some tweaks to how the query URL string is built, replacing `%3D` with plain `=`. In attempt to simplify error-hunting. But worried that this may not work with all endpoints. Had to do some tweaking to get OA:WD lookup to work.
 * changes to the `extract_lookup` function as the previous `pluck` call did not always work. New combination of `pluck` and `map_df` hopefully will work OK. But again, worried that this may break things that were previously working.
 * This is why we should have proper tests in place, and I should be using git branches to test things I'm not sure about...
 
