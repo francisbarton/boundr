@@ -1,3 +1,10 @@
+# 0.2.9.4
+* Added in result_type parameter to `build_api_query` as I noticed that some queries weren't working properly. Turned out that lookups with more than 2000 results were being truncated. [The way to fix this](https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm) (see examples six and seven) is to specify a `resultType` of `"standard"` which allows responses up to 32,000 long. jogger's spatial queries were already batched into batches of 25/50 so this didn't come up as an issue.
+
+
+# 0.2.9.3
+* Further build_api tweaks
+
 # 0.2.9.2
 
 * update and fix examples

@@ -123,8 +123,6 @@ build_api_query <- function(ref,
   # pull table code from list above
   url_string <- url_strings[[ref]]
 
-  distinct <- "&returnDistinctValues=true"
-
   url_base <- "https://ons-inspire.esriuk.com/"
 
   if (type == "census") {
@@ -142,7 +140,6 @@ build_api_query <- function(ref,
 
   if (type == "centroid") {
     admin <- "Census_Boundaries"
-    distinct <- ""
   }
 
 
@@ -203,21 +200,37 @@ build_api_query <- function(ref,
   }
 
 
+  # for simple lookup queries  we can use "standard" result type;
+  # CRS is irrelevant
+  # "7" will need to be changed if list above incorporates more lookup options
+  if (ref %in% 1:7) {
+    result_type <- "standard"
+    sr_line <- ""
+  } else {
+
+    # this result_type is needed for spatial queries, "standard" doesn't agree
+    # see examples six and seven here:
+    # https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm
+    result_type <- "none"
+    sr_line <- paste0("&outSR=", sr)
+  }
+
+
   arcgis_base <- "arcgis/rest/services/"
-  server_line <- "/FeatureServer/0/"    # they all seem to be this nowadays
+
+  # they all seem to be this since recent changes
+  server_line <- "/FeatureServer/0/"
+
   query_line <- "query?where="
   within_open <- "%20("
   within_close <- ")%20"
   fields_line <- "&outFields="
+  result_type_line <- "&resultType="
+  return_format <- "&f=json"
 
   # in theory there are several other options that could be customised here
   # if it were worth the candle.
   # maybe I should bother to allow that, in order better to replicate the API
-
-  coda <- paste0("&outSR=",
-                 sr,
-                 "&f=json"
-                 )
 
   # create the query
   paste0(
@@ -232,7 +245,9 @@ build_api_query <- function(ref,
     within_close,
     fields_line,
     fields,
-    coda,
-    distinct
+    sr_line,
+    result_type_line,
+    result_type,
+    return_format
   )
 }
