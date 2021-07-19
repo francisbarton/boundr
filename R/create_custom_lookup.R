@@ -71,7 +71,7 @@ create_custom_lookup <- function(bounds_level,
   # "full", tend to include MSOA columns, unless overridden by user param
   if (is.null(include_msoa) &
       tolower(bounds_level) %in% c("oa", "coa", "lsoa") &
-      !tolower(within_level) %in% c("wd", "ward") &
+      !tolower(within_level) %in% c("wd", "ward", "lad") &
       return_style == "tidy") {
     include_msoa <- TRUE
   } else if (is.null(include_msoa)) {
@@ -175,10 +175,19 @@ create_custom_lookup <- function(bounds_level,
   }
 
 
+
+
   table_code_ref <- table_code_ref_lookup %>%
     dplyr::filter(bounds_level == fields[1]) %>%
     dplyr::filter(within_level == fields[4]) %>%
     dplyr::pull(3)
+
+  # A special case where we want MSOAs not Wards back with OA:LAD lookup.
+  # Requires include_msoa = TRUE to be explicitly passed.
+  # (if include_msoa is NULL|FALSE then ref will be 2 and wards returned)
+  if (bounds_level == "oa" & within_level == "lad" & include_msoa) {
+    table_code_ref <- 1
+  }
 
   end_col <- length(fields)
   return_fields <- "*" # default for return_style = "tidy"

@@ -183,10 +183,13 @@ build_api_query <- function(ref,
       paste0("'", ., "'") %>%
       stringr::str_c(
         within_level, # area level code eg WD19CD, CAUTH19NM
-        "%3D", # "="
+        # "%3D", # "="
+        "=", # trying this instead of %3D doesn't seem to matter
         .,     # vector of 'within'
-        sep = "%20", # Open Geog website puts spaces in, so so will I
-        collapse = "%20OR%20" # collapse multiple locations with an " OR "
+        # using "+" instead of a space also seems to be good for the API
+        # sep = "%20", # Open Geog website puts spaces in, so so will I
+        sep = " ", # Open Geog website puts spaces in, so so will I
+        collapse = " OR " # collapse multiple locations with an " OR "
       )
   }
 

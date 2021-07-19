@@ -82,24 +82,16 @@ geo_get <- function(bounds_level,
   }
 
 
-
-  if (within_cd) {
-
-    basic_df <- dplyr::as_tibble(!!bounds_level := within)
-
-  } else {
-
-    # get the basic lookup table
-    basic_df <- create_custom_lookup(
-      bounds_level,
-      within,
-      within_level,
-      within_cd,
-      include_msoa,
-      return_style,
-      include_welsh_names
-    )
-  }
+  # get the basic lookup table
+  basic_df <- create_custom_lookup(
+    bounds_level,
+    within,
+    within_level,
+    within_cd,
+    include_msoa,
+    return_style,
+    include_welsh_names
+  )
 
 
 
@@ -147,18 +139,18 @@ geo_get <- function(bounds_level,
     }
 
 
-    # Set it up so that we can stipulate the join fields as 'cd' only, rather than
-    # letting dplyr::left_join try to match on multiple fields as it does by
-    # default.
+    # Set it up so that we can stipulate the join fields as 'cd' only,
+    # rather than letting dplyr::left_join try to match on multiple fields,
+    # as it does by default.
     # The reason this matters is that if the ONS makes a small change to the
     # spelling of an area name ('nm') this can mess up the join; but the cd
     # shouldn't change unless there's a fundamental change in the area.
 
+    # not doing it quite this way (below) any more:
     # create a length 1 named vector ( c(x = x) )
     # join_by <- purrr::set_names(bounds_query_level_new, bounds_query_level_orig)
-
-    # and some exceptions:
-
+    # we're doing it via the rename line below (ie force spatial return to have
+    # same column name as basic_df so that they match on that)
 
     geo_get_bounds(
       bounds_query_level = bounds_query_level_new,

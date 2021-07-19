@@ -4,7 +4,10 @@
 #' @return a data frame
 extract_lookup <- function(x) {
   x %>%
-    jsonlite::fromJSON() %>%
-    purrr::pluck("features", "attributes") %>%
+    # jsonlite::fromJSON() %>%
+    jsonlite::read_json() %>%
+    # purrr::pluck("features", "attributes") %>%
+    purrr::pluck("features") %>%
+    purrr::map_df("attributes") %>%
     janitor::clean_names()
 }

@@ -1,3 +1,9 @@
+# 0.2.9.5
+
+* tweaks to make the `within_cd` parameter actually work (I don't think I had tested this properly before).
+* some tweaks to how the query URL string is built, replacing `%3D` with plain `-` and `%20` with plain spaces. In attempt to simplify error-hunting. But worried that this may not work with all endpoints. Had to do some tweaking to get OA:WD lookup to work.
+* changes to the `extract_lookup` function as the previous `pluck` call did not always work. New combination of `pluck` and `map_df` hopefully will work OK. But agin, worried that this may break things that were previously working.
+
 # 0.2.9.4
 * Added in result_type parameter to `build_api_query` as I noticed that some queries weren't working properly. Turned out that lookups with more than 2000 results were being truncated. [The way to fix this](https://developers.arcgis.com/rest/services-reference/enterprise/query-feature-service-layer-.htm) (see examples six and seven) is to specify a `resultType` of `"standard"` which allows responses up to 32,000 long. jogger's spatial queries were already batched into batches of 25/50 so this didn't come up as an issue.
 
