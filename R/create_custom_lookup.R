@@ -248,14 +248,19 @@ create_custom_lookup <- function(bounds_level,
       dplyr::filter(ctry21nm %in% within)
   } else {
     # and for other things use the API as usual:
-    df_out <- build_api_query(
+    df_out <- within %>%
+      # According to the API docs, 50 is the limit for geo queries.
+      # Excessively long queries return 404.
+      batch_it_simple(batch_size = 50) %>% # from my myrmidon pkg
+      purrr::map_df( ~ build_api_query(
       ref = table_code_ref,
       within_level = dplyr::nth(fields, nth_field),
-      within = within,
+      within = .,
       fields = return_fields
-    ) %>%
-    extract_lookup() %>%
-    treat_results(return_style = return_style)
+      ) %>%
+      extract_lookup() %>%
+      treat_results(return_style = return_style)
+      )
   }
 
 

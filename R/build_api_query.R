@@ -125,6 +125,8 @@ build_api_query <- function(ref,
 
   url_base <- "https://ons-inspire.esriuk.com/"
 
+  distinct <- "&returnDistinctValues=true"
+
   if (type == "census") {
     url_base <- "https://services1.arcgis.com/ESMARspQHYMw9BZ9/"
     admin <- ""
@@ -140,6 +142,7 @@ build_api_query <- function(ref,
 
   if (type == "centroid") {
     admin <- "Census_Boundaries"
+    distinct <- ""
   }
 
 
@@ -250,6 +253,7 @@ build_api_query <- function(ref,
     sr_line,
     result_type_line,
     result_type,
+    distinct,
     return_format
   )
 }
