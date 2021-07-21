@@ -41,10 +41,6 @@
 #'   return Welsh language LAD and MSOA names where relevant. \code{NULL} (the
 #'   default) means that an educated decision will be made by the program,
 #'   based on whether any of the areas returned have "^W" codes.
-#' @param return_boundaries whether to retrieve object boundaries data from
-#'   the API. Default \code{TRUE}. If \code{return_boundaries} and
-#'   \code{return_centroids} are both \code{FALSE}, a plain summary df
-#'   without geometry will be returned.
 #'
 #' @return a data frame or an sf (simple features) object (data frame
 #'   with geometries)
@@ -52,7 +48,7 @@
 #'
 #' @examples
 #' geo_get("wd", "Swindon", "lad")
-#' geo_get("msoa", "Swansea", "lad", centroid_fields = TRUE) %>%
+#' geo_get("msoa", "Swansea", "lad", return_centroids = TRUE) %>%
 #'   head(10)
 #' geo_get("lsoa", "Zetland", "ward", shape_fields = TRUE)
 #' geo_get(bounds_level = "lad",
@@ -75,9 +71,10 @@ geo_get <- function(bounds_level,
                     quiet_read = TRUE) {
 
 
-  # centroids query doesn't include any higher level fields
   if (return_centroids) {
     return_boundaries <- FALSE
+    centroid_fields <- FALSE
+    shape_fields <- FALSE
     return_style <- "minimal"
   }
 
@@ -96,7 +93,7 @@ geo_get <- function(bounds_level,
 
 
   # if the user sets 'return_boundaries' FALSE then just return a summary table
-  if (!return_boundaries && !return_centroids) {
+  if (!return_boundaries && !return_centroids && !centroid_fields) {
     basic_df # return
   } else {
 
@@ -146,15 +143,10 @@ geo_get <- function(bounds_level,
     # spelling of an area name ('nm') this can mess up the join; but the cd
     # shouldn't change unless there's a fundamental change in the area.
 
-    # not doing it quite this way (below) any more:
-    # create a length 1 named vector ( c(x = x) )
-    # join_by <- purrr::set_names(bounds_query_level_new, bounds_query_level_orig)
-    # we're doing it via the rename line below (ie force spatial return to have
-    # same column name as basic_df so that they match on that)
-
     geo_get_bounds(
       bounds_query_level = bounds_query_level_new,
       area_codes = within,
+      return_boundaries,
       return_centroids,
       centroid_fields,
       shape_fields,

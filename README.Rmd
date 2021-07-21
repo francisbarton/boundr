@@ -58,7 +58,7 @@ geo_get("wd", "Swindon", "lad") %>%
 
 
 ```{r example-2}
-geo_get("msoa", "Swansea", "lad", centroid_fields = TRUE) %>%
+geo_get("msoa", "Swansea", "lad", return_centroids = TRUE) %>%
   head(10)
 
 ```

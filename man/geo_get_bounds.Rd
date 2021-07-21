@@ -7,6 +7,7 @@
 geo_get_bounds(
   bounds_query_level,
   area_codes,
+  return_boundaries = TRUE,
   return_centroids = FALSE,
   centroid_fields = FALSE,
   shape_fields = FALSE,
@@ -22,6 +23,11 @@ be the full code not an abbreviation such as "lsoa"}
 bounds_query_level. Probably to be supplied from a column pulled from a
 lookup df or similar.}
 
+\item{return_boundaries}{whether to retrieve object boundaries data from
+the API. Default \code{TRUE}. If \code{return_boundaries} and
+\code{return_centroids} and \code{centroid_fields} are all \code{FALSE}, a
+plain summary df without any geometry will be returned.}
+
 \item{return_centroids}{whether to retrieve area centroids instead of
 boundaries. Default \code{FALSE}. If set to TRUE then it will override
 \code{return_boundaries} whether that was set TRUE or otherwise. If
@@ -29,8 +35,8 @@ boundaries. Default \code{FALSE}. If set to TRUE then it will override
 a plain summary data frame without geometry will be returned.}
 
 \item{centroid_fields}{Boolean, default FALSE. Whether to include BNG
-eastings, northings, lat and long fields in the return when returning
-boundaries.}
+eastings, northings, lat and long fields in the return. NB this \emph{doesn't}
+apply to direct (population-weighted) centroid queries.}
 
 \item{shape_fields}{Boolean, default FALSE. Whether to include
 Shape__Area and Shape__Length fields in the return when returning

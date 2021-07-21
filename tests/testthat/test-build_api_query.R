@@ -44,11 +44,12 @@ test_that(
         type = "census",
         within_level = "lad20nm",
         within = c("Cheltenham", "Gloucester", "Stroud", "Cotswold", "Tewkesbury", "Forest of Dean"),
-        fields = c("lad20cd", "lad20nm"),
+        fields = c("lad20cd", "lad20nm", "BNG_E", "BNG_N"),
+        return_geometry = FALSE,
         sr = 7405
       ),
 
-      "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Local_Authority_Districts_December_2020_UK_BFC/FeatureServer/0/query?where=%20(LAD20NM%20=%20'CHELTENHAM'%20OR%20LAD20NM%20=%20'GLOUCESTER'%20OR%20LAD20NM%20=%20'STROUD'%20OR%20LAD20NM%20=%20'COTSWOLD'%20OR%20LAD20NM%20=%20'TEWKESBURY'%20OR%20LAD20NM%20=%20'FOREST%20OF%20DEAN')%20&outFields=LAD20CD,LAD20NM&outSR=7405&resultType=none&returnDistinctValues=true&f=json"
+      "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Local_Authority_Districts_December_2020_UK_BFC/FeatureServer/0/query?where=%20(LAD20NM%20=%20'CHELTENHAM'%20OR%20LAD20NM%20=%20'GLOUCESTER'%20OR%20LAD20NM%20=%20'STROUD'%20OR%20LAD20NM%20=%20'COTSWOLD'%20OR%20LAD20NM%20=%20'TEWKESBURY'%20OR%20LAD20NM%20=%20'FOREST%20OF%20DEAN')%20&outFields=LAD20CD,LAD20NM,BNG_E,BNG_N&outSR=7405&resultType=none&returnGeometry=false&returnDistinctValues=true&f=json"
     )
   }
 )

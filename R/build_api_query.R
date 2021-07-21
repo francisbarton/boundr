@@ -15,6 +15,7 @@
 #'   returned
 #' @param fields The fields of the data to be returned. Defaults to \code{"*"}
 #'   (all); can instead be a set of column names/variables.
+#' @param return_geometry Whether to return a geometry
 #' @param sr The (EPSG) spatial reference of any returned geometry.
 #'   4326 ("WGS 84") by default. Can be specified as numeric or character.
 #'
@@ -40,6 +41,7 @@ build_api_query <- function(ref,
                             within_level,
                             within = NULL,
                             fields = "*",
+                            return_geometry = TRUE,
                             sr = 4326) {
 
 
@@ -133,18 +135,24 @@ build_api_query <- function(ref,
   }
 
   if (type == "admin") {
-    admin <- "Administrative_Boundaries"
+    admin <- "Administrative_Boundaries/"
   }
 
   if (type == "other") {
-    admin <- "Other_Boundaries"
+    admin <- "Other_Boundaries/"
   }
 
   if (type == "centroid") {
-    admin <- "Census_Boundaries"
+    admin <- "Census_Boundaries/"
     distinct <- ""
   }
 
+
+  if (return_geometry) {
+    geom_line <- ""
+  } else {
+    geom_line <- "&returnGeometry=false"
+  }
 
 
   # server string in query URL
@@ -253,6 +261,7 @@ build_api_query <- function(ref,
     sr_line,
     result_type_line,
     result_type,
+    geom_line,
     distinct,
     return_format
   )

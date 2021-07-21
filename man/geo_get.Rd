@@ -62,8 +62,8 @@ based on whether any of the areas returned have "^W" codes.}
 
 \item{return_boundaries}{whether to retrieve object boundaries data from
 the API. Default \code{TRUE}. If \code{return_boundaries} and
-\code{return_centroids} are both \code{FALSE}, a plain summary df
-without geometry will be returned.}
+\code{return_centroids} and \code{centroid_fields} are all \code{FALSE}, a
+plain summary df without any geometry will be returned.}
 
 \item{return_centroids}{whether to retrieve area centroids instead of
 boundaries. Default \code{FALSE}. If set to TRUE then it will override
@@ -72,8 +72,8 @@ boundaries. Default \code{FALSE}. If set to TRUE then it will override
 a plain summary data frame without geometry will be returned.}
 
 \item{centroid_fields}{Boolean, default FALSE. Whether to include BNG
-eastings, northings, lat and long fields in the return when returning
-boundaries.}
+eastings, northings, lat and long fields in the return. NB this \emph{doesn't}
+apply to direct (population-weighted) centroid queries.}
 
 \item{shape_fields}{Boolean, default FALSE. Whether to include
 Shape__Area and Shape__Length fields in the return when returning
@@ -99,7 +99,7 @@ This program focuses on areas within England and Wales only, initially.
 }
 \examples{
 geo_get("wd", "Swindon", "lad")
-geo_get("msoa", "Swansea", "lad", centroid_fields = TRUE) \%>\%
+geo_get("msoa", "Swansea", "lad", return_centroids = TRUE) \%>\%
   head(10)
 geo_get("lsoa", "Zetland", "ward", shape_fields = TRUE)
 geo_get(bounds_level = "lad",

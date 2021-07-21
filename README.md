@@ -38,7 +38,7 @@ geo_get("wd", "Swindon", "lad") %>%
 <img src="man/figures/README-example-1-1.png" width="100%" />
 
 ``` r
-geo_get("msoa", "Swansea", "lad", centroid_fields = TRUE) %>%
+geo_get("msoa", "Swansea", "lad", return_centroids = TRUE) %>%
   head(10)
 #> 
 #> -- Column specification --------------------------------------------------------
@@ -53,37 +53,50 @@ geo_get("msoa", "Swansea", "lad", centroid_fields = TRUE) %>%
 #> Joining, by = "msoa11nm"
 #> Joining, by = c("lsoa11cd", "lsoa11nm")
 #> Joining, by = c("lsoa11cd", "lsoa11nm")
-#> Simple feature collection with 10 features and 7 fields
-#> Geometry type: MULTIPOLYGON
+#> Joining, by = "msoa11cd"
+#> Simple feature collection with 10 features and 9 fields
+#> Geometry type: POINT
 #> Dimension:     XY
-#> Bounding box:  xmin: -4.081328 ymin: 51.64419 xmax: -3.842743 ymax: 51.77423
+#> Bounding box:  xmin: -4.101869 ymin: 51.62307 xmax: -3.908663 ymax: 51.64444
 #> Geodetic CRS:  WGS 84
-#>     msoa11cd    msoa11nm    msoa11nmw            msoa11hclnm
-#> 1  W02000169 Swansea 002 Abertawe 002         Clydach & Mawr
-#> 2  W02000170 Swansea 003 Abertawe 003        Morriston North
-#> 3  W02000171 Swansea 004 Abertawe 004 Llangyfelach & Tircoed
-#> 4  W02000172 Swansea 005 Abertawe 005              Gorseinon
-#> 5  W02000173 Swansea 006 Abertawe 006             Birchgrove
-#> 6  W02000174 Swansea 007 Abertawe 007                Loughor
-#> 7  W02000175 Swansea 008 Abertawe 008        Morriston South
-#> 8  W02000176 Swansea 009 Abertawe 009            Mynydd-bach
-#> 9  W02000177 Swansea 010 Abertawe 010             Llansamlet
-#> 10 W02000178 Swansea 011 Abertawe 011               Penderry
-#>               msoa11hclnmw   lad20cd lad20nm                       geometry
-#> 1           Clydach a Mawr W06000011 Swansea MULTIPOLYGON (((-3.998642 5...
-#> 2         Gogledd Treforys W06000011 Swansea MULTIPOLYGON (((-3.912776 5...
-#> 3  Llangyfelach a Thircoed W06000011 Swansea MULTIPOLYGON (((-4.01002 51...
-#> 4                Gorseinon W06000011 Swansea MULTIPOLYGON (((-4.05016 51...
-#> 5                Gellifedw W06000011 Swansea MULTIPOLYGON (((-3.873473 5...
-#> 6               Casllwchwr W06000011 Swansea MULTIPOLYGON (((-4.07236 51...
-#> 7              De Treforys W06000011 Swansea MULTIPOLYGON (((-3.929079 5...
-#> 8              Mynydd-bach W06000011 Swansea MULTIPOLYGON (((-3.937648 5...
-#> 9               Llansamlet W06000011 Swansea MULTIPOLYGON (((-3.896356 5...
-#> 10                 Penderi W06000011 Swansea MULTIPOLYGON (((-3.954672 5...
+#>     msoa11cd    msoa11nm    msoa11nmw                 msoa11hclnm
+#> 1  W02000187 Swansea 020 Abertawe 020      Dunvant & Upper Killay
+#> 2  W02000187 Swansea 020 Abertawe 020      Dunvant & Upper Killay
+#> 3  W02000186 Swansea 019 Abertawe 019                    Townhill
+#> 4  W02000185 Swansea 018 Abertawe 018 Llanmorlais & Three Crosses
+#> 5  W02000185 Swansea 018 Abertawe 018 Llanmorlais & Three Crosses
+#> 6  W02000184 Swansea 017 Abertawe 017                     Cockett
+#> 7  W02000183 Swansea 016 Abertawe 016                     Landore
+#> 8  W02000183 Swansea 016 Abertawe 016                     Landore
+#> 9  W02000182 Swansea 015 Abertawe 015                    Cwmbwrla
+#> 10 W02000181 Swansea 014 Abertawe 014                  Bon-y-maen
+#>             msoa11hclnmw    wd20cd    wd20nm   lad20cd lad20nm
+#> 1  Dynfant a Chilâ Uchaf W05000965   Dunvant W06000011 Swansea
+#> 2  Dynfant a Chilâ Uchaf W05000966  Fairwood W06000011 Swansea
+#> 3               Townhill W05000979  Townhill W06000011 Swansea
+#> 4  Llanmorlais a'r Crwys W05000966  Fairwood W06000011 Swansea
+#> 5  Llanmorlais a'r Crwys W05000974 Penclawdd W06000011 Swansea
+#> 6                Y Cocyd W05000963   Cockett W06000011 Swansea
+#> 7                Glandwr W05000961    Castle W06000011 Swansea
+#> 8                Glandwr W05000969   Landore W06000011 Swansea
+#> 9               Cwmbwrla W05000964  Cwmbwrla W06000011 Swansea
+#> 10            Bôn-y-maen W05000960  Bonymaen W06000011 Swansea
+#>                      geometry
+#> 1  POINT (-4.031534 51.62307)
+#> 2  POINT (-4.031534 51.62307)
+#> 3   POINT (-3.963942 51.6284)
+#> 4  POINT (-4.101869 51.63796)
+#> 5  POINT (-4.101869 51.63796)
+#> 6  POINT (-3.980032 51.63668)
+#> 7  POINT (-3.941649 51.63632)
+#> 8  POINT (-3.941649 51.63632)
+#> 9  POINT (-3.951766 51.63971)
+#> 10 POINT (-3.908663 51.64444)
 ```
 
 ``` r
 geo_get("lsoa", "Zetland", "ward", shape_fields = TRUE)
+#> Joining, by = "lsoa11cd"
 #> Simple feature collection with 3 features and 6 fields
 #> Geometry type: POLYGON
 #> Dimension:     XY
@@ -105,13 +118,15 @@ geo_get(bounds_level = "lad",
   within_level = "cty",
   return_style = "simple",
   return_boundaries = FALSE)
-#>     lad20cd        lad20nm   cty20cd         cty20nm
-#> 1 E07000078     Cheltenham E10000013 Gloucestershire
-#> 2 E07000079       Cotswold E10000013 Gloucestershire
+#> # A tibble: 6 x 4
+#>   lad20cd   lad20nm        cty20cd   cty20nm        
+#>   <chr>     <chr>          <chr>     <chr>          
+#> 1 E07000078 Cheltenham     E10000013 Gloucestershire
+#> 2 E07000079 Cotswold       E10000013 Gloucestershire
 #> 3 E07000080 Forest of Dean E10000013 Gloucestershire
-#> 4 E07000081     Gloucester E10000013 Gloucestershire
-#> 5 E07000082         Stroud E10000013 Gloucestershire
-#> 6 E07000083     Tewkesbury E10000013 Gloucestershire
+#> 4 E07000081 Gloucester     E10000013 Gloucestershire
+#> 5 E07000082 Stroud         E10000013 Gloucestershire
+#> 6 E07000083 Tewkesbury     E10000013 Gloucestershire
 ```
 
 Return a bare API query ready to be run or checked externally:
@@ -123,7 +138,7 @@ build_api_query(
   within_level = "cauth20nm",
   within = "Greater Manchester"
 )
-#> [1] "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/LAD20_CAUTH20_EN_LU/FeatureServer/0/query?where=%20(CAUTH20NM%20%3D%20'GREATER%20MANCHESTER')%20&outFields=*&outSR=4326&f=json&returnDistinctValues=true"
+#> [1] "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/LAD20_CAUTH20_EN_LU/FeatureServer/0/query?where=%20(CAUTH20NM%20=%20'GREATER%20MANCHESTER')%20&outFields=*&resultType=standard&returnDistinctValues=true&f=json"
 ```
 
 ## Contributing

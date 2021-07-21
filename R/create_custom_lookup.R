@@ -63,10 +63,6 @@ create_custom_lookup <- function(bounds_level,
                                  include_welsh_names = NULL) {
 
 
-
-  # when looking up LSOA -> MSOA, retain LSOA cols?
-  keep_lsoa_cols <- TRUE
-
   # When returning LSOAs but not Wards, and return_style is "tidy" or
   # "full", tend to include MSOA columns, unless overridden by user param
   if (is.null(include_msoa) &&
@@ -88,6 +84,10 @@ create_custom_lookup <- function(bounds_level,
     )
     include_msoa <- FALSE
   }
+
+
+  # when looking up LSOA -> MSOA, retain LSOA cols?
+  keep_lsoa_cols <- TRUE
 
   if (tolower(bounds_level) == "msoa") {
     bounds_level <- "lsoa" # because OG doesn't have MSOA level lookups (?)
@@ -201,6 +201,18 @@ create_custom_lookup <- function(bounds_level,
   return_fields <- "*" # default for return_style = "tidy"
 
 
+  # This is to avoid getting both Wards and MSOAs, where things get messy
+  # because the lookups are all overlapped and you get more than one row
+  # per L/MSOA, and download a load of duplicate boundaries.
+  if (return_style == "tidy" &
+      bounds_level == "lsoa" &
+      within_level %in% c("lad", "ltla")
+  ) {
+    return_style <- "simple"
+  }
+
+
+
   # use return_style to decide how many columns to return
   if (return_style == "simple") {
     return_fields <- fields
@@ -224,11 +236,25 @@ create_custom_lookup <- function(bounds_level,
       return_style <- "tidy"
     }
 
-    df %>%
-      # return all columns between first and last specified fields
-      dplyr::select(!!rlang::sym(fields[1]):!!rlang::sym(fields[end_col])) %>%
-      dplyr::distinct() %>%
-      janitor::remove_empty("cols")
+    if (return_style == "minimal") {
+      df %>%
+        # return just first two columns
+        dplyr::select(!!rlang::sym(fields[1]):!!rlang::sym(fields[2])) %>%
+        dplyr::distinct() %>%
+        janitor::remove_empty("cols")
+    } else if (return_style == "simple") {
+      df %>%
+        # return just the columns in "fields"
+        dplyr::select(any_of(fields)) %>%
+        dplyr::distinct() %>%
+        janitor::remove_empty("cols")
+    } else {
+      df %>%
+        # return all columns between first and last specified fields
+        dplyr::select(!!rlang::sym(fields[1]):!!rlang::sym(fields[end_col])) %>%
+        dplyr::distinct() %>%
+        janitor::remove_empty("cols")
+    }
   }
 
 
@@ -249,9 +275,7 @@ create_custom_lookup <- function(bounds_level,
   } else {
     # and for other things use the API as usual:
     df_out <- within %>%
-      # According to the API docs, 50 is the limit for geo queries.
-      # Excessively long queries return 404.
-      batch_it_simple(batch_size = 50) %>% # from my myrmidon pkg
+      batch_it_simple(batch_size = 25) %>% # from my myrmidon pkg
       purrr::map_df( ~ build_api_query(
       ref = table_code_ref,
       within_level = dplyr::nth(fields, nth_field),
