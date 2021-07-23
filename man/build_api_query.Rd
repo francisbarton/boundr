@@ -10,7 +10,6 @@ build_api_query(
   within_level,
   within = NULL,
   fields = "*",
-  return_geometry = TRUE,
   sr = 4326
 )
 }
@@ -31,8 +30,6 @@ returned}
 
 \item{fields}{The fields of the data to be returned. Defaults to \code{"*"}
 (all); can instead be a set of column names/variables.}
-
-\item{return_geometry}{Whether to return a geometry}
 
 \item{sr}{The (EPSG) spatial reference of any returned geometry.
 4326 ("WGS 84") by default. Can be specified as numeric or character.}

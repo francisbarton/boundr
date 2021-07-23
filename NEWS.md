@@ -1,3 +1,7 @@
+# 0.2.11
+
+* Removes the `returnGeometry` option previously added, as this was seemingly causing a problem with centroid retrieval? I don't think it was really needed anyway
+
 # 0.2.10
 
 * adds the ability to retrieve lookups and geometries at a single level, i.e. where `bounds_level` and `within_level` are the same.

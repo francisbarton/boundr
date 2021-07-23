@@ -41,6 +41,10 @@
 #'   return Welsh language LAD and MSOA names where relevant. \code{NULL} (the
 #'   default) means that an educated decision will be made by the program,
 #'   based on whether any of the areas returned have "^W" codes.
+#' @param return_boundaries whether to retrieve object boundaries data from
+#'   the API. Default \code{TRUE}. If \code{return_boundaries} and
+#'   \code{return_centroids} and \code{centroid_fields} are all \code{FALSE}, a
+#'   plain summary df without any geometry will be returned.
 #'
 #' @return a data frame or an sf (simple features) object (data frame
 #'   with geometries)
@@ -75,7 +79,6 @@ geo_get <- function(bounds_level,
     return_boundaries <- FALSE
     centroid_fields <- FALSE
     shape_fields <- FALSE
-    return_style <- "minimal"
   }
 
 
@@ -146,7 +149,6 @@ geo_get <- function(bounds_level,
     geo_get_bounds(
       bounds_query_level = bounds_query_level_new,
       area_codes = within,
-      return_boundaries,
       return_centroids,
       centroid_fields,
       shape_fields,

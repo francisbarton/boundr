@@ -7,7 +7,6 @@
 geo_get_bounds(
   bounds_query_level,
   area_codes,
-  return_boundaries = TRUE,
   return_centroids = FALSE,
   centroid_fields = FALSE,
   shape_fields = FALSE,
@@ -22,11 +21,6 @@ be the full code not an abbreviation such as "lsoa"}
 \item{area_codes}{a vector of codes that match the level of
 bounds_query_level. Probably to be supplied from a column pulled from a
 lookup df or similar.}
-
-\item{return_boundaries}{whether to retrieve object boundaries data from
-the API. Default \code{TRUE}. If \code{return_boundaries} and
-\code{return_centroids} and \code{centroid_fields} are all \code{FALSE}, a
-plain summary df without any geometry will be returned.}
 
 \item{return_centroids}{whether to retrieve area centroids instead of
 boundaries. Default \code{FALSE}. If set to TRUE then it will override

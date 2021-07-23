@@ -15,7 +15,6 @@
 #'   returned
 #' @param fields The fields of the data to be returned. Defaults to \code{"*"}
 #'   (all); can instead be a set of column names/variables.
-#' @param return_geometry Whether to return a geometry
 #' @param sr The (EPSG) spatial reference of any returned geometry.
 #'   4326 ("WGS 84") by default. Can be specified as numeric or character.
 #'
@@ -41,7 +40,6 @@ build_api_query <- function(ref,
                             within_level,
                             within = NULL,
                             fields = "*",
-                            return_geometry = TRUE,
                             sr = 4326) {
 
 
@@ -67,7 +65,7 @@ build_api_query <- function(ref,
     # https://geoportal.statistics.gov.uk/datasets/local-authority-district-to-combined-authority-december-2020-lookup-in-england
     "LAD20_CAUTH20_EN_LU",
 
-    # https://geoportal.statistics.gov.uk/datasets/ons::lower-layer-super-output-area-2011-to-upper-tier-local-authorities-2021-lookup-in-england-and-wales-
+    # https://geoportal.statistics.gov.uk/datasets/ons::lower-layer-super-output-area-2011-to-upper-tier-local-authorities-2021-lookup-in-england-and-wales
     "LSOA11_UTLA21_EW_LU",
 
     # https://geoportal.statistics.gov.uk/datasets/ons::lower-tier-local-authority-to-upper-tier-local-authority-april-2021-lookup-in-england-and-wales
@@ -147,22 +145,6 @@ build_api_query <- function(ref,
     distinct <- ""
   }
 
-
-  if (return_geometry) {
-    geom_line <- ""
-  } else {
-    geom_line <- "&returnGeometry=false"
-  }
-
-
-  # server string in query URL
-  # if (server == "feature") {
-  #   server_line <- "/FeatureServer/0/"
-  # }
-  #
-  # if (server == "map") {
-  #   server_line <- "/MapServer/0/"
-  # }
 
   # upper or lower case field names? it seems to depend on the server, or
   # maybe the type, haven't managed to check yet.
@@ -261,7 +243,6 @@ build_api_query <- function(ref,
     sr_line,
     result_type_line,
     result_type,
-    geom_line,
     distinct,
     return_format
   )
