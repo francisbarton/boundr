@@ -72,7 +72,9 @@ geo_get_bounds <- function(bounds_query_level,
     "ctyua20cd",  13,     FALSE,
     "rgn20cd",    14,     FALSE,
     "ctry20cd",   15,     FALSE,
-    "msoa11cd",   16,     TRUE
+    "oa11cd",     16,     TRUE,
+    "lsoa11cd",   17,     TRUE,
+    "msoa11cd",   18,     TRUE
   )
 
 

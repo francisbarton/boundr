@@ -67,7 +67,7 @@ create_custom_lookup <- function(bounds_level,
   # "full", tend to include MSOA columns, unless overridden by user param
   if (is.null(include_msoa) &&
       tolower(bounds_level) %in% c("oa", "coa", "lsoa") &&
-      !tolower(within_level) %in% c("wd", "ward", "lad") &&
+      !tolower(within_level) %in% c("wd", "ward") &&
       return_style == "tidy") {
     include_msoa <- TRUE
   } else if (is.null(include_msoa)) {
@@ -110,7 +110,7 @@ create_custom_lookup <- function(bounds_level,
     "msoa",   "msoa",   1,
     "oa",     "rgn",    1,
     "lsoa",   "rgn",    1,
-    "oa",     "lad",    2, # 1 would work: returns MSOAs; 2 retns Wards
+    "oa",     "lad",    1, # 2 would return Wards
     "oa",     "wd",     2,
     "wd",     "wd",     3,
     "wd",     "lad",    3,

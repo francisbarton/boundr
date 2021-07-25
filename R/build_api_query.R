@@ -104,8 +104,18 @@ build_api_query <- function(ref,
 
 
 
-    ### CENTROIDS (16)
+    ### CENTROIDS (16 - 18)
     ##################################################################
+
+    # Output Areas (December 2011) Population Weighted Centroids
+    # https://geoportal.statistics.gov.uk/datasets/ons::output-areas-december-2011-population-weighted-centroids-1/
+    "Output_Area_December_2011_Centroids",
+
+
+    # Lower Layer Super Output Areas (December 2011) Population Weighted Centroids
+    # https://geoportal.statistics.gov.uk/datasets/ons::lower-layer-super-output-areas-december-2011-population-weighted-centroids
+    "Lower_Super_Output_Areas_December_2011_Centroids",
+
 
     # Middle Layer Super Output Areas (December 2011) Population Weighted Centroids
     # https://geoportal.statistics.gov.uk/datasets/middle-layer-super-output-areas-december-2011-population-weighted-centroids

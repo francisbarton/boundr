@@ -1,3 +1,8 @@
+# 0.2.12
+
+* Enables population-weighted centroid queries for OA and LSOA as well as MSOA now
+* Fixed OA:LAD queries returning wards as intermediate levels instead of MSOAs
+
 # 0.2.11
 
 * Removes the `returnGeometry` option previously added, as this was seemingly causing a problem with centroid retrieval? I don't think it was really needed anyway
