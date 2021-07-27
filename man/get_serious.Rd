@@ -12,3 +12,4 @@ get_serious(x)
 \description{
 filter a lookup table to get formal field codes from informal inputs
 }
+\keyword{internal}

@@ -48,3 +48,4 @@ an sf object
 \description{
 Return boundary geometries for supplied list of area codes
 }
+\keyword{internal}

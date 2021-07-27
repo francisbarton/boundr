@@ -36,6 +36,7 @@
 #'   default) means that an educated decision will be made by the program,
 #'   based on whether any of the areas returned have "^W" codes.
 #'
+#' @keywords internal
 #' @return a data frame (tibble)
 #' @examples
 #' \dontrun{
@@ -211,6 +212,10 @@ create_custom_lookup <- function(bounds_level,
     return_style <- "simple"
   }
 
+  # this combo won't work! So switch to simple
+  if (within_cd && return_style == "minimal") {
+    return_style <- "simple"
+  }
 
 
   # use return_style to decide how many columns to return
@@ -274,6 +279,7 @@ create_custom_lookup <- function(bounds_level,
       dplyr::filter(ctry21nm %in% within)
   } else {
     # and for other things use the API as usual:
+
     df_out <- within %>%
       batch_it_simple(batch_size = 25) %>% # from my myrmidon pkg
       purrr::map_df( ~ build_api_query(

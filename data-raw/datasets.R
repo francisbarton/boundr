@@ -13,7 +13,7 @@ lsoa11cdnm <- paste0(
   dplyr::select(1:2)
 
 
-usethis::use_data(lsoa11cdnm, overwrite = TRUE)
+usethis::use_data(lsoa11cdnm, overwrite = TRUE, internal = FALSE)
 
 
 
@@ -49,4 +49,6 @@ upper_tier_region_ctry_lookup <- extract_properties(
   dplyr::distinct() %>%
   dplyr::arrange(utla21cd)
 
-usethis::use_data(upper_tier_region_ctry_lookup, overwrite = TRUE)
+
+
+usethis::use_data(upper_tier_region_ctry_lookup, overwrite = TRUE, internal = FALSE)

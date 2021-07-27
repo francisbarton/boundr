@@ -21,6 +21,7 @@
 #'   no geometry is returned/returnable, eg lookup queries
 #' @param quiet_read Controls quiet parameter to sf::st_read
 #'
+#' @keywords internal
 #' @return an sf object
 #' @export
 geo_get_bounds <- function(bounds_query_level,
@@ -86,18 +87,13 @@ geo_get_bounds <- function(bounds_query_level,
     dplyr::pull(ref)
 
 
-  type <- "census"
-  if (return_centroids) {
-    type <- "centroid"
-  }
-
   bounds_queries <- area_codes %>%
     # According to the API docs, 50 is the limit for geo queries.
     # Excessively long queries return 404.
-    batch_it_simple(batch_size = 50) %>% # borrowed from my myrmidon utils pkg
+    # Playing it safe with 25
+    batch_it_simple(batch_size = 25) %>% # borrowed from my myrmidon utils pkg
     purrr::map(~ build_api_query(
       ref = ref,
-      type = type,
       within_level = bounds_query_level,
       within = .,
       fields = return_fields,

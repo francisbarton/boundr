@@ -1,6 +1,7 @@
 #' Helper function
 #'
 #' @param x an API query string (from build_api_query())
+#' @keywords internal
 #' @return a data frame
 extract_lookup <- function(x) {
   x %>%

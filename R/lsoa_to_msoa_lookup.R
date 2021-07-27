@@ -6,7 +6,7 @@
 #'   not. Boolean. Default TRUE.
 #' @param keep whether to keep the LSOA column(s) or just return a df starting
 #'   at MSOA level. Default FALSE.
-#'
+#' @keywords internal
 #' @return a data frame (a lookup table)
 #'
 lsoa_to_msoa_lookup <- function(
@@ -46,7 +46,8 @@ lsoa_to_msoa_lookup <- function(
 
 
   df_out <- df %>%
-    dplyr::select(dplyr::any_of(c("oa11cd", "lsoa11cd", "lsoa11nm"))) %>%
+    # dplyr::select(dplyr::any_of(c("oa11cd", "lsoa11cd", "lsoa11nm"))) %>%
+    dplyr::select(dplyr::starts_with(c("oa", "lsoa"))) %>%
     dplyr::distinct() %>%
     dplyr::left_join(msoa_lookup) %>%
     dplyr::left_join(df)
@@ -56,7 +57,7 @@ lsoa_to_msoa_lookup <- function(
   } else {
     df_out %>%
       dplyr::select(
-        !dplyr::any_of(c("oa11cd", "lsoa11cd", "lsoa11nm", "wd19cd", "wd19nm"))
+        !dplyr::starts_with(c("oa", "lsoa", "wd"))
         ) %>%
       dplyr::distinct()
   }

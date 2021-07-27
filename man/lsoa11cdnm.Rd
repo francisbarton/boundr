@@ -3,7 +3,7 @@
 \docType{data}
 \name{lsoa11cdnm}
 \alias{lsoa11cdnm}
-\title{A list of all LSOAs in England and Wales: codes and names}
+\title{(data) A list of all LSOAs in England and Wales: codes and names}
 \format{
 A data frame with 34753 rows and 2 variables:
 \describe{
@@ -15,6 +15,6 @@ A data frame with 34753 rows and 2 variables:
 lsoa11cdnm
 }
 \description{
-A list of all LSOAs in England and Wales: codes and names
+(data) A list of all LSOAs in England and Wales: codes and names
 }
 \keyword{datasets}

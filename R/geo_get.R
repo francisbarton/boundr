@@ -1,4 +1,4 @@
-#' Get boundaries for small areas within a local authority area
+#' Get boundaries for smaller areas within a larger area
 #'
 #' The ONS OpenGeography Portal (\url{https://geoportal.statistics.gov.uk/})
 #' is a great resource for area boundary and data lookups within the UK.
@@ -15,18 +15,20 @@
 #' @param within The name of a geographic area to filter by eg "Swindon",
 #'   "Gloucestershire", "Wales".
 #' @param within_level Upper geographic level to filter at. eg if filtering to
-#'   find all LSOAs in a local authority, \code{within_level} will be "lad". Has
-#'   to be one of "wd/ward", "lad", "cty/county", "utla/upper", "rgn/region",
-#'   "cauth" or "ctry/country". Case-insensitive. Not all combinations of
-#'   \code{bounds_level} and \code{within_level} make sense or are possible! NB
-#'   "county" includes metropolitan counties such as "Inner London", "Tyne and
+#'   find all LSOAs in a local authority, \code{within_level} will be "lad".
+#'   Has to be one of "wd/ward", "lad/ltla", "cty/county", "utla/upper",
+#'   "rgn/region", "cauth" or "ctry/country". Case-insensitive. Not all
+#'   combinations of \code{bounds_level} and \code{within_level} make sense or
+#'   are possible! NB "county" includes metropolitan counties such as "Tyne and
 #'   Wear" and "West Midlands".
 #' @param within_cd Usually you'll build the query with a place name to search
 #'   within. But sometimes you may wish to pass in a vector of area codes
 #'   instead (if that's all you have, or more likely if you are querying within
 #'   wards, which don't have unique names (there's a lot of Abbey wards in
 #'   England!)). If you're passing in area codes not names, set this to TRUE.
-#' @param include_msoa If \code{bounds_level} = LSOA and return_style is "tidy",
+#'   NB this only applies to the higher, "within", level. jogger won't let you
+#'   retrieve boundaries by passing in codes for the lower (bounds) level.
+#' @param include_msoa If \code{bounds_level} = LSOA and return_style = "tidy",
 #'   whether to also include MSOA columns (in "tidy" return style). If
 #'   \code{bounds_level} is MSOA, this will be forced to \code{TRUE}.
 #' @param return_style "tidy" (the default) means all available columns between
@@ -35,8 +37,8 @@
 #'   nm) columns for \code{bounds_level} and \code{within_level} are returned -
 #'   other columns are omitted. "minimal" means 'only return the columns for
 #'   \code{bounds_level}'.
-#' @param include_welsh_names Only makes a difference when \code{bounds_level} =
-#'   msoa, or when \code{bounds_level} = lsoa and \code{return_style} = "tidy".
+#' @param include_welsh_names Only makes a difference when \code{bounds_level}
+#'  = msoa, or when \code{bounds_level} = lsoa and \code{return_style} = tidy.
 #'   \code{FALSE} returns no Welsh language columns. \code{TRUE} attempts to
 #'   return Welsh language LAD and MSOA names where relevant. \code{NULL} (the
 #'   default) means that an educated decision will be made by the program,
@@ -156,7 +158,7 @@ geo_get <- function(bounds_level,
       quiet_read
     ) %>%
       dplyr::rename(!!bounds_query_level_orig := 1) %>%
-      dplyr::left_join(basic_df) %>%
+      dplyr::left_join(basic_df, by = bounds_query_level_orig) %>%
       dplyr::relocate(names(basic_df))
   }
 }

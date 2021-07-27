@@ -1,3 +1,8 @@
+# 0.2.13
+
+* Fixes a bug where `within_cd` and `return_style = minimal` – a non-functional combination – was allowed through.
+* Fixes an earlier mistake where I thought that all API URLs were "FeatureServer" now - but centroid queries still need "MapServer".
+
 # 0.2.12
 
 * Enables population-weighted centroid queries for OA and LSOA as well as MSOA now

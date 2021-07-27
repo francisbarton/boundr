@@ -5,9 +5,6 @@
 #'
 #' @param ref an integer, passed by the calling function, that
 #'   indicates which url_string to use
-#' @param type geographies can be listed as various types. Here we are just
-#'   using Census geographies and Administrative geographies. This affects the
-#'   beginning of the query URL. "census" is the default.
 #' @param within_level The area level variable name associated with the
 #'   locations filter. e.g. \code{"cty19nm"} or \code{"rgn19nm"}
 #' @param within A place name, or list of place names or codes, to filter the
@@ -36,7 +33,6 @@
 #'   fields = c("lad20cd", "lad20nm")
 #' )
 build_api_query <- function(ref,
-                            type = "census",
                             within_level,
                             within = NULL,
                             fields = "*",
@@ -123,6 +119,7 @@ build_api_query <- function(ref,
     )
 
 
+
   ####################################################################
   # set up commonly used string variables for query URL construction;
   # just for neatness & easier updating. These are just taken from the
@@ -133,27 +130,31 @@ build_api_query <- function(ref,
   # pull table code from list above
   url_string <- url_strings[[ref]]
 
-  url_base <- "https://ons-inspire.esriuk.com/"
-
-  distinct <- "&returnDistinctValues=true"
-
-  if (type == "census") {
+  # standard
+  if (ref < 16) {
     url_base <- "https://services1.arcgis.com/ESMARspQHYMw9BZ9/"
-    admin <- ""
+    part_2 <- ""
+    server_line <- "/FeatureServer/0/"
+    distinct <- "&returnDistinctValues=true"
   }
 
-  if (type == "admin") {
-    admin <- "Administrative_Boundaries/"
-  }
-
-  if (type == "other") {
-    admin <- "Other_Boundaries/"
-  }
-
-  if (type == "centroid") {
-    admin <- "Census_Boundaries/"
+  # centroids only
+  if (ref %in% 16:18) {
+    url_base <- "https://ons-inspire.esriuk.com/"
+    part_2 <- "Census_Boundaries/"
+    server_line <- "/MapServer/0/"
     distinct <- ""
   }
+
+  # mothballed for now (maybe needed for things like CCG boundaries...)
+  # if (type == "admin") {
+  #   part_2 <- "Administrative_Boundaries/"
+  # }
+  #
+  # if (type == "other") {
+  #   part_2 <- "Other_Boundaries/"
+  # }
+
 
 
   # upper or lower case field names? it seems to depend on the server, or
@@ -205,7 +206,7 @@ build_api_query <- function(ref,
   }
 
 
-  # for simple lookup queries  we can use "standard" result type;
+  # for simple lookup queries we can use "standard" result type;
   # CRS is irrelevant
   # "7" will need to be changed if list above incorporates more lookup options
   if (ref %in% 1:7) {
@@ -223,9 +224,6 @@ build_api_query <- function(ref,
 
   arcgis_base <- "arcgis/rest/services/"
 
-  # they all seem to be this since recent changes
-  server_line <- "/FeatureServer/0/"
-
   query_line <- "query?where="
   within_open <- "%20("
   within_close <- ")%20"
@@ -241,7 +239,7 @@ build_api_query <- function(ref,
   paste0(
     url_base,
     arcgis_base,
-    admin,
+    part_2,
     url_string,
     server_line,
     query_line,

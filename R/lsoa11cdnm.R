@@ -1,4 +1,4 @@
-#' A list of all LSOAs in England and Wales: codes and names
+#' (data) A list of all LSOAs in England and Wales: codes and names
 #'
 #' @format A data frame with 34753 rows and 2 variables:
 #' \describe{

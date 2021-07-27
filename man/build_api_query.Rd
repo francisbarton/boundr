@@ -4,22 +4,11 @@
 \alias{build_api_query}
 \title{Helper Function to Build Queries to the Open Geography API}
 \usage{
-build_api_query(
-  ref,
-  type = "census",
-  within_level,
-  within = NULL,
-  fields = "*",
-  sr = 4326
-)
+build_api_query(ref, within_level, within = NULL, fields = "*", sr = 4326)
 }
 \arguments{
 \item{ref}{an integer, passed by the calling function, that
 indicates which url_string to use}
-
-\item{type}{geographies can be listed as various types. Here we are just
-using Census geographies and Administrative geographies. This affects the
-beginning of the query URL. "census" is the default.}
 
 \item{within_level}{The area level variable name associated with the
 locations filter. e.g. \code{"cty19nm"} or \code{"rgn19nm"}}

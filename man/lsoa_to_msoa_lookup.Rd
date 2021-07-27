@@ -22,3 +22,4 @@ a data frame (a lookup table)
 \description{
 Helper Function to Convert LSOA names to MSOA Codes + Names
 }
+\keyword{internal}

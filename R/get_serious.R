@@ -1,6 +1,7 @@
 #' filter a lookup table to get formal field codes from informal inputs
 #'
 #' @param x an input string or vector of strings
+#' @keywords internal
 get_serious <- function(x) {
 
   # the order of these really matters! bounds_level has to be higher in the

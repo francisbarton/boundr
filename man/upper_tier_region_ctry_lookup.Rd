@@ -3,7 +3,7 @@
 \docType{data}
 \name{upper_tier_region_ctry_lookup}
 \alias{upper_tier_region_ctry_lookup}
-\title{A lookup of upper-tier Local Authorities (EW) to their Region (if any) and Country}
+\title{(data) A lookup of upper-tier Local Authorities (EW) to their Region (if any) and Country}
 \format{
 A data frame with 174 rows and 6 variables:
 \describe{
@@ -19,6 +19,6 @@ A data frame with 174 rows and 6 variables:
 upper_tier_region_ctry_lookup
 }
 \description{
-A lookup of upper-tier Local Authorities (EW) to their Region (if any) and Country
+(data) A lookup of upper-tier Local Authorities (EW) to their Region (if any) and Country
 }
 \keyword{datasets}
