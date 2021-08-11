@@ -159,9 +159,9 @@ create_custom_lookup <- function(bounds_level,
     if (within_level == "cty") {
       within_level <- "utla"
     }
-    if (within_level == "ltla") {
-      within_level <- "lad"
-    }
+    # if (within_level == "ltla") {
+    #   within_level <- "lad"
+    # }
   }
 
   if (bounds_level == "lad" && within_level %in% c("utla", "rgn")) {
@@ -246,24 +246,22 @@ create_custom_lookup <- function(bounds_level,
     }
 
     if (return_style == "minimal") {
-      df %>%
+      df1 <- df %>%
         # return just first two columns
-        dplyr::select(!!rlang::sym(fields[1]):!!rlang::sym(fields[2])) %>%
-        dplyr::distinct() %>%
-        janitor::remove_empty("cols")
+        dplyr::select(!!rlang::sym(fields[1]):!!rlang::sym(fields[2]))
     } else if (return_style == "simple") {
-      df %>%
+      df1 <- df %>%
         # return just the columns in "fields"
-        dplyr::select(any_of(fields)) %>%
-        dplyr::distinct() %>%
-        janitor::remove_empty("cols")
+        dplyr::select(any_of(fields))
     } else {
-      df %>%
+      df1 <- df %>%
         # return all columns between first and last specified fields
-        dplyr::select(!!rlang::sym(fields[1]):!!rlang::sym(fields[end_col])) %>%
-        dplyr::distinct() %>%
-        janitor::remove_empty("cols")
+        dplyr::select(!!rlang::sym(fields[1]):!!rlang::sym(fields[end_col]))
     }
+
+    df1 %>%
+      dplyr::distinct() %>%
+      janitor::remove_empty("cols")
   }
 
 
@@ -272,37 +270,28 @@ create_custom_lookup <- function(bounds_level,
   if (within_cd) nth_field <- -2
   if (bounds_cd) nth_field <- 1
 
+  where_level <- dplyr::nth(fields, nth_field)
 
-  # no available ONS API lookup for UTLA:RGN, so use our built-in table
-  # (also prefer it for LAD:RGN lookups!):
-  if (bounds_level %in% c("upper", "utla") && within_level %in% c("region", "rgn")) {
-    df_out <- upper_tier_region_ctry_lookup %>%
-      dplyr::select(!(c(ltla21cd, ltla21nm, ctry21cd, ctry21nm))) %>%
-      dplyr::filter(rgn21nm %in% within) %>%
-      dplyr::distinct()
-  } else if (bounds_level %in% c("lad", "ltla") && within_level %in% c("region", "rgn")) {
-    df_out <- upper_tier_region_ctry_lookup %>%
-      dplyr::select(!(c(ctry21cd, ctry21nm))) %>%
-      dplyr::filter(rgn21nm %in% within)
-  } else if (bounds_level %in% c("upper", "utla") && within_level %in% c("country", "ctry")) {
-    df_out <- upper_tier_region_ctry_lookup %>%
-      dplyr::filter(ctry21nm %in% within) %>%
+  if (all(fields %in% names(oa_lad21_lookup))) {
+    df1 <- oa_lad21_lookup %>%
+      dplyr::filter(.data[[where_level]] %in% within) %>%
       dplyr::distinct()
   } else {
     # and for other things use the API as usual:
-
-    df_out <- within %>%
+    df1 <- within %>%
       batch_it_simple(batch_size = 25) %>% # from my myrmidon pkg
       purrr::map_df( ~ build_api_query(
       ref = table_code_ref,
-      where_level = dplyr::nth(fields, nth_field),
+      where_level = where_level,
       where = .,
       fields = return_fields
       ) %>%
-      extract_lookup() %>%
-      treat_results(return_style = return_style)
+      extract_lookup()
       )
   }
+
+  df_out <- df1 %>%
+    treat_results(return_style = return_style)
 
 
   # if not specified by the user, make an educated decision about

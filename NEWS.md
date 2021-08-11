@@ -1,3 +1,7 @@
+# 0.2.16
+
+* Simplifies `treat_results` routine and use of `oa_lad21_lookup` custom lookup
+
 # 0.2.15
 
 * Fixes internal data issue where datasets weren't being found

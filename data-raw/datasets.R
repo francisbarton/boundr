@@ -64,6 +64,28 @@ lad21nmw_lookup <- jsonlite::fromJSON(
 
 
 
+nnhts <- c("Corby", "East Northamptonshire", "Kettering", "Wellingborough")
+wnhts <- c("Daventry", "Northampton", "South Northamptonshire")
+
+
+oa_lad21_lookup <- jsonlite::fromJSON(
+  # https://geoportal.statistics.gov.uk/datasets/ons::output-area-to-lower-layer-super-output-area-to-middle-layer-super-output-area-to-local-authority-district-december-2020-lookup-in-england-and-wales/
+  "https://opendata.arcgis.com/datasets/65664b00231444edb3f6f83c9d40591f_0.geojson"
+) %>%
+  purrr::pluck("features", "properties") %>%
+  janitor::clean_names() %>%
+  dplyr::select(!c(fid, rgn20cd, rgn20nm)) %>%
+  dplyr::mutate(ltla21nm = dplyr::case_when(
+    lad20nm %in% nnhts ~ "North Northamptonshire",
+    lad20nm %in% wnhts ~ "West Northamptonshire",
+    TRUE ~ lad20nm
+  )) %>%
+  dplyr::left_join(upper_tier_region_ctry_lookup) %>%
+  dplyr::relocate(ltla21cd, .before = ltla21nm)
+
+
+
+
 
 hocl_msoa_names <- paste0(
   "https://houseofcommonslibrary.github.io/",
@@ -72,4 +94,4 @@ hocl_msoa_names <- paste0(
   dplyr::select(-Laname)
 
 
-usethis::use_data(lsoa11cdnm, upper_tier_region_ctry_lookup, lad21nmw_lookup, hocl_msoa_names, overwrite = TRUE, internal = TRUE, compress = "bzip2")
+usethis::use_data(lsoa11cdnm, upper_tier_region_ctry_lookup, lad21nmw_lookup, hocl_msoa_names, oa_lad21_lookup, overwrite = TRUE, internal = TRUE, compress = "bzip2")
