@@ -8,6 +8,7 @@ create_custom_lookup(
   bounds_level,
   within,
   within_level,
+  bounds_cd = FALSE,
   within_cd = FALSE,
   include_msoa = NULL,
   return_style = "tidy",
@@ -20,23 +21,28 @@ create_custom_lookup(
 "cty/county". Case-insensitive.}
 
 \item{within}{The name of a geographic area to filter by eg "Swindon",
-"Gloucestershire", "Wales".}
+"Gloucestershire", "Wales", or a set of area codes (with bounds_cd or
+within_cd).}
 
 \item{within_level}{Upper geographic level to filter at. eg if filtering to
-find all LSOAs in a local authority, \code{within_level} will be "lad". Has
-to be one of "wd/ward", "lad", "cty/county", "utla/upper", "rgn/region",
-"cauth" or "ctry/country". Case-insensitive. Not all combinations of
-\code{bounds_level} and \code{within_level} make sense or are possible! NB
-"county" includes metropolitan counties such as "Inner London", "Tyne and
+find all LSOAs in a local authority, \code{within_level} will be "lad".
+Has to be one of "wd/ward", "lad/ltla", "cty/county", "utla/upper",
+"rgn/region", "cauth" or "ctry/country". Case-insensitive. Not all
+combinations of \code{bounds_level} and \code{within_level} make sense or
+are possible! NB "county" includes metropolitan counties such as "Tyne and
 Wear" and "West Midlands".}
+
+\item{bounds_cd}{When you just supply a list of area codes for places you
+want boundaries for. NB this relates to lower areas, "bounds" level.}
 
 \item{within_cd}{Usually you'll build the query with a place name to search
 within. But sometimes you may wish to pass in a vector of area codes
 instead (if that's all you have, or more likely if you are querying within
 wards, which don't have unique names (there's a lot of Abbey wards in
-England!)). If you're passing in area codes not names, set this to TRUE.}
+England!)). If you're passing in area codes not names, set this to TRUE.
+NB this only applies to the higher, "within", level.}
 
-\item{include_msoa}{If \code{bounds_level} is LSOA and return_style is "tidy",
+\item{include_msoa}{If \code{bounds_level} = LSOA and return_style = "tidy",
 whether to also include MSOA columns (in "tidy" return style). If
 \code{bounds_level} is MSOA, this will be forced to \code{TRUE}.}
 
@@ -52,7 +58,7 @@ msoa, or when \code{bounds_level} = lsoa and \code{return_style} = "tidy".
 \code{FALSE} returns no Welsh language columns. \code{TRUE} attempts to
 return Welsh language LAD and MSOA names where relevant. \code{NULL} (the
 default) means that an educated decision will be made by the program,
-based on whether any of the areas returned have "^W" codes.}
+based on whether any of the areas returned have "W" codes.}
 }
 \value{
 a data frame (tibble)

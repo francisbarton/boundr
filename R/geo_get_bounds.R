@@ -64,12 +64,11 @@ geo_get_bounds <- function(bounds_query_level,
 
   ref_lookup <- dplyr::tribble(
     ~bounds_level, ~ref, ~centroids,
-
     "oa11cd",      8,     FALSE,
     "lsoa11cd",    9,     FALSE,
     "msoa11cd",   10,     FALSE,
     "wd20cd",     11,     FALSE,
-    "lad20cd",    12,     FALSE,
+    "lad21cd",    12,     FALSE,
     "ctyua20cd",  13,     FALSE,
     "rgn20cd",    14,     FALSE,
     "ctry20cd",   15,     FALSE,
@@ -94,8 +93,8 @@ geo_get_bounds <- function(bounds_query_level,
     batch_it_simple(batch_size = 25) %>% # borrowed from my myrmidon utils pkg
     purrr::map(~ build_api_query(
       ref = ref,
-      within_level = bounds_query_level,
-      within = .,
+      where_level = bounds_query_level,
+      where = .,
       fields = return_fields,
       sr = spatial_ref
     ))

@@ -1,12 +1,22 @@
+# 0.2.15
+
+* Fixes internal data issue where datasets weren't being found
+* Adds more internal datasets to internal package data
+* Upgrades LAD boundaries query to 2021 boundaries
+* Simplifies LSOA:MSOA lookup by using internal data for HoCL names CSV
+
+
 # 0.2.13
 
 * Fixes a bug where `within_cd` and `return_style = minimal` – a non-functional combination – was allowed through.
 * Fixes an earlier mistake where I thought that all API URLs were "FeatureServer" now - but centroid queries still need "MapServer".
 
+
 # 0.2.12
 
 * Enables population-weighted centroid queries for OA and LSOA as well as MSOA now
-* Fixed OA:LAD queries returning wards as intermediate levels instead of MSOAs
+* Fixes OA:LAD queries returning wards as intermediate levels instead of MSOAs
+
 
 # 0.2.11
 

@@ -8,6 +8,7 @@ geo_get(
   bounds_level,
   within,
   within_level = NULL,
+  bounds_cd = FALSE,
   within_cd = FALSE,
   include_msoa = NULL,
   return_style = "tidy",
@@ -26,7 +27,8 @@ geo_get(
 "cty/county". Case-insensitive.}
 
 \item{within}{The name of a geographic area to filter by eg "Swindon",
-"Gloucestershire", "Wales".}
+"Gloucestershire", "Wales", or a set of area codes (with bounds_cd or
+within_cd).}
 
 \item{within_level}{Upper geographic level to filter at. eg if filtering to
 find all LSOAs in a local authority, \code{within_level} will be "lad".
@@ -36,13 +38,15 @@ combinations of \code{bounds_level} and \code{within_level} make sense or
 are possible! NB "county" includes metropolitan counties such as "Tyne and
 Wear" and "West Midlands".}
 
+\item{bounds_cd}{When you just supply a list of area codes for places you
+want boundaries for. NB this relates to lower areas, "bounds" level.}
+
 \item{within_cd}{Usually you'll build the query with a place name to search
 within. But sometimes you may wish to pass in a vector of area codes
 instead (if that's all you have, or more likely if you are querying within
 wards, which don't have unique names (there's a lot of Abbey wards in
 England!)). If you're passing in area codes not names, set this to TRUE.
-NB this only applies to the higher, "within", level. jogger won't let you
-retrieve boundaries by passing in codes for the lower (bounds) level.}
+NB this only applies to the higher, "within", level.}
 
 \item{include_msoa}{If \code{bounds_level} = LSOA and return_style = "tidy",
 whether to also include MSOA columns (in "tidy" return style). If
@@ -55,12 +59,12 @@ nm) columns for \code{bounds_level} and \code{within_level} are returned -
 other columns are omitted. "minimal" means 'only return the columns for
 \code{bounds_level}'.}
 
-\item{include_welsh_names}{Only makes a difference when \code{bounds_level}
-= msoa, or when \code{bounds_level} = lsoa and \code{return_style} = tidy.
+\item{include_welsh_names}{Only makes a difference when \code{bounds_level} =
+msoa, or when \code{bounds_level} = lsoa and \code{return_style} = "tidy".
 \code{FALSE} returns no Welsh language columns. \code{TRUE} attempts to
 return Welsh language LAD and MSOA names where relevant. \code{NULL} (the
 default) means that an educated decision will be made by the program,
-based on whether any of the areas returned have "^W" codes.}
+based on whether any of the areas returned have "W" codes.}
 
 \item{return_boundaries}{whether to retrieve object boundaries data from
 the API. Default \code{TRUE}. If \code{return_boundaries} and

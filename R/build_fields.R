@@ -1,8 +1,8 @@
 #' filter a lookup table to get formal field codes from informal inputs
 #'
-#' @param x an input string or vector of strings
+#' @param x a string or vector of strings
 #' @keywords internal
-get_serious <- function(x) {
+build_fields <- function(x) {
 
   # the order of these really matters! bounds_level has to be higher in the
   # table than within_level :-) :-O Due to the way the 'fields' vector works.
@@ -31,7 +31,22 @@ get_serious <- function(x) {
     "country", "ctry20"
   )
 
-  area_code_lookup %>%
-    dplyr::filter(friendly %in% tolower(x)) %>%
-    dplyr::pull(serious)
+  if (all(tolower(x) %in% area_code_lookup$friendly)) {
+    area_code_lookup %>%
+      dplyr::filter(friendly %in% tolower(x)) %>%
+      dplyr::pull(serious) %>%
+      rep(each = 2) %>%
+      paste0(c("cd", "nm")) %>%
+      unique()
+  } else if (any(tolower(x) %in% area_code_lookup$friendly)) {
+    usethis::ui_stop(
+      "If you specify 1 of bounds_level and within_level in full, you need also to specify the other (ie both)."
+    )
+  } else {
+    x %>%
+      stringr::str_remove_all("(cd|nm)$") %>%
+      rep(each = 2) %>%
+      paste0(c("cd", "nm")) %>%
+      unique()
+  }
 }

@@ -9,40 +9,6 @@
 #' @inheritParams create_custom_lookup
 #' @inheritParams geo_get_bounds
 #'
-#' @param bounds_level The lowest level at which to return codes and names, eg
-#'   "LSOA". Has to be one of "lsoa", "msoa", "wd/ward", "lad",
-#'   "cty/county". Case-insensitive.
-#' @param within The name of a geographic area to filter by eg "Swindon",
-#'   "Gloucestershire", "Wales".
-#' @param within_level Upper geographic level to filter at. eg if filtering to
-#'   find all LSOAs in a local authority, \code{within_level} will be "lad".
-#'   Has to be one of "wd/ward", "lad/ltla", "cty/county", "utla/upper",
-#'   "rgn/region", "cauth" or "ctry/country". Case-insensitive. Not all
-#'   combinations of \code{bounds_level} and \code{within_level} make sense or
-#'   are possible! NB "county" includes metropolitan counties such as "Tyne and
-#'   Wear" and "West Midlands".
-#' @param within_cd Usually you'll build the query with a place name to search
-#'   within. But sometimes you may wish to pass in a vector of area codes
-#'   instead (if that's all you have, or more likely if you are querying within
-#'   wards, which don't have unique names (there's a lot of Abbey wards in
-#'   England!)). If you're passing in area codes not names, set this to TRUE.
-#'   NB this only applies to the higher, "within", level. jogger won't let you
-#'   retrieve boundaries by passing in codes for the lower (bounds) level.
-#' @param include_msoa If \code{bounds_level} = LSOA and return_style = "tidy",
-#'   whether to also include MSOA columns (in "tidy" return style). If
-#'   \code{bounds_level} is MSOA, this will be forced to \code{TRUE}.
-#' @param return_style "tidy" (the default) means all available columns between
-#'   \code{bounds_level} and \code{within_level} will be returned, but with any
-#'   empty columns removed. "simple" means that only the code and name (cd and
-#'   nm) columns for \code{bounds_level} and \code{within_level} are returned -
-#'   other columns are omitted. "minimal" means 'only return the columns for
-#'   \code{bounds_level}'.
-#' @param include_welsh_names Only makes a difference when \code{bounds_level}
-#'  = msoa, or when \code{bounds_level} = lsoa and \code{return_style} = tidy.
-#'   \code{FALSE} returns no Welsh language columns. \code{TRUE} attempts to
-#'   return Welsh language LAD and MSOA names where relevant. \code{NULL} (the
-#'   default) means that an educated decision will be made by the program,
-#'   based on whether any of the areas returned have "^W" codes.
 #' @param return_boundaries whether to retrieve object boundaries data from
 #'   the API. Default \code{TRUE}. If \code{return_boundaries} and
 #'   \code{return_centroids} and \code{centroid_fields} are all \code{FALSE}, a
@@ -65,6 +31,7 @@
 geo_get <- function(bounds_level,
                     within,
                     within_level = NULL,
+                    bounds_cd = FALSE,
                     within_cd = FALSE,
                     include_msoa = NULL,
                     return_style = "tidy",
@@ -89,6 +56,7 @@ geo_get <- function(bounds_level,
     bounds_level,
     within,
     within_level,
+    bounds_cd,
     within_cd,
     include_msoa,
     return_style,
@@ -130,11 +98,11 @@ geo_get <- function(bounds_level,
     }
 
     if (bounds_query_level_orig == "ltla21cd") {
-      bounds_query_level_new <- "lad20cd"
+      bounds_query_level_new <- "lad21cd"
     }
 
 
-    if (!within_cd) {
+    if (!bounds_cd) {
       within <- basic_df %>%
         dplyr::select(dplyr::ends_with("cd")) %>%
         dplyr::pull(1)

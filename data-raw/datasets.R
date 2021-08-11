@@ -1,7 +1,7 @@
 
 # List of all LSOAs in England and Wales: codes and names -----------------
 
-
+library(tidyverse)
 
 lsoa11cdnm <- paste0(
   "https://opendata.arcgis.com/",
@@ -13,8 +13,6 @@ lsoa11cdnm <- paste0(
   dplyr::select(1:2)
 
 
-usethis::use_data(lsoa11cdnm, overwrite = TRUE, internal = FALSE)
-
 
 
 extract_properties <- function(x) {
@@ -24,6 +22,9 @@ extract_properties <- function(x) {
     janitor::clean_names() %>%
     dplyr::select(-fid)
 }
+
+
+
 
 
 upper_tier_region_ctry_lookup <- extract_properties(
@@ -45,10 +46,30 @@ upper_tier_region_ctry_lookup <- extract_properties(
     ),
     by = c("ltla21cd" = "lad21cd", "ltla21nm" = "lad21nm")
   ) %>%
-  dplyr::select(!c(ltla21cd, ltla21nm)) %>%
-  dplyr::distinct() %>%
-  dplyr::arrange(utla21cd)
+  # dplyr::select(!c(ltla21cd, ltla21nm)) %>%
+  dplyr::distinct()
 
 
 
-usethis::use_data(upper_tier_region_ctry_lookup, overwrite = TRUE, internal = FALSE)
+
+
+
+lad21nmw_lookup <- jsonlite::fromJSON(
+  # https://geoportal.statistics.gov.uk/datasets/local-authority-districts-april-2021-names-and-codes-in-the-united-kingdom/
+  "https://opendata.arcgis.com/datasets/c02975a3618b46db958369ff7204d1bf_0.geojson") %>%
+  purrr::pluck("features", "properties") %>%
+  janitor::clean_names() %>%
+  dplyr::select(-fid)
+
+
+
+
+
+hocl_msoa_names <- paste0(
+  "https://houseofcommonslibrary.github.io/",
+  "msoanames/MSOA-Names-Latest.csv") %>%
+  readr::read_csv() %>%
+  dplyr::select(-Laname)
+
+
+usethis::use_data(lsoa11cdnm, upper_tier_region_ctry_lookup, lad21nmw_lookup, hocl_msoa_names, overwrite = TRUE, internal = TRUE, compress = "bzip2")

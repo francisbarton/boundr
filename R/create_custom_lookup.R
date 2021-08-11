@@ -2,25 +2,28 @@
 #'
 #' Roughly equivalent to \code{geo_get(boundaries = FALSE)}
 #'
-#'
 #' @param bounds_level The lowest level at which to return codes and names, eg
 #'   "LSOA". Has to be one of "lsoa", "msoa", "wd/ward", "lad",
 #'   "cty/county". Case-insensitive.
 #' @param within The name of a geographic area to filter by eg "Swindon",
-#'   "Gloucestershire", "Wales".
+#'   "Gloucestershire", "Wales", or a set of area codes (with bounds_cd or
+#'   within_cd).
 #' @param within_level Upper geographic level to filter at. eg if filtering to
-#'   find all LSOAs in a local authority, \code{within_level} will be "lad". Has
-#'   to be one of "wd/ward", "lad", "cty/county", "utla/upper", "rgn/region",
-#'   "cauth" or "ctry/country". Case-insensitive. Not all combinations of
-#'   \code{bounds_level} and \code{within_level} make sense or are possible! NB
-#'   "county" includes metropolitan counties such as "Inner London", "Tyne and
+#'   find all LSOAs in a local authority, \code{within_level} will be "lad".
+#'   Has to be one of "wd/ward", "lad/ltla", "cty/county", "utla/upper",
+#'   "rgn/region", "cauth" or "ctry/country". Case-insensitive. Not all
+#'   combinations of \code{bounds_level} and \code{within_level} make sense or
+#'   are possible! NB "county" includes metropolitan counties such as "Tyne and
 #'   Wear" and "West Midlands".
+#' @param bounds_cd When you just supply a list of area codes for places you
+#'   want boundaries for. NB this relates to lower areas, "bounds" level.
 #' @param within_cd Usually you'll build the query with a place name to search
 #'   within. But sometimes you may wish to pass in a vector of area codes
 #'   instead (if that's all you have, or more likely if you are querying within
 #'   wards, which don't have unique names (there's a lot of Abbey wards in
 #'   England!)). If you're passing in area codes not names, set this to TRUE.
-#' @param include_msoa If \code{bounds_level} is LSOA and return_style is "tidy",
+#'   NB this only applies to the higher, "within", level.
+#' @param include_msoa If \code{bounds_level} = LSOA and return_style = "tidy",
 #'   whether to also include MSOA columns (in "tidy" return style). If
 #'   \code{bounds_level} is MSOA, this will be forced to \code{TRUE}.
 #' @param return_style "tidy" (the default) means all available columns between
@@ -34,7 +37,7 @@
 #'   \code{FALSE} returns no Welsh language columns. \code{TRUE} attempts to
 #'   return Welsh language LAD and MSOA names where relevant. \code{NULL} (the
 #'   default) means that an educated decision will be made by the program,
-#'   based on whether any of the areas returned have "^W" codes.
+#'   based on whether any of the areas returned have "W" codes.
 #'
 #' @keywords internal
 #' @return a data frame (tibble)
@@ -58,6 +61,7 @@
 create_custom_lookup <- function(bounds_level,
                                  within,
                                  within_level,
+                                 bounds_cd = FALSE,
                                  within_cd = FALSE,
                                  include_msoa = NULL,
                                  return_style = "tidy",
@@ -140,11 +144,13 @@ create_custom_lookup <- function(bounds_level,
     dplyr::mutate(bounds_level = dplyr::case_when(
       stringr::str_ends(bounds_level, "oa") ~ paste0(bounds_level, "11cd"),
       stringr::str_ends(bounds_level, "la") ~ paste0(bounds_level, "21cd"),
+      # bounds_level == "lad" ~ paste0(bounds_level, "21cd"),
       TRUE ~ paste0(bounds_level, "20cd")
     )) %>%
     dplyr::mutate(within_level = dplyr::case_when(
       stringr::str_ends(within_level, "oa") ~ paste0(within_level, "11nm"),
       stringr::str_ends(within_level, "la") ~ paste0(within_level, "21nm"),
+      # stringr::str_match(bounds_level, "lad") ~ paste0(bounds_level, "21nm"),
       TRUE ~ paste0(within_level, "20nm")
     ))
 
@@ -158,16 +164,14 @@ create_custom_lookup <- function(bounds_level,
     }
   }
 
-  if (bounds_level == "lad" && within_level == "utla") {
+  if (bounds_level == "lad" && within_level %in% c("utla", "rgn")) {
     bounds_level <- "ltla"
   }
 
 
   # create a vector of field codes from the upper and lower levels supplied
   fields <- c(bounds_level, within_level) %>%
-    get_serious() %>%
-    rep(each = 2) %>%
-    paste0(c("cd", "nm"))
+    build_fields()
 
   end_col <- length(fields)
 
@@ -176,7 +180,7 @@ create_custom_lookup <- function(bounds_level,
   # oa11cd column.
   # dplyr::select() doesn't mind if you pass a duplicated column name to it,
   # either... BRILLIANT!
-  if (bounds_level == "oa") fields[2] <- "oa11cd" # cheeky
+  if (fields[2] == "oa11nm") fields[2] <- "oa11cd" # cheeky
 
   if (bounds_level == "oa" && within_level %in% c("wd", "ward")) {
     return_style <- "tidy"
@@ -230,7 +234,7 @@ create_custom_lookup <- function(bounds_level,
   }
 
   # maybe extract to an external helper function in another file?
-  treat_results <- function(df, return_style) {
+  treat_results <- function(df, return_style = "tidy") {
 
     # check that the parameter is valid
     # TODO: I think I should do this with match.args() or sth
@@ -266,17 +270,24 @@ create_custom_lookup <- function(bounds_level,
   # use last field by default, but use penultimate if using codes not names
   nth_field <- -1
   if (within_cd) nth_field <- -2
+  if (bounds_cd) nth_field <- 1
 
 
-  # no available ONS API lookup for UTLA:RGN, so use our built-in table:
+  # no available ONS API lookup for UTLA:RGN, so use our built-in table
+  # (also prefer it for LAD:RGN lookups!):
   if (bounds_level %in% c("upper", "utla") && within_level %in% c("region", "rgn")) {
+    df_out <- upper_tier_region_ctry_lookup %>%
+      dplyr::select(!(c(ltla21cd, ltla21nm, ctry21cd, ctry21nm))) %>%
+      dplyr::filter(rgn21nm %in% within) %>%
+      dplyr::distinct()
+  } else if (bounds_level %in% c("lad", "ltla") && within_level %in% c("region", "rgn")) {
     df_out <- upper_tier_region_ctry_lookup %>%
       dplyr::select(!(c(ctry21cd, ctry21nm))) %>%
       dplyr::filter(rgn21nm %in% within)
   } else if (bounds_level %in% c("upper", "utla") && within_level %in% c("country", "ctry")) {
     df_out <- upper_tier_region_ctry_lookup %>%
-      dplyr::select(!(c(rgn21cd, rgn21nm))) %>%
-      dplyr::filter(ctry21nm %in% within)
+      dplyr::filter(ctry21nm %in% within) %>%
+      dplyr::distinct()
   } else {
     # and for other things use the API as usual:
 
@@ -284,8 +295,8 @@ create_custom_lookup <- function(bounds_level,
       batch_it_simple(batch_size = 25) %>% # from my myrmidon pkg
       purrr::map_df( ~ build_api_query(
       ref = table_code_ref,
-      within_level = dplyr::nth(fields, nth_field),
-      within = .,
+      where_level = dplyr::nth(fields, nth_field),
+      where = .,
       fields = return_fields
       ) %>%
       extract_lookup() %>%
@@ -315,15 +326,6 @@ create_custom_lookup <- function(bounds_level,
   # add Welsh language LAD names if desired
   # maybe extract to an external helper function in another file?
   if ("lad21nm" %in% colnames(df_out) && include_welsh_names) {
-    lad21nmw_lookup <- jsonlite::fromJSON(
-      # "https://opendata.arcgis.com/datasets/4094644cae32481f95fe7030334c8589_0.geojson" # old (2020)
-      # https://geoportal.statistics.gov.uk/datasets/local-authority-districts-april-2021-names-and-codes-in-the-united-kingdom/
-      "https://opendata.arcgis.com/datasets/c02975a3618b46db958369ff7204d1bf_0.geojson" # 2021
-      ) %>%
-      purrr::pluck("features", "properties") %>%
-      janitor::clean_names() %>%
-      dplyr::select(-fid)
-
     df_out <- df_out %>%
       dplyr::left_join(lad21nmw_lookup) %>%
       dplyr::relocate(lad21nmw, .after = lad21nm)

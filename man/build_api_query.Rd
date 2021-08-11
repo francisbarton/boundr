@@ -4,18 +4,17 @@
 \alias{build_api_query}
 \title{Helper Function to Build Queries to the Open Geography API}
 \usage{
-build_api_query(ref, within_level, within = NULL, fields = "*", sr = 4326)
+build_api_query(ref, where_level, where = NULL, fields = "*", sr = 4326)
 }
 \arguments{
 \item{ref}{an integer, passed by the calling function, that
-indicates which url_string to use}
+indicates which url_string to use.}
 
-\item{within_level}{The area level variable name associated with the
-locations filter. e.g. \code{"cty19nm"} or \code{"rgn19nm"}}
+\item{where_level}{The variable name associated with the
+locations filter. e.g. \code{"lsoa11nm"} or \code{"rgn20cd"}}
 
-\item{within}{A place name, or list of place names or codes, to filter the
-data by. If nothing is stipulated then the full unfiltered table will be
-returned}
+\item{where}{A vector of names or codes to filter the data by. If nothing is
+provided then the full table should be returned.}
 
 \item{fields}{The fields of the data to be returned. Defaults to \code{"*"}
 (all); can instead be a set of column names/variables.}
@@ -28,17 +27,17 @@ a string that should function as a valid API query
 }
 \description{
 A function called by create_custom_lookup.R and geo_get.R to build a
-valid query
+valid query.
 }
 \examples{
 build_api_query(ref = 4,
-  within_level = "cauth20nm",
-  within = "Greater Manchester",
+  where_level = "cauth20nm",
+  where = "Greater Manchester",
   fields = c("lad20cd", "lad20nm", "cauth20cd", "cauth20nm")
 )
 build_api_query(ref = 12,
-  within_level = "lad20nm",
-  within = c(
+  where_level = "lad20nm",
+  where = c(
     "Cheltenham", "Gloucester",
     "Stroud", "Cotswold",
     "Tewkesbury", "Forest of Dean"

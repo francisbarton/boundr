@@ -1,15 +1,14 @@
 #' Helper Function to Build Queries to the Open Geography API
 #'
 #' A function called by create_custom_lookup.R and geo_get.R to build a
-#' valid query
+#' valid query.
 #'
 #' @param ref an integer, passed by the calling function, that
-#'   indicates which url_string to use
-#' @param within_level The area level variable name associated with the
-#'   locations filter. e.g. \code{"cty19nm"} or \code{"rgn19nm"}
-#' @param within A place name, or list of place names or codes, to filter the
-#'   data by. If nothing is stipulated then the full unfiltered table will be
-#'   returned
+#'   indicates which url_string to use.
+#' @param where_level The variable name associated with the
+#'   locations filter. e.g. \code{"lsoa11nm"} or \code{"rgn20cd"}
+#' @param where A vector of names or codes to filter the data by. If nothing is
+#' provided then the full table should be returned.
 #' @param fields The fields of the data to be returned. Defaults to \code{"*"}
 #'   (all); can instead be a set of column names/variables.
 #' @param sr The (EPSG) spatial reference of any returned geometry.
@@ -19,13 +18,13 @@
 #' @export
 #' @examples
 #' build_api_query(ref = 4,
-#'   within_level = "cauth20nm",
-#'   within = "Greater Manchester",
+#'   where_level = "cauth20nm",
+#'   where = "Greater Manchester",
 #'   fields = c("lad20cd", "lad20nm", "cauth20cd", "cauth20nm")
 #' )
 #' build_api_query(ref = 12,
-#'   within_level = "lad20nm",
-#'   within = c(
+#'   where_level = "lad20nm",
+#'   where = c(
 #'     "Cheltenham", "Gloucester",
 #'     "Stroud", "Cotswold",
 #'     "Tewkesbury", "Forest of Dean"
@@ -33,8 +32,8 @@
 #'   fields = c("lad20cd", "lad20nm")
 #' )
 build_api_query <- function(ref,
-                            within_level,
-                            within = NULL,
+                            where_level,
+                            where = NULL,
                             fields = "*",
                             sr = 4326) {
 
@@ -86,8 +85,8 @@ build_api_query <- function(ref,
     # Wards (December 2020) Boundaries UK BFC
     "Wards_December_2020_UK_BFC_V3",
 
-    # Local Authority Districts (December 2020) Boundaries UK BFC
-    "Local_Authority_Districts_December_2020_UK_BFC",
+    # Local Authority Districts (May 2021) UK BGC
+    "LAD_MAY_2021_UK_BGC",
 
     # Counties and Unitaries
     "Counties_and_Unitary_Authorities_December_2020_UK_BGC_V2",
@@ -164,7 +163,7 @@ build_api_query <- function(ref,
 
   # if (server == "feature") {
   fields <- toupper(fields)
-  within_level <- toupper(within_level)
+  where_level <- toupper(where_level)
   # }
 
   # format 'locations' correctly
@@ -172,10 +171,10 @@ build_api_query <- function(ref,
   # utils::URLencode because I found that it wasn't encoding
   # all the things as I needed it to for the query to be valid
 
-  if (is.null(within)) {
-    within <- "1%3D1"
+  if (is.null(where)) {
+    where <- "1%3D1"
   } else {
-    within <- within %>%
+    where <- where %>%
       stringr::str_replace_all(" ", "%20") %>%
 
       # don't think this is needed but it's what the site itself does
@@ -186,10 +185,10 @@ build_api_query <- function(ref,
       # ' seems to be OK without being escaped as %27 in queries
       paste0("'", ., "'") %>%
       stringr::str_c(
-        within_level, # area level code eg WD19CD, CAUTH19NM
+        where_level, # area level code eg WD20CD
         # "%3D", # "="
         "=", # trying this instead of %3D doesn't seem to matter
-        .,     # vector of 'within'
+        .,     # vector of 'where'
         # using "+" instead of a space also seems to be good for the API
         sep = "%20", # Open Geog website puts spaces in, so so will I
         collapse = "%20OR%20" # collapse multiple locations with an " OR "
@@ -225,8 +224,8 @@ build_api_query <- function(ref,
   arcgis_base <- "arcgis/rest/services/"
 
   query_line <- "query?where="
-  within_open <- "%20("
-  within_close <- ")%20"
+  where_open <- "%20("
+  where_close <- ")%20"
   fields_line <- "&outFields="
   result_type_line <- "&resultType="
   return_format <- "&f=json"
@@ -243,9 +242,9 @@ build_api_query <- function(ref,
     url_string,
     server_line,
     query_line,
-    within_open,
-    within,
-    within_close,
+    where_open,
+    where,
+    where_close,
     fields_line,
     fields,
     sr_line,
