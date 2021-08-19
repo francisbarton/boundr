@@ -4,6 +4,7 @@
 # jogger
 
 <!-- badges: start -->
+[![CodeFactor](https://www.codefactor.io/repository/github/francisbarton/jogger/badge)](https://www.codefactor.io/repository/github/francisbarton/jogger)
 <!-- badges: end -->
 
 ### Retrieve area boundaries and data from the ONS Open Geography Portal
