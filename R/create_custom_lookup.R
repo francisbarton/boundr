@@ -124,6 +124,7 @@ create_custom_lookup <- function(bounds_level,
     "wd",     "ctry",   3,
     "lad",    "cty",    3,
     "lad",    "rgn",    3,
+    "ltla",    "rgn",    3,
     "lad",    "ctry",   3,
     "cty",    "rgn",    3,
     "cty",    "ctry",   3,
@@ -144,13 +145,13 @@ create_custom_lookup <- function(bounds_level,
     dplyr::mutate(bounds_level = dplyr::case_when(
       stringr::str_ends(bounds_level, "oa") ~ paste0(bounds_level, "11cd"),
       stringr::str_ends(bounds_level, "la") ~ paste0(bounds_level, "21cd"),
-      # bounds_level == "lad" ~ paste0(bounds_level, "21cd"),
+      bounds_level == "rgn" ~ paste0(bounds_level, "21cd"),
       TRUE ~ paste0(bounds_level, "20cd")
     )) %>%
     dplyr::mutate(within_level = dplyr::case_when(
       stringr::str_ends(within_level, "oa") ~ paste0(within_level, "11nm"),
       stringr::str_ends(within_level, "la") ~ paste0(within_level, "21nm"),
-      # stringr::str_match(bounds_level, "lad") ~ paste0(bounds_level, "21nm"),
+      within_level == "rgn" ~ paste0(within_level, "21nm"),
       TRUE ~ paste0(within_level, "20nm")
     ))
 

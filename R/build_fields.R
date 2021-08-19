@@ -25,8 +25,8 @@ build_fields <- function(x) {
     "ctyua",   "ctyua20",
     "mcty",    "mcty18",
     "cauth",   "cauth20",
-    "rgn",     "rgn20",
-    "region",  "rgn20",
+    "rgn",     "rgn21",
+    "region",  "rgn21",
     "ctry",    "ctry20",
     "country", "ctry20"
   )
