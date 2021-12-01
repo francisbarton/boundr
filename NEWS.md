@@ -1,3 +1,9 @@
+# 0.2.20 (November 30, 2021)
+
+* Updates to API addresses, mostly relating to more area codes moving to 2021 codes
+* Still some bugs that need fixing
+* TODO I need to write more tests!
+
 # 0.2.16
 
 * Simplifies `treat_results` routine and use of `oa_lad21_lookup` custom lookup

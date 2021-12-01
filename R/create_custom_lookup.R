@@ -41,6 +41,7 @@
 #'
 #' @keywords internal
 #' @return a data frame (tibble)
+#' @export
 #' @examples
 #' \dontrun{
 #' create_custom_lookup(
@@ -124,8 +125,7 @@ create_custom_lookup <- function(bounds_level,
     "wd",     "ctry",   3,
     "lad",    "cty",    3,
     "lad",    "rgn",    3,
-    "ltla",    "rgn",    3,
-    "lad",    "ctry",   3,
+    "ltla",   "rgn",    3,
     "cty",    "rgn",    3,
     "cty",    "ctry",   3,
     "rgn",    "ctry",   3,
@@ -138,36 +138,29 @@ create_custom_lookup <- function(bounds_level,
     "lsoa",   "lad",    7,
     "lsoa",   "ltla",   7,  # ltla needs to be renamed to lad here
     "lad",    "lad",    7,
-    "rgn",    "rgn",    7
+    "rgn",    "rgn",    8,
+    "lad",    "ctry",   9,
+    "ltla",   "ctry",   9
     # "lsoa",   "cauth",   2,     4,
     # "lsoa",   "ctry",    1,     4
   ) %>%
     dplyr::mutate(bounds_level = dplyr::case_when(
       stringr::str_ends(bounds_level, "oa") ~ paste0(bounds_level, "11cd"),
       stringr::str_ends(bounds_level, "la") ~ paste0(bounds_level, "21cd"),
-      bounds_level == "rgn" ~ paste0(bounds_level, "21cd"),
+      bounds_level == "rgn" & within_level == "ctry" ~ "rgn20cd",
+      bounds_level == "rgn" ~ "rgn21cd",
+      bounds_level == "lad" & within_level %in% c("utla", "rgn") ~ "ltla21cd",
+      bounds_level %in% c("lad", "ltla") & within_level == "ctry" ~ "lad21cd",
       TRUE ~ paste0(bounds_level, "20cd")
     )) %>%
     dplyr::mutate(within_level = dplyr::case_when(
+      stringr::str_ends(bounds_level, "21cd") ~ paste0(within_level, "21nm"),
       stringr::str_ends(within_level, "oa") ~ paste0(within_level, "11nm"),
       stringr::str_ends(within_level, "la") ~ paste0(within_level, "21nm"),
-      within_level == "rgn" ~ paste0(within_level, "21nm"),
+      within_level == "rgn" ~ "rgn21nm",
+      bounds_level == "lsoa11cd" & within_level == "cty" ~ "utla21nm",
       TRUE ~ paste0(within_level, "20nm")
     ))
-
-
-  if (bounds_level == "lsoa") {
-    if (within_level == "cty") {
-      within_level <- "utla"
-    }
-    # if (within_level == "ltla") {
-    #   within_level <- "lad"
-    # }
-  }
-
-  if (bounds_level == "lad" && within_level %in% c("utla", "rgn")) {
-    bounds_level <- "ltla"
-  }
 
 
   # create a vector of field codes from the upper and lower levels supplied
@@ -210,12 +203,12 @@ create_custom_lookup <- function(bounds_level,
   # This is to avoid getting both Wards and MSOAs, where things get messy
   # because the lookups are all overlapped and you get more than one row
   # per L/MSOA, and download a load of duplicate boundaries.
-  if (return_style == "tidy" &
-      bounds_level == "lsoa" &
-      within_level %in% c("lad", "ltla")
-  ) {
-    return_style <- "simple"
-  }
+  # if (return_style == "tidy" &
+  #     bounds_level == "lsoa" &
+  #     within_level %in% c("lad", "ltla")
+  # ) {
+  #   return_style <- "simple"
+  # }
 
   # this combo won't work! So switch to simple
   if (within_cd && return_style == "minimal") {
@@ -273,30 +266,24 @@ create_custom_lookup <- function(bounds_level,
 
   where_level <- dplyr::nth(fields, nth_field)
 
-  if (all(fields %in% names(oa_lad21_lookup))) {
-    df1 <- oa_lad21_lookup %>%
-      dplyr::filter(.data[[where_level]] %in% within) %>%
-      dplyr::distinct()
-  } else {
-    # and for other things use the API as usual:
-    df1 <- within %>%
-      batch_it_simple(batch_size = 25) %>% # from my myrmidon pkg
-      purrr::map_df( ~ build_api_query(
+
+  df1 <- within %>%
+    batch_it_simple(batch_size = 25) %>% # from my myrmidon pkg
+    purrr::map_df( ~ build_api_query(
       ref = table_code_ref,
       where_level = where_level,
       where = .,
       fields = return_fields
-      ) %>%
+    ) %>%
       extract_lookup()
-      )
-  }
+    )
 
   df_out <- df1 %>%
     treat_results(return_style = return_style)
 
 
   # if not specified by the user, make an educated decision about
-  # including Welsh language MSOA and LAD names (LAD19NMW / MSOA11NMW /
+  # including Welsh language MSOA and LAD names (LAD2*NMW / MSOA11NMW /
   # MSOA11HCLNMW, where relevant)
   # maybe extract to an external helper function in another file?
   if (is.null(include_welsh_names)) {

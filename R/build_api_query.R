@@ -45,7 +45,7 @@ build_api_query <- function(ref,
   # Source URLs are included as comments.
   url_strings <- c(
 
-    ### LOOKUPS (1 - 7)
+    ### LOOKUPS (1 - 9)
     #########################################################################
 
     # https://geoportal.statistics.gov.uk/datasets/output-area-to-lower-layer-super-output-area-to-middle-layer-super-output-area-to-local-authority-district-december-2020-lookup-in-england-and-wales
@@ -60,7 +60,7 @@ build_api_query <- function(ref,
     # https://geoportal.statistics.gov.uk/datasets/local-authority-district-to-combined-authority-december-2020-lookup-in-england
     "LAD20_CAUTH20_EN_LU",
 
-    # https://geoportal.statistics.gov.uk/datasets/ons::lower-layer-super-output-area-2011-to-upper-tier-local-authorities-2021-lookup-in-england-and-wales
+    # https://geoportal.statistics.gov.uk/datasets/lower-layer-super-output-area-2011-to-upper-tier-local-authorities-2021-lookup-in-england-and-wales-/
     "LSOA11_UTLA21_EW_LU",
 
     # https://geoportal.statistics.gov.uk/datasets/ons::lower-tier-local-authority-to-upper-tier-local-authority-april-2021-lookup-in-england-and-wales
@@ -69,27 +69,33 @@ build_api_query <- function(ref,
     # https://geoportal.statistics.gov.uk/datasets/lower-layer-super-output-area-2011-to-ward-2020-to-lad-2020-lookup-in-england-and-wales-v2/
     "LSOA11_WD20_LAD20_EW_LU_v2",
 
+    # https://geoportal.statistics.gov.uk/datasets/local-authority-district-to-region-april-2021-lookup-in-england/
+    "LAD21_RGN21_EN_LU",
 
-    ### BOUNDARIES (8 - 15)
+    # https://geoportal.statistics.gov.uk/datasets/local-authority-district-to-country-april-2021-lookup-in-the-united-kingdom/
+    "LAD21_CTRY21_UK_LU",
+
+
+    ### BOUNDARIES (10 - 17)
     ########################################################################
 
-    # Output Areas (December 2011) Boundaries EW BFC
-    "Output_Areas_December_2011_Boundaries_EW_BFC",
+    # Output Areas (December 2011) Boundaries EW BGC
+    "Output_Areas_December_2011_Boundaries_EW_BGC",
 
-    # Lower Layer Super Output Areas (December 2011) Boundaries Full Clipped (BFC) EW V3
-    "Lower_Layer_Super_Output_Areas_December_2011_Boundaries_EW_BFC_V2",
+    # Lower Layer Super Output Areas (December 2011) Boundaries (BGC) EW V3
+    "Lower_Layer_Super_Output_Areas_DEC_2011_EW_BGC_V3",
 
-    # Middle Layer Super Output Areas (December 2011) Boundaries Full Clipped (BFC) EW V3
-    "Middle_Layer_Super_Output_Areas_December_2011_EW_BFC_V2",
+    # Middle Layer Super Output Areas (December 2011) Boundaries Full Clipped (BGC) EW V3
+    "Middle_Layer_Super_Output_Areas_DEC_2011_EW_BGC_V3",
 
-    # Wards (December 2020) Boundaries UK BFC
-    "Wards_December_2020_UK_BFC_V3",
+    # Wards (May 2021) Boundaries UK BGC
+    "Wards_May_2021_UK_BGC",
 
     # Local Authority Districts (May 2021) UK BGC
     "LAD_MAY_2021_UK_BGC",
 
     # Counties and Unitaries
-    "Counties_and_Unitary_Authorities_December_2020_UK_BGC_V2",
+    "Counties_and_Unitary_Authorities_May_2021_UK_BGC_v2",
 
     # Regions (December 2020) UK BUC
     "Regions_December_2020_EN_BUC_V2",
@@ -99,7 +105,7 @@ build_api_query <- function(ref,
 
 
 
-    ### CENTROIDS (16 - 18)
+    ### CENTROIDS (18 - 20)
     ##################################################################
 
     # Output Areas (December 2011) Population Weighted Centroids
@@ -130,7 +136,7 @@ build_api_query <- function(ref,
   url_string <- url_strings[[ref]]
 
   # standard
-  if (ref < 16) {
+  if (ref < 18) {
     url_base <- "https://services1.arcgis.com/ESMARspQHYMw9BZ9/"
     part_2 <- ""
     server_line <- "/FeatureServer/0/"
@@ -138,7 +144,7 @@ build_api_query <- function(ref,
   }
 
   # centroids only
-  if (ref %in% 16:18) {
+  if (ref %in% 18:20) {
     url_base <- "https://ons-inspire.esriuk.com/"
     part_2 <- "Census_Boundaries/"
     server_line <- "/MapServer/0/"

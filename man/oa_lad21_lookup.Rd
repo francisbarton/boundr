@@ -8,8 +8,8 @@
 A data frame with 181408 rows and 15 variables:
 \describe{
 \item{oa11cd}{OA code}
-\item{lsoa21cd}{LSOA code}
-\item{lsoa21nm}{LSOA name}
+\item{lsoa11cd}{LSOA code}
+\item{lsoa11nm}{LSOA name}
 \item{msoa11cd}{MSOA code}
 \item{msoa11nm}{MSOA name}
 \item{lad20cd}{LAD code}

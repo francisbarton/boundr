@@ -20,13 +20,13 @@ test_that(
 
     expect_identical(
       build_api_query(
-        ref = 10,
+        ref = 12,
         where_level = "msoa11cd",
         where = c("E02006666", "E02006667", "E02006668"),
         fields = c("msoa11cd", "msoa11nm")
       ),
 
-      "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Middle_Layer_Super_Output_Areas_December_2011_EW_BFC_V2/FeatureServer/0/query?where=%20(MSOA11CD%20=%20'E02006666'%20OR%20MSOA11CD%20=%20'E02006667'%20OR%20MSOA11CD%20=%20'E02006668')%20&outFields=MSOA11CD,MSOA11NM&outSR=4326&resultType=none&returnDistinctValues=true&f=json"
+      "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Middle_Layer_Super_Output_Areas_DEC_2011_EW_BGC_V3/FeatureServer/0/query?where=%20(MSOA11CD%20=%20'E02006666'%20OR%20MSOA11CD%20=%20'E02006667'%20OR%20MSOA11CD%20=%20'E02006668')%20&outFields=MSOA11CD,MSOA11NM&outSR=4326&resultType=none&returnDistinctValues=true&f=json"
     )
   }
 )
@@ -38,7 +38,7 @@ test_that(
 
     expect_identical(
       build_api_query(
-        ref = 12,
+        ref = 14,
         where_level = "lad20nm",
         where = c("Cheltenham", "Gloucester", "Stroud", "Cotswold", "Tewkesbury", "Forest of Dean"),
         fields = c("lad20cd", "lad20nm", "BNG_E", "BNG_N"),

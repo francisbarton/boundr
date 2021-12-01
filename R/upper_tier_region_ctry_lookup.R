@@ -3,7 +3,7 @@
 #' @format A data frame with 331 rows and 8 variables:
 #' \describe{
 #'   \item{ltla21cd}{LTLA code}
-#'   \item{ltla21cd}{LTLA name}
+#'   \item{ltla21nm}{LTLA name}
 #'   \item{utla21cd}{UTLA code}
 #'   \item{utla21nm}{UTLA name}
 #'   \item{rgn21cd}{Region code}

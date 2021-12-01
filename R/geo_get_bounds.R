@@ -33,6 +33,17 @@ geo_get_bounds <- function(bounds_query_level,
                            quiet_read = TRUE) {
 
 
+  bounds_query_level <- bounds_query_level %>%
+    stringr::str_replace_all(., c(
+      wd20 = "wd21",
+      lad20 = "lad21",
+      rgn21 = "rgn20",
+      ctry21 = "ctry20",
+      ltla20 = "ltla21",
+      utla20 = "utla21",
+      ctyua20 = "ctyua21"
+    ))
+
 
   # TODO allow customising which fields user wants
   shape_fields_list <- NULL
@@ -62,19 +73,21 @@ geo_get_bounds <- function(bounds_query_level,
 
 
 
+
+
   ref_lookup <- dplyr::tribble(
     ~bounds_level, ~ref, ~centroids,
-    "oa11cd",      8,     FALSE,
-    "lsoa11cd",    9,     FALSE,
-    "msoa11cd",   10,     FALSE,
-    "wd20cd",     11,     FALSE,
-    "lad21cd",    12,     FALSE,
-    "ctyua20cd",  13,     FALSE,
-    "rgn20cd",    14,     FALSE,
-    "ctry20cd",   15,     FALSE,
-    "oa11cd",     16,     TRUE,
-    "lsoa11cd",   17,     TRUE,
-    "msoa11cd",   18,     TRUE
+    "oa11cd",     10,     FALSE,
+    "lsoa11cd",   11,     FALSE,
+    "msoa11cd",   12,     FALSE,
+    "wd21cd",     13,     FALSE,
+    "lad21cd",    14,     FALSE,
+    "ctyua21cd",  15,     FALSE,
+    "rgn20cd",    16,     FALSE,
+    "ctry20cd",   17,     FALSE,
+    "oa11cd",     18,     TRUE,
+    "lsoa11cd",   19,     TRUE,
+    "msoa11cd",   20,     TRUE
   )
 
 
