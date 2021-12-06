@@ -53,20 +53,17 @@ tmap::tmap_mode("plot")
 geo_get("wd", "Swindon", "lad") %>% 
   tmap::tm_shape() +
   tmap::tm_borders()
-
 ```
 
 
 ```{r example-2}
 geo_get("msoa", "Swansea", "lad", return_centroids = TRUE) %>%
-  head(10)
-
+  head(5)
 ```
 
 
 ```{r example-3}
 geo_get("lsoa", "Zetland", "ward", shape_fields = TRUE)
-
 ```
 
 
@@ -76,7 +73,6 @@ geo_get(bounds_level = "lad",
   within_level = "cty",
   return_style = "simple",
   return_boundaries = FALSE)
-
 ```
 
 Return a bare API query ready to be run or checked externally:
@@ -85,10 +81,10 @@ Return a bare API query ready to be run or checked externally:
 build_api_query(
   # currently you just have to know which ref to use - see build_api_query.R
   ref = 4, 
-  within_level = "cauth20nm",
-  within = "Greater Manchester"
+  where_level = "cauth20nm",
+  where = "Greater Manchester",
+  sr = 27700
 )
-
 ```
 
 
@@ -112,7 +108,7 @@ Please note that the `jogger` project is released with a [Contributor Code of Co
 
 ## News
 
-See NEWS.md for version notes
+See [NEWS.md](NEWS.md) for version notes
 
 ### Licences
 

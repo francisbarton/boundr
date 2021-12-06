@@ -4,7 +4,6 @@
 # jogger
 
 <!-- badges: start -->
-[![CodeFactor](https://www.codefactor.io/repository/github/francisbarton/jogger/badge)](https://www.codefactor.io/repository/github/francisbarton/jogger)
 <!-- badges: end -->
 
 ### Retrieve area boundaries and data from the ONS Open Geography Portal
@@ -40,77 +39,44 @@ geo_get("wd", "Swindon", "lad") %>%
 
 ``` r
 geo_get("msoa", "Swansea", "lad", return_centroids = TRUE) %>%
-  head(10)
-#> 
-#> -- Column specification --------------------------------------------------------
-#> cols(
-#>   msoa11cd = col_character(),
-#>   msoa11nm = col_character(),
-#>   msoa11nmw = col_character(),
-#>   msoa11hclnm = col_character(),
-#>   msoa11hclnmw = col_character(),
-#>   Laname = col_character()
-#> )
+  head(5)
 #> Joining, by = "msoa11nm"
 #> Joining, by = c("lsoa11cd", "lsoa11nm")
 #> Joining, by = c("lsoa11cd", "lsoa11nm")
-#> Joining, by = "msoa11cd"
-#> Simple feature collection with 10 features and 9 fields
+#> Simple feature collection with 5 features and 7 fields
 #> Geometry type: POINT
 #> Dimension:     XY
-#> Bounding box:  xmin: -4.101869 ymin: 51.62307 xmax: -3.908663 ymax: 51.64444
+#> Bounding box:  xmin: -4.101869 ymin: 51.62307 xmax: -3.941649 ymax: 51.63971
 #> Geodetic CRS:  WGS 84
-#>     msoa11cd    msoa11nm    msoa11nmw                 msoa11hclnm
-#> 1  W02000187 Swansea 020 Abertawe 020      Dunvant & Upper Killay
-#> 2  W02000187 Swansea 020 Abertawe 020      Dunvant & Upper Killay
-#> 3  W02000186 Swansea 019 Abertawe 019                    Townhill
-#> 4  W02000185 Swansea 018 Abertawe 018 Llanmorlais & Three Crosses
-#> 5  W02000185 Swansea 018 Abertawe 018 Llanmorlais & Three Crosses
-#> 6  W02000184 Swansea 017 Abertawe 017                     Cockett
-#> 7  W02000183 Swansea 016 Abertawe 016                     Landore
-#> 8  W02000183 Swansea 016 Abertawe 016                     Landore
-#> 9  W02000182 Swansea 015 Abertawe 015                    Cwmbwrla
-#> 10 W02000181 Swansea 014 Abertawe 014                  Bon-y-maen
-#>             msoa11hclnmw    wd20cd    wd20nm   lad20cd lad20nm
-#> 1  Dynfant a Chilâ Uchaf W05000965   Dunvant W06000011 Swansea
-#> 2  Dynfant a Chilâ Uchaf W05000966  Fairwood W06000011 Swansea
-#> 3               Townhill W05000979  Townhill W06000011 Swansea
-#> 4  Llanmorlais a'r Crwys W05000966  Fairwood W06000011 Swansea
-#> 5  Llanmorlais a'r Crwys W05000974 Penclawdd W06000011 Swansea
-#> 6                Y Cocyd W05000963   Cockett W06000011 Swansea
-#> 7                Glandwr W05000961    Castle W06000011 Swansea
-#> 8                Glandwr W05000969   Landore W06000011 Swansea
-#> 9               Cwmbwrla W05000964  Cwmbwrla W06000011 Swansea
-#> 10            Bôn-y-maen W05000960  Bonymaen W06000011 Swansea
-#>                      geometry
-#> 1  POINT (-4.031534 51.62307)
-#> 2  POINT (-4.031534 51.62307)
-#> 3   POINT (-3.963942 51.6284)
-#> 4  POINT (-4.101869 51.63796)
-#> 5  POINT (-4.101869 51.63796)
-#> 6  POINT (-3.980032 51.63668)
-#> 7  POINT (-3.941649 51.63632)
-#> 8  POINT (-3.941649 51.63632)
-#> 9  POINT (-3.951766 51.63971)
-#> 10 POINT (-3.908663 51.64444)
+#>    msoa11cd    msoa11nm    msoa11nmw                 msoa11hclnm
+#> 1 W02000187 Swansea 020 Abertawe 020      Dunvant & Upper Killay
+#> 2 W02000185 Swansea 018 Abertawe 018 Llanmorlais & Three Crosses
+#> 3 W02000184 Swansea 017 Abertawe 017                     Cockett
+#> 4 W02000183 Swansea 016 Abertawe 016                     Landore
+#> 5 W02000182 Swansea 015 Abertawe 015                    Cwmbwrla
+#>            msoa11hclnmw   lad20cd lad20nm                   geometry
+#> 1 Dynfant a Chilâ Uchaf W06000011 Swansea POINT (-4.031534 51.62307)
+#> 2 Llanmorlais a'r Crwys W06000011 Swansea POINT (-4.101869 51.63796)
+#> 3               Y Cocyd W06000011 Swansea POINT (-3.980032 51.63668)
+#> 4               Glandwr W06000011 Swansea POINT (-3.941649 51.63632)
+#> 5              Cwmbwrla W06000011 Swansea POINT (-3.951766 51.63971)
 ```
 
 ``` r
 geo_get("lsoa", "Zetland", "ward", shape_fields = TRUE)
-#> Joining, by = "lsoa11cd"
 #> Simple feature collection with 3 features and 6 fields
 #> Geometry type: POLYGON
 #> Dimension:     XY
 #> Bounding box:  xmin: -1.059949 ymin: 54.6023 xmax: -1.036318 ymax: 54.61806
 #> Geodetic CRS:  WGS 84
 #>    lsoa11cd                  lsoa11nm    wd20cd  wd20nm shape_area shape_length
-#> 1 E01012184 Redcar and Cleveland 001D E05012460 Zetland   265580.9     3023.669
-#> 2 E01012185 Redcar and Cleveland 004F E05012460 Zetland   189456.1     2617.889
-#> 3 E01012186 Redcar and Cleveland 004G E05012460 Zetland   510045.3     5069.503
+#> 1 E01012184 Redcar and Cleveland 001D E05012460 Zetland   262702.7     2949.721
+#> 2 E01012185 Redcar and Cleveland 004F E05012460 Zetland   189191.0     2470.998
+#> 3 E01012186 Redcar and Cleveland 004G E05012460 Zetland   518788.5     4897.473
 #>                         geometry
 #> 1 POLYGON ((-1.053543 54.6166...
-#> 2 POLYGON ((-1.047838 54.6074...
-#> 3 POLYGON ((-1.047691 54.6129...
+#> 2 POLYGON ((-1.047871 54.6075...
+#> 3 POLYGON ((-1.0503 54.61492,...
 ```
 
 ``` r
@@ -136,8 +102,9 @@ Return a bare API query ready to be run or checked externally:
 build_api_query(
   # currently you just have to know which ref to use - see build_api_query.R
   ref = 4, 
-  within_level = "cauth20nm",
-  within = "Greater Manchester"
+  where_level = "cauth20nm",
+  where = "Greater Manchester",
+  sr = 27700
 )
 #> [1] "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/LAD20_CAUTH20_EN_LU/FeatureServer/0/query?where=%20(CAUTH20NM%20=%20'GREATER%20MANCHESTER')%20&outFields=*&resultType=standard&returnDistinctValues=true&f=json"
 ```
@@ -164,7 +131,7 @@ By contributing to this project, you agree to abide by its terms.
 
 ## News
 
-See NEWS.md for version notes
+See [NEWS.md](NEWS.md) for version notes
 
 ### Licences
 

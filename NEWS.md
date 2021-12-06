@@ -1,8 +1,10 @@
 # 0.2.20 (November 30, 2021)
 
 * Updates to API addresses, mostly relating to more area codes moving to 2021 codes
+* used package doc file for %>% and other imports, and removed pipe.Rd etc
 * Still some bugs that need fixing
 * TODO I need to write more tests!
+* TODO build local copy of whole API schema and work out a way of querying that rather than manually updating URLs and codes
 
 # 0.2.16
 
