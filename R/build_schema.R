@@ -22,10 +22,12 @@ pull_fields <- function(url) {
     httr2::request() %>%
     httr2::req_url_path_append("/0") %>%
     httr2::req_url_query(f = "pjson") %>%
-    httr2::req_perform() %>%
+    httr2::req_throttle()
+  httr2::req_perform() %>%
     httr2::resp_body_json() %>%
     purrr::pluck("fields") %>%
     purrr::map_chr("name") %>%
+    tolower() %>%
     purrr::set_names()
 }
 
@@ -36,5 +38,11 @@ build_schema <- function() {
     dplyr::pull(url) %>%
     purrr::map_df(pull_fields) %>%
     dplyr::select(sort(names(.))) %>%
-    dplyr::bind_cols(schema_init, .)
+    dplyr::bind_cols(schema_init, .) %>%
+    dplyr::rename(
+      name = 1,
+      type = 2,
+      url = 3
+    ) %>%
+    janitor::clean_names()
 }
