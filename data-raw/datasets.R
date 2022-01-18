@@ -85,8 +85,6 @@ oa_lad21_lookup <- jsonlite::fromJSON(
 
 
 
-
-
 hocl_msoa_names <- paste0(
   "https://houseofcommonslibrary.github.io/",
   "msoanames/MSOA-Names-Latest.csv") %>%
@@ -94,4 +92,6 @@ hocl_msoa_names <- paste0(
   dplyr::select(-Laname)
 
 
-usethis::use_data(lsoa11cdnm, upper_tier_region_ctry_lookup, lad21nmw_lookup, hocl_msoa_names, oa_lad21_lookup, overwrite = TRUE, internal = TRUE, compress = "bzip2")
+opengeo_schema <- build_schema()
+
+usethis::use_data(lsoa11cdnm, upper_tier_region_ctry_lookup, lad21nmw_lookup, hocl_msoa_names, oa_lad21_lookup, opengeo_schema, overwrite = TRUE, internal = TRUE, compress = "bzip2")
