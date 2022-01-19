@@ -92,7 +92,6 @@ hocl_msoa_names <- paste0(
   dplyr::select(-Laname)
 
 
-opengeo_schema_raw <- build_schema()
-opengeo_schema_tidy <- tidy_schema(opengeo_schema_raw)
+opengeo_schema <- build_schema()
 
-usethis::use_data(lsoa11cdnm, upper_tier_region_ctry_lookup, lad21nmw_lookup, hocl_msoa_names, oa_lad21_lookup, opengeo_schema_raw, opengeo_schema_tidy, overwrite = TRUE, internal = TRUE, compress = "bzip2")
+usethis::use_data(lsoa11cdnm, upper_tier_region_ctry_lookup, lad21nmw_lookup, hocl_msoa_names, oa_lad21_lookup, opengeo_schema, overwrite = TRUE, internal = TRUE, compress = "bzip2")
