@@ -10,9 +10,9 @@ schema_init <- function() {
     httr2::resp_body_json() %>%
     purrr::pluck("services") %>% {
       dplyr::tibble(
-        name = purrr::map_chr(., "name"),
-        type = purrr::map_chr(., "type"),
-        url = purrr::map_chr(., "url")
+        api_name = purrr::map_chr(., "name"),
+        api_type = purrr::map_chr(., "type"),
+        api_url = purrr::map_chr(., "url")
       )
     }
 }
@@ -22,8 +22,7 @@ pull_fields <- function(url) {
     httr2::request() %>%
     httr2::req_url_path_append("/0") %>%
     httr2::req_url_query(f = "pjson") %>%
-    httr2::req_throttle()
-  httr2::req_perform() %>%
+    httr2::req_perform() %>%
     httr2::resp_body_json() %>%
     purrr::pluck("fields") %>%
     purrr::map_chr("name") %>%
@@ -35,14 +34,19 @@ build_schema <- function() {
   schema_init <- schema_init()
 
   schema_init %>%
-    dplyr::pull(url) %>%
+    dplyr::pull(api_url) %>%
     purrr::map_df(pull_fields) %>%
     dplyr::select(sort(names(.))) %>%
-    dplyr::bind_cols(schema_init, .) %>%
-    dplyr::rename(
-      name = 1,
-      type = 2,
-      url = 3
-    ) %>%
-    janitor::clean_names()
+    dplyr::bind_cols(schema_init, .)
+}
+
+
+tidy_schema <- function(df) {
+  df %>%
+    dplyr::select(c(
+      1:3,
+      ends_with("cd")
+    )) %>%
+    dplyr::filter(!if_all(ends_with("cd"), is.na)) %>%
+    dplyr::select(1:3, sort(names(.)))
 }
