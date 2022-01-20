@@ -1,10 +1,16 @@
-pull_fields <- function(url) {
+og_api_query <- function(url, append = "/0") {
   url %>%
     httr2::request() %>%
-    httr2::req_url_path_append("/0") %>%
+    httr2::req_url_path_append(append) %>%
     httr2::req_url_query(f = "pjson") %>%
     httr2::req_perform() %>%
-    httr2::resp_body_json() %>% {
+    httr2::resp_body_json()
+}
+
+
+pull_fields <- function(url) {
+  url %>%
+    og_api_query() %>% {
       dplyr::tibble(
         service_name = purrr::pluck(., "name"),
         service_type = purrr::pluck(., "type"),
@@ -28,10 +34,7 @@ build_schema <- function() {
     "ArcGIS/rest/services")
 
   urls <- server_url %>%
-    httr2::request() %>%
-    httr2::req_url_query(f = "pjson") %>%
-    httr2::req_perform() %>%
-    httr2::resp_body_json() %>%
+    og_api_query(append = "") %>%
     purrr::pluck("services") %>%
     purrr::map_chr("url")
 
