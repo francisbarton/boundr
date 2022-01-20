@@ -1,3 +1,12 @@
+# 0.3.0 (January 18, 2022)
+
+* Rebuilt whole program around a schema approach (git branch: `schema`)
+* It's rough but it sort of works for now.
+* TODO: Make MSOA queries work (not supported by ONS lookups)
+* TODO: Function documentation
+* TODO: Testing and undoubtedly more fixes
+
+
 # 0.2.20 (November 30, 2021)
 
 * Updates to API addresses, mostly relating to more area codes moving to 2021 codes

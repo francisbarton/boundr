@@ -1,3 +1,4 @@
+#' @export
 create_lookup_table <- function(lookup, within, within_names = NULL, within_codes = NULL, return_width = c("tidy", "basic", "full", "minimal"), lookup_year = NULL, within_year = NULL, country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"), option = 1) {
 
   # https://developers.arcgis.com/rest/services-reference/
@@ -38,9 +39,9 @@ create_lookup_table <- function(lookup, within, within_names = NULL, within_code
       stringr::str_c(collapse = " OR ")}
 
   ids <- query_base_url %>%
-    return_result_ids(within) %>%
+    return_result_ids(where = within) %>%
     unique() %>%
-    batch_it(2000)
+    batch_it(500)
 
   fields <- switch(return_width,
                    "tidy" = "*",
@@ -63,19 +64,30 @@ create_lookup_table <- function(lookup, within, within_names = NULL, within_code
 }
 
 
-return_result_ids <- function(url, within) {
+return_result_ids <- function(url, where) {
   url %>%
     httr2::request() %>%
     httr2::req_url_path_append("/0/query") %>%
-    httr2::req_url_query(where = within) %>%
+    httr2::req_url_query(where = where) %>%
     httr2::req_url_query(returnGeometry = "false") %>%
     httr2::req_url_query(returnIdsOnly = "true") %>%
     httr2::req_url_query(f = "json") %>%
     httr2::req_perform() %>%
-    httr2::resp_body_json() %>%
+    httr2::resp_body_json(check_type = FALSE) %>%
     purrr::pluck("objectIds") %>%
     purrr::flatten_int()
 }
+
+return_id_query <- function(url, where) {
+  url %>%
+    httr2::request() %>%
+    httr2::req_url_path_append("/0/query") %>%
+    httr2::req_url_query(where = where) %>%
+    httr2::req_url_query(returnGeometry = "false") %>%
+    httr2::req_url_query(returnIdsOnly = "true") %>%
+    httr2::req_url_query(f = "json")
+}
+
 
 return_query_data <- function(ids, url, fields) {
   ids <- stringr::str_c(ids, collapse = ",")

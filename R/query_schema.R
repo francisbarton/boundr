@@ -1,25 +1,24 @@
-pull_geo_query_url <- function(x, year = NULL, resolution = c("BGC", "BSC", "BUC", "BFC", "BFE"), option = 1) {
+pull_geo_query_url <- function(geo_code_field, resolution, geo_option = 1) {
 
-  resolution <- match.arg(resolution)
-
-  codes <- opengeo_schema %>%
-    dplyr::filter(!stringr::str_detect(service_name, "_LU$")) %>%
-    janitor::remove_empty("cols") %>%
-    dplyr::select(ends_with("cd")) %>%
-    janitor::remove_empty("rows") %>%
-    names()
-
-  x <- test_prefixes(codes, x)
-  x_code <- find_codes(codes, x, year)
-
-  usethis::ui_info(
-    stringr::str_glue("Using code {x_code}.")
-  )
+  # codes <- opengeo_schema %>%
+  #   dplyr::filter(!stringr::str_detect(service_name, "_LU$")) %>%
+  #   janitor::remove_empty("cols") %>%
+  #   dplyr::select(ends_with("cd")) %>%
+  #   janitor::remove_empty("rows") %>%
+  #   names()
+  #
+  # x <- test_prefixes(codes, x)
+  # x_code <- find_codes(codes, x, year)
+  #
+  # usethis::ui_info(
+  #   stringr::str_glue("Using code {x_code}.")
+  # )
 
   results <- opengeo_schema %>%
     dplyr::arrange(desc(edit_date)) %>%
-    dplyr::filter(!across(x_code, is.na)) %>%
+    dplyr::filter(!stringr::str_detect(service_name, "_LU$")) %>%
     dplyr::filter(stringr::str_detect(service_name, resolution)) %>%
+    dplyr::filter(!across(geo_code_field, is.na)) %>%
     janitor::remove_empty("cols")
 
   msg <- stringr::str_wrap(
@@ -37,12 +36,12 @@ pull_geo_query_url <- function(x, year = NULL, resolution = c("BGC", "BSC", "BUC
             ") ",
             results$service_name),
           collapse = "\n"),
-        "Using option {option}. (Change the `option` parameter to use a different one.)", sep = "\n"))
+        "Using option {geo_option}. (Change the `geo_option` parameter to use a different one.)", sep = "\n"))
   }
 
   results %>%
-    dplyr::slice(option) %>%
-    dplyr::select(service_url, x_code = x_code) %>%
+    dplyr::slice(geo_option) %>%
+    dplyr::select(service_url, x_code = geo_code_field) %>%
     as.list()
 }
 
