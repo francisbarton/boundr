@@ -8,8 +8,9 @@
 
 ### Retrieve area boundaries and data from the ONS Open Geography Portal
 
-** This README is now out of date, as the package has been refactored. **
-** A new README will be written to document the new approach. **
+**This README is now out of date, as the package has been refactored.**
+
+**A new README will be written to document the new approach.**
 
 The main function of this package is to download area lookups and
 boundaries (in GeoJSON format) using the ONS Open Geography API, for all
