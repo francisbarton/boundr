@@ -5,6 +5,10 @@ bounds <- function(lookup, within, within_names = NULL, within_codes = NULL, ret
   country_filter <- match.arg(country_filter)
   return_width <- match.arg(return_width)
 
+  # !!!!!!!!!!!!!!!!
+  # add in subroutine to deal with LSOA -> MSOA conversion
+  # in lookup table creation process
+
   lookup_table <- create_lookup_table(lookup, within, within_names, within_codes, return_width, lookup_year, within_year, country_filter, option)
 
   geo_code_field <- lookup_table %>%
@@ -18,7 +22,7 @@ bounds <- function(lookup, within, within_names = NULL, within_codes = NULL, ret
     tolower()
 
   if (!geo_code_field %in% names(lookup_table)) {
-    # ... oh shit
+    # not sure what we should do if this happens - just error I guess
   }
 
   area_codes <- lookup_table %>%
