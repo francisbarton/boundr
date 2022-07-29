@@ -53,7 +53,7 @@ return_bounds_data <- function(ids, url, crs) {
   ids <- stringr::str_c(ids, collapse = ",")
   url %>%
     httr2::request() %>%
-    httr2::req_url_path_append("/0/query") %>%
+    httr2::req_url_path_append("0/query") %>%
     httr2::req_url_query(objectIds = ids) %>%
     httr2::req_url_query(outFields = "*") %>%
     httr2::req_url_query(returnGeometry = "true") %>%

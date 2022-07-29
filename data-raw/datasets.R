@@ -89,7 +89,7 @@ hocl_msoa_names <- paste0(
   "https://houseofcommonslibrary.github.io/",
   "msoanames/MSOA-Names-Latest.csv") %>%
   readr::read_csv() %>%
-  dplyr::select(-Laname)
+  dplyr::select(!Laname)
 
 
 opengeo_schema <- build_schema()

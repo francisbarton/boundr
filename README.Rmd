@@ -17,75 +17,60 @@ knitr::opts_chunk$set(
 ```
 
 
-# jogger
+# boundr
 
 <!-- badges: start -->
 <!-- badges: end -->
 
 ### Retrieve area boundaries and data from the ONS Open Geography Portal
 
-The main function of this package is to download area lookups and boundaries
-  (in GeoJSON format) using the ONS Open Geography API, for all sub-areas - at a
-  specified level - within a specified area.
+`boundr` was previously [`jogger`](https://github.com/francisbarton/jogger).
+
+The main purpose of this package is to download area lookups and boundaries
+  (in GeoJSON format) using the ONS Open Geography API, for all areas at a
+  specified level within a specified area.
+  
+The structure of the project looks a bit like this:
+
+```
+bounds() [main UI function]
+   ^
+   |
+   |
+    <-------  create_lookup_table()
+   |                ^
+   |                |
+   |                 <--------- return_query_data()
+   |                |
+   |                 <--------- pull_lookup_query_url() 
+   |                                       \
+   |                                        \
+    <-------  return_bounds_data()           <----- opengeo_schema [data]
+                    ^                       /              ^
+                    |                      /               |
+                     <--------  pull_geo_query_url()       |
+                                                           |
+                                                     build_schema()
+```
+
+
 The main script will return a data frame with the sub-area geometry column,
   as an `sf` object ready to be visualised as a map.
-It's initially just for areas within England and Wales, with a hope to add
-  Scottish geographies at a later date.
-And currently just for the following area levels:
-  LSOA, MSOA, Ward, LAD/LTLA, UTLA/CTY, CAUTH, RGN _[subject to change]_
 
 
 ## Installation
 
+You can install this package from the R console by entering
+
 ```
 remotes::install_github("francisbarton/jogger")
 ```
+if you have the `remotes` package installed.
+
 
 ## Examples
 
-```{r example-1, message = FALSE}
-library(jogger)
-library(dplyr, quietly = TRUE)
-library(tmap)
-
-tmap::tmap_mode("plot")
-
-geo_get("wd", "Swindon", "lad") %>% 
-  tmap::tm_shape() +
-  tmap::tm_borders()
-```
-
-
-```{r example-2}
-geo_get("msoa", "Swansea", "lad", return_centroids = TRUE) %>%
-  head(5)
-```
-
-
-```{r example-3}
-geo_get("lsoa", "Zetland", "ward", shape_fields = TRUE)
-```
-
-
-```{r example-4}
-geo_get(bounds_level = "lad",
-  within = "Gloucestershire",
-  within_level = "cty",
-  return_style = "simple",
-  return_boundaries = FALSE)
-```
-
-Return a bare API query ready to be run or checked externally:
-
-```{r example-5}
-build_api_query(
-  # currently you just have to know which ref to use - see build_api_query.R
-  ref = 4, 
-  where_level = "cauth20nm",
-  where = "Greater Manchester",
-  sr = 27700
-)
-```
+New `boundr` examples to come.
 
 
 ## Contributing
@@ -103,7 +88,7 @@ This project has a Contributor Code of Conduct:
 
 ### Code of Conduct
 
-Please note that the `jogger` project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
+Please note that the `boundr` project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
 
 
 ## News
@@ -128,5 +113,4 @@ including:
 
 [ogl3]: https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/
 [ons-licence]: https://www.ons.gov.uk/methodology/geography/licences
-
 
