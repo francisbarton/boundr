@@ -60,9 +60,9 @@ column, as an `sf` object ready to be visualised as a map.
 
 ## Installation
 
-You can install this package from the R console by entering
+You can install this package from the `R` console by entering
 
-    remotes::install_github("francisbarton/jogger")
+    remotes::install_github("francisbarton/boundr")
 
 if you have the `remotes` package installed.
 
@@ -72,27 +72,16 @@ if you have the `remotes` package installed.
 
 ## Contributing
 
-Suggestions are welcome, preferably posted as an issue here on GitHub.
-Contributions as pull requests are also welcome.
+Suggestions for improvements are welcome, preferably posted as an issue
+here on GitHub. Contributions as pull requests are also welcome.
 
-You are also welcome to email me with comments or ideas. I'd be glad of
-suggestions for improvement, or extra features.
-
-Improvements to the naming of key functions and their parameters
-especially welcome. Contact details are on my GitHub profile.
-
-This project has a Contributor Code of Conduct:
-
-### Code of Conduct
-
-Please note that the `boundr` project is released with a [Contributor
-Code of
+Please note that `boundr` is released with a [Contributor Code of
 Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html).
 By contributing to this project, you agree to abide by its terms.
 
 ## News
 
-See [NEWS.md](NEWS.md) for version notes
+See [NEWS.md](NEWS.md) for version notes.
 
 ### Licences
 
