@@ -5,3 +5,5 @@
 inst/
 docs
 README_cache
+R/extract_lookup.R
+R/hocl_msoa_names.R
