@@ -17,8 +17,8 @@ pull_geo_query_url <- function(geo_code_field, resolution, geo_option = 1) {
   results <- opengeo_schema %>%
     dplyr::arrange(desc(edit_date)) %>%
     dplyr::filter(!stringr::str_detect(service_name, "_LU$")) %>%
-    dplyr::filter(stringr::str_detect(service_name, resolution)) %>%
-    dplyr::filter(!across(geo_code_field, is.na)) %>%
+    dplyr::filter(stringr::str_detect(service_name, toupper(resolution))) %>%
+    dplyr::filter(!is.na(geo_code_field)) %>%
     janitor::remove_empty("cols")
 
   msg <- stringr::str_wrap(
@@ -50,16 +50,19 @@ pull_lookup_query_url <- function(x, y, year_x = NULL, year_y = NULL, country_fi
 
   countries <- match.arg(country_filter)
 
-  schema1 <- opengeo_schema %>%
+  # filter only lookup tables from the schema
+  schema_lookups <- opengeo_schema %>%
     dplyr::filter(stringr::str_detect(service_name, "_LU$")) %>%
     janitor::remove_empty("cols")
 
-  codes1 <- schema1 %>%
+  # make list of codes used in lookups
+  schema1_names <- schema_lookups %>%
     dplyr::select(ends_with("cd")) %>%
     names()
 
-  x <- test_prefixes(codes1, x)
-  x_code <- find_codes(codes1, x, year_x)
+  # make sure that x matches one of the
+  x <- test_prefixes(schema1_names, x)
+  x_code <- find_codes(schema1_names, x, year_x)
 
   schema2 <- schema1 %>%
     dplyr::filter(!across(x_code, is.na)) %>%
@@ -106,21 +109,30 @@ pull_lookup_query_url <- function(x, y, year_x = NULL, year_y = NULL, country_fi
 
 
 
-test_prefixes <- function(codes, prefix) {
-  poss_prefixes <- unique(sub("(^[a-z]+)(.*)", "\\1", codes))
 
-  if (!prefix %in% poss_prefixes) {
+
+test_prefixes <- function(schema_names, prefix) {
+
+  # create list of all available prefixes from the schema column names
+  poss_prefixes <- unique(sub("(^[a-z]+)(.*)", "\\1", schema_names))
+
+
+  if (prefix %in% poss_prefixes) prefix
+  else {
     new_prefix <- grep(paste0("^", prefix), poss_prefixes, perl = TRUE, value = TRUE)[1]
+    new_prefix <- stringr::str_match(poss_prefixes, paste0("^", prefix))
     if (nzchar(new_prefix)) {
-      usethis::ui_info(
-        stringr::str_glue("Prefix not found. Using {new_prefix} instead."))
+      stringr::str_glue("Prefix not found. Using {new_prefix} instead.") %>%
+        usethis::ui_info()
       new_prefix
     } else {
-      usethis::ui_stop(
-        stringr::str_glue("Prefix {prefix} not found."))
+      stringr::str_glue("Prefix {prefix} not found.") %>%
+        usethis::ui_stop()
     }
-  } else prefix
+  }
 }
+
+
 
 
 find_codes <- function(codes, prefix, year = NULL, cutoff = 30) {
@@ -164,5 +176,7 @@ find_codes <- function(codes, prefix, year = NULL, cutoff = 30) {
   assertthat::assert_that(is.character(out), msg = msg)
   assertthat::assert_that(nzchar(out), msg = msg)
   assertthat::assert_that(length(out) == 1, msg = msg)
+
+  # return
   out
 }

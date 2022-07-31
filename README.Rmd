@@ -1,5 +1,8 @@
 ---
 output: github_document
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -16,80 +19,76 @@ knitr::opts_chunk$set(
 
 ```
 
-
 # boundr
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 ### Retrieve area boundaries and data from the ONS Open Geography Portal
 
-`boundr` was previously [`jogger`](https://github.com/francisbarton/jogger).
+`boundr` was previously
+[`jogger`](https://github.com/francisbarton/jogger).
 
-The main purpose of this package is to download area lookups and boundaries
-  (in GeoJSON format) using the ONS Open Geography API, for all areas at a
-  specified level within a specified area.
-  
+The main purpose of this package is to download area lookups and
+boundaries (in GeoJSON format) using the ONS Open Geography API, for all
+areas at a specified level within a specified area.
+
 The structure of the project looks a bit like this:
 
-```
-bounds() [main UI function]
-   ^
-   |
-   |
-    <-------  create_lookup_table()
-   |                ^
-   |                |
-   |                 <--------- return_query_data()
-   |                |
-   |                 <--------- pull_lookup_query_url() 
-   |                                       \
-   |                                        \
-    <-------  return_bounds_data()           <----- opengeo_schema [data]
-                    ^                       /              ^
-                    |                      /               |
-                     <--------  pull_geo_query_url()       |
-                                                           |
-                                                     build_schema()
-```
+    bounds() [main UI function]
+       ^
+       |
+       |
+        <-------  create_lookup_table()
+       |                ^
+       |                |
+       |                 <--------- return_query_data()
+       |                |
+       |                 <--------- pull_lookup_query_url() 
+       |                                       \
+       |                                        \
+        <-------  return_bounds_data()           <----- opengeo_schema [data]
+                        ^                       /              ^
+                        |                      /               |
+                         <--------  pull_geo_query_url()       |
+                                                               |
+                                                         build_schema()
 
-
-The main script will return a data frame with the sub-area geometry column,
-  as an `sf` object ready to be visualised as a map.
-
+The main script will return a data frame with the sub-area geometry
+column, as an `sf` object ready to be visualised as a map.
 
 ## Installation
 
 You can install this package from the R console by entering
 
-```
-remotes::install_github("francisbarton/jogger")
-```
-if you have the `remotes` package installed.
+    remotes::install_github("francisbarton/jogger")
 
+if you have the `remotes` package installed.
 
 ## Examples
 
-New `boundr` examples to come.
-
+`jogger` examples removed. New `boundr` examples to come!
 
 ## Contributing
 
-Suggestions are welcome, preferably posted as an issue on GitHub.
+Suggestions are welcome, preferably posted as an issue here on GitHub.
 Contributions as pull requests are also welcome.
 
-You are also welcome to email me with comments or ideas.
-I'd be glad of suggestions for improvement, or extra features.
+You are also welcome to email me with comments or ideas. I'd be glad of
+suggestions for improvement, or extra features.
 
-Improvements to the naming of key functions and their parameters especially welcome.
-Contact details are on my GitHub profile.
+Improvements to the naming of key functions and their parameters
+especially welcome. Contact details are on my GitHub profile.
 
 This project has a Contributor Code of Conduct:
 
 ### Code of Conduct
 
-Please note that the `boundr` project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
-
+Please note that the `boundr` project is released with a [Contributor
+Code of
+Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.
 
 ## News
 
@@ -99,18 +98,16 @@ See [NEWS.md](NEWS.md) for version notes
 
 The code in this repo is MIT licensed.
 
-The data that the code helps you retrieve is issued under a variety of licences,
-including:
+The data that the code helps you retrieve is issued under a variety of
+licences, including:
 
-* the [Open Government Licence v3.0][ogl3]
+-   the [Open Government Licence
+    v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
 
-
-> Licensing statement [as stipulated by the ONS][ons-licence]:
-> 
-> * Source: Office for National Statistics licensed under the [Open Government Licence v3.0][ogl3]
-> * Contains OS data © Crown copyright and database right 2021.
-
-
-[ogl3]: https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/
-[ons-licence]: https://www.ons.gov.uk/methodology/geography/licences
-
+> Licensing statement [as stipulated by the
+> ONS](https://www.ons.gov.uk/methodology/geography/licences):
+>
+> -   Source: Office for National Statistics licensed under the [Open
+>     Government Licence
+>     v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
+> -   Contains OS data © Crown copyright and database right 2021.
