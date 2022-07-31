@@ -1,50 +1,154 @@
+#' @param x Lower level area code eg "lsoa", "wd", "lad". Equivalent to the `lookup` parameter in `bounds()`.
+#' @param y Higher level area code eg "lad", "cty". Equivalent to the `within` parameter in `bounds()`.
+#' @param year_x A specific year for data relating to parameter `x`, if needed. Defaults to `NULL`, which will return the most recent data.
+#' @param year_y A specific year for data relating to parameter `y`, if needed. Defaults to `NULL`, which will return the most recent data.
+#' @param country_filter Open Geography datasets are sometimes available just within certain countries. Specify a country code if you want your results restricted to a certain country only - eg "WA" for Wales, "EW" for England and Wales. By default returns all options.
+#' @param option Defaults to 1, which means that the URL will just be the first one from the list of possible services resulting from the level and year filters above. If this does not give you what you want, you can run the query again with a different option from the list.
+#' @returns Aims to return the a list of length 3: the query URL, the lower level (`x`) code (eg `lsoa11cd`), and the higher level (`y`) code.
+return_lookup_query_url <- function(x, y, year_x = NULL, year_y = NULL, country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"), option = 1) {
 
+  countries <- match.arg(country_filter)
+  
+  
+  assert_that(is.numeric(option))
 
-find_codes <- function(schema, prefix, year = NULL, cutoff = 30) {
+  # filter only lookup tables from the schema
+  schema_lookups <- opengeo_schema %>%
+    dplyr::filter(stringr::str_detect(service_name, "_LU$")) %>%
+    janitor::remove_empty("cols")
 
-  out <- NULL
+  # make list of codes used in lookups
+  schema_names <- schema_lookups %>%
+    dplyr::select(ends_with("cd")) %>%
+    names()
 
-  poss_codes <- grep(paste0("(?<=^", prefix, ")\\d+"), codes, perl = TRUE, value = TRUE)
-  assertthat::assert_that(length(poss_codes) > 0,
-    msg = paste0("No codes found for prefix `", prefix, "`."))
-
-  poss_years <- substr(poss_codes, nchar(prefix) + 1, nchar(prefix) + 2)
-  assertthat::assert_that(length(poss_years) > 0,
-    msg = paste0("No year codes found for prefix `", prefix, "`."))
-
-  while (is.null(out) & cutoff > 10) {
-    if (is.null(year)) {
-      max_year <- poss_years %>%
-        `[`(which(as.numeric(.) < cutoff)) %>%
-        as.numeric() %>%
-        max()
-      out <- grep(paste0("^", prefix, max_year), codes, value = TRUE)[1]
-    } else {
-      if (nchar(year) == 1) year <- paste0(0, year)
-      year <- sub(".*(?=[0-9]{2}$)", "", year, perl = TRUE)
-
-      if (year %in% poss_years) {
-        out <- grep(paste0("^", prefix, year), codes, value = TRUE)[1]
-      } else {
-        # find_codes(codes, prefix, year = NULL, cutoff = as.numeric(year))
-        cutoff = as.numeric(year)
-        year <- NULL
-      }
-    }
+  if (is.null(year_x)) {
+    x_name <- schema_names %>% 
+      stringr::str_subset(stringr::str_glue("^{x}")) %>% 
+      sort(decreasing = TRUE) %>% 
+      head(1)
+  } else {
+    year_x <- stringr::str_extract(year_x, "\\d{1,2}$") %>% 
+      stringr::str_pad(width = 2, side = "left", pad = "0")
+    x_name <- schema_names %>% 
+      stringr::str_subset(stringr::str_glue("^{x}{year_x}")) %>% 
+      head(1)
   }
 
-  msg <- paste0("No matching code found for `",
-                prefix,
-                "`, `",
-                year,
-                "`.")
-  assertthat::assert_that(is.character(out), msg = msg)
-  assertthat::assert_that(nzchar(out), msg = msg)
-  assertthat::assert_that(length(out) == 1, msg = msg)
+  # year_y <- stringr::str_extract(year_y, "\\d{2}$") %>% 
+  #   stringr::str_pad(width = 2, side = "left", pad = "0")
+  
 
-  # return
-  out
+  # reduce schema to only those matching x_code
+  schema2 <- schema_lookups %>%
+    dplyr::filter(!is.na(x_name)) %>%
+    janitor::remove_empty("cols")
+
+  schema2_names <- schema2 %>%
+    dplyr::select(ends_with("cd")) %>%
+    names()
+
+
+  if (is.null(year_y)) {
+    y_name <- schema2_names %>% 
+      stringr::str_subset(stringr::str_glue("^{y}")) %>% 
+      sort(decreasing = TRUE) %>% 
+      head(1)
+  } else {
+    year_y <- stringr::str_extract(year_y, "\\d{1,2}$") %>% 
+      stringr::str_pad(width = 2, side = "left", pad = "0")
+    y_name <- schema2_names %>% 
+      stringr::str_subset(stringr::str_glue("^{y}{year_y}")) %>% 
+      head(1)
+  }
+
+
+  usethis::ui_info(
+    stringr::str_glue("Using codes {x_name}, {y_name}.")
+  )
+
+  results <- schema2 %>%
+    dplyr::filter(!is.na(y_name)) %>%
+    dplyr::filter(stringr::str_detect(service_name, countries)) %>%
+    dplyr::arrange(desc(edit_date))
+
+  msg <- "No result was found for the parameters supplied. Try a different year or a different country filter?"
+  assertthat::assert_that(nrow(results) > 0, msg = msg)
+
+  if (nrow(results) > 1) {
+      stringr::str_c(
+        "More than 1 result found:",
+        stringr::str_c(
+          paste0(
+            "\t(",
+            seq(nrow(results)),
+            ") ",
+            results$service_name),
+          collapse = "\n"),
+        "Using option {option}. (Change the `option` parameter to use a different one.)", sep = "\n") %>% 
+    usethis::ui_info()
+  }
+
+  results %>%
+    dplyr::slice(option) %>%
+    dplyr::select(service_url, x_code = .env[["x_name"]], y_code = .env[["y_name"]]) %>%
+    as.list()
 }
+
+
+
+
+
+
+
+
+
+
+# find_codes <- function(schema, prefix, year = NULL, cutoff = 30) {
+
+#   out <- NULL
+
+#   poss_codes <- grep(paste0("(?<=^", prefix, ")\\d+"), codes, perl = TRUE, value = TRUE)
+#   assertthat::assert_that(length(poss_codes) > 0,
+#     msg = paste0("No codes found for prefix `", prefix, "`."))
+
+#   poss_years <- substr(poss_codes, nchar(prefix) + 1, nchar(prefix) + 2)
+#   assertthat::assert_that(length(poss_years) > 0,
+#     msg = paste0("No year codes found for prefix `", prefix, "`."))
+
+#   while (is.null(out) & cutoff > 10) {
+#     if (is.null(year)) {
+#       max_year <- poss_years %>%
+#         `[`(which(as.numeric(.) < cutoff)) %>%
+#         as.numeric() %>%
+#         max()
+#       out <- grep(paste0("^", prefix, max_year), codes, value = TRUE)[1]
+#     } else {
+#       if (nchar(year) == 1) year <- paste0(0, year)
+#       year <- sub(".*(?=[0-9]{2}$)", "", year, perl = TRUE)
+
+#       if (year %in% poss_years) {
+#         out <- grep(paste0("^", prefix, year), codes, value = TRUE)[1]
+#       } else {
+#         # find_codes(codes, prefix, year = NULL, cutoff = as.numeric(year))
+#         cutoff = as.numeric(year)
+#         year <- NULL
+#       }
+#     }
+#   }
+
+#   msg <- paste0("No matching code found for `",
+#                 prefix,
+#                 "`, `",
+#                 year,
+#                 "`.")
+#   assertthat::assert_that(is.character(out), msg = msg)
+#   assertthat::assert_that(nzchar(out), msg = msg)
+#   assertthat::assert_that(length(out) == 1, msg = msg)
+
+#   # return
+#   out
+# }
 
 
 
@@ -99,68 +203,68 @@ pull_geo_query_url <- function(geo_code_field, resolution, geo_option = 1) {
 }
 
 
-pull_lookup_query_url <- function(x, y, year_x = NULL, year_y = NULL, country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"), option = 1) {
+# pull_lookup_query_url <- function(x, y, year_x = NULL, year_y = NULL, country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"), option = 1) {
 
-  countries <- match.arg(country_filter)
+#   countries <- match.arg(country_filter)
 
-  # filter only lookup tables from the schema
-  schema_lookups <- opengeo_schema %>%
-    dplyr::filter(stringr::str_detect(service_name, "_LU$")) %>%
-    janitor::remove_empty("cols")
+#   # filter only lookup tables from the schema
+#   schema_lookups <- opengeo_schema %>%
+#     dplyr::filter(stringr::str_detect(service_name, "_LU$")) %>%
+#     janitor::remove_empty("cols")
 
-  # make list of codes used in lookups
-  schema1_names <- schema_lookups %>%
-    dplyr::select(ends_with("cd")) %>%
-    names()
+#   # make list of codes used in lookups
+#   schema1_names <- schema_lookups %>%
+#     dplyr::select(ends_with("cd")) %>%
+#     names()
 
-  # make sure that x matches one of the available columns
-  # is check_prefix() really necessary? Can we just do find_codes?
-  x <- check_prefix(schema1_names, x)
-  x_code <- find_codes(schema1_names, x, year_x)
+#   # make sure that x matches one of the available columns
+#   # is check_prefix() really necessary? Can we just do find_codes?
+#   x <- check_prefix(schema1_names, x)
+#   x_code <- find_codes(schema1_names, x, year_x)
 
-  # reduce schema to only those matching x_code
-  schema2 <- schema1 %>%
-    dplyr::filter(!across(x_code, is.na)) %>%
-    janitor::remove_empty("cols")
+#   # reduce schema to only those matching x_code
+#   schema2 <- schema1 %>%
+#     dplyr::filter(!across(x_code, is.na)) %>%
+#     janitor::remove_empty("cols")
 
-  codes2 <- schema2 %>%
-    dplyr::select(ends_with("cd")) %>%
-    names()
+#   codes2 <- schema2 %>%
+#     dplyr::select(ends_with("cd")) %>%
+#     names()
 
-  y <- test_prefixes(codes2, y)
-  y_code <- find_codes(codes2, y, year_y)
+#   y <- test_prefixes(codes2, y)
+#   y_code <- find_codes(codes2, y, year_y)
 
-  usethis::ui_info(
-    stringr::str_glue("Using codes {x_code}, {y_code}.")
-  )
+#   usethis::ui_info(
+#     stringr::str_glue("Using codes {x_code}, {y_code}.")
+#   )
 
-  results <- schema2 %>%
-    dplyr::filter(!across(y_code, is.na)) %>%
-    dplyr::filter(stringr::str_detect(service_name, countries)) %>%
-    dplyr::arrange(desc(edit_date))
+#   results <- schema2 %>%
+#     dplyr::filter(!across(y_code, is.na)) %>%
+#     dplyr::filter(stringr::str_detect(service_name, countries)) %>%
+#     dplyr::arrange(desc(edit_date))
 
-  msg <- "No result was found for the parameters supplied. Try a different year or a different country filter?"
-  assertthat::assert_that(nrow(results) > 0, msg = msg)
+#   msg <- "No result was found for the parameters supplied. Try a different year or a different country filter?"
+#   assertthat::assert_that(nrow(results) > 0, msg = msg)
 
-  if (nrow(results) > 1) {
-    usethis::ui_info(
-      stringr::str_c(
-        "More than 1 result found:",
-        stringr::str_c(
-          paste0(
-            "\t(",
-            seq(nrow(results)),
-            ") ",
-            results$service_name),
-          collapse = "\n"),
-        "Using option {option}. (Change the `option` parameter to use a different one.)", sep = "\n"))
-  }
+#   if (nrow(results) > 1) {
+#     usethis::ui_info(
+#       stringr::str_c(
+#         "More than 1 result found:",
+#         stringr::str_c(
+#           paste0(
+#             "\t(",
+#             seq(nrow(results)),
+#             ") ",
+#             results$service_name),
+#           collapse = "\n"),
+#         "Using option {option}. (Change the `option` parameter to use a different one.)", sep = "\n"))
+#   }
 
-  results %>%
-    dplyr::slice(option) %>%
-    dplyr::select(service_url, x_code = x_code, y_code = y_code) %>%
-    as.list()
-}
+#   results %>%
+#     dplyr::slice(option) %>%
+#     dplyr::select(service_url, x_code = x_code, y_code = y_code) %>%
+#     as.list()
+# }
 
 
 query_opengeo_api <- function(url, append = "0") {
