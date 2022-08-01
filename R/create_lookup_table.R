@@ -6,7 +6,8 @@ create_lookup_table <- function(lookup, within, within_names = NULL, within_code
 
   country_filter <- match.arg(country_filter)
   return_width <- match.arg(return_width)
-  lookup_query_data <- pull_lookup_query_url(lookup, within, lookup_year, within_year, country_filter, option)
+  
+  lookup_query_data <- return_lookup_query_url(lookup, within, lookup_year, within_year, country_filter, option)
 
   query_base_url <- lookup_query_data[["service_url"]]
 

@@ -1,4 +1,4 @@
-lookup_query_data <- pull_lookup_query_url(x = "wd", y = "lad", country_filter = "EN")
+lookup_query_data <- return_lookup_query_url(x = "wd", y = "lad", country_filter = "EN")
 within_names <- "Stroud"
 within_codes <- NULL
 within_code_field <- lookup_query_data[["y_code"]]
