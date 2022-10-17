@@ -114,7 +114,8 @@ query_opengeo_api <- function(url, append = "0") {
     httr2::req_headers(UserAgent = "boundr R package") %>%
     httr2::req_url_path_append(append) %>%
     httr2::req_url_query(f = "pjson") %>%
-    httr2::req_retry(max_tries = 3)
+    httr2::req_retry(max_tries = 3) %>% 
+    httr2::req_perform()
 }
 
 # safely_query_opengeo_api <- purrr::safely(query_opengeo_api)
