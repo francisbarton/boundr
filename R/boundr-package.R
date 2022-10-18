@@ -7,6 +7,7 @@
 #' @importFrom dplyr last_col matches num_range one_of across if_any if_all
 #' @importFrom dplyr first last nth
 #' @importFrom assertthat assert_that
+#' @importFrom rlang sym
 
 ## usethis namespace: end
 NULL

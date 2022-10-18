@@ -1,15 +1,14 @@
-#' @param x Lower level area code eg "lsoa", "wd", "lad". Equivalent to the `lookup` parameter in `bounds()`.
-#' @param y Higher level area code eg "lad", "cty". Equivalent to the `within` parameter in `bounds()`.
-#' @param year_x A specific year for data relating to parameter `x`, if needed. Defaults to `NULL`, which will return the most recent data.
-#' @param year_y A specific year for data relating to parameter `y`, if needed. Defaults to `NULL`, which will return the most recent data.
+#' Return lookup query URL and lower and higher field codes
+#' @param lookup Lower level area code eg "lsoa", "wd", "lad". Equivalent to the `lookup` parameter in `bounds()`.
+#' @param within Higher level area code eg "lad", "cty". Equivalent to the `within` parameter in `bounds()`.
+#' @param lookup_year A specific year for data relating to parameter `x`, if needed. Defaults to `NULL`, which will return the most recent data.
+#' @param within_year A specific year for data relating to parameter `y`, if needed. Defaults to `NULL`, which will return the most recent data.
 #' @param country_filter Open Geography datasets are sometimes available just within certain countries. Specify a country code if you want your results restricted to a certain country only - eg "WA" for Wales, "EW" for England and Wales. By default returns all options.
 #' @param option Defaults to 1, which means that the URL will just be the first one from the list of possible services resulting from the level and year filters above. If this does not give you what you want, you can run the script again with a different option from the list.
-#' @returns Aims to return the a list of length 3: the query URL, the lower level (`x`) code (eg `lsoa11cd`), and the higher level (`y`) code.
-return_lookup_query_url <- function(x, y, year_x = NULL, year_y = NULL, country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"), option = 1) {
+#' @returns A list of length 3: the query URL, the lower level (`lookup`) field code (eg `lsoa11cd`), and the higher level (`within`) field code.
+return_lookup_query_info <- function(lookup, within, lookup_year = NULL, within_year = NULL, country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"), option = 1) {
 
   country_filter <- match.arg(country_filter)
-  
-  
   assert_that(is.numeric(option))
 
   # filter only lookup tables from the schema
@@ -50,34 +49,32 @@ return_lookup_query_url <- function(x, y, year_x = NULL, year_y = NULL, country_
     field_code
   }
 
-  x_field <- return_field_code(x, year_x, schema_names)
+  lookup_field <- return_field_code(lookup, lookup_year, schema_names)
 
 
 
 
   # reduce schema to only those matching x_field
   schema2 <- schema_lookups %>%
-    dplyr::filter(if_any(.env[["x_field"]], ~ !is.na(.))) %>%
+    dplyr::filter(!is.na(!!rlang::sym(lookup_field))) %>%
     janitor::remove_empty("cols")
 
   schema2_names <- schema2 %>%
     dplyr::select(ends_with("cd")) %>%
     names()
 
-  y_field <- return_field_code(y, year_y, schema2_names)
+  within_field <- return_field_code(within, within_year, schema2_names)
 
 
 
 
   usethis::ui_info(
-    stringr::str_glue("Using codes {x_field}, {y_field}.")
+    stringr::str_glue("Using codes {lookup_field}, {within_field}.")
   )
 
 
-
-
   results <- schema2 %>%
-    dplyr::filter(!is.na(y_field)) %>%
+    dplyr::filter(!is.na(!!rlang::sym(within_field))) %>%
     janitor::remove_empty("cols")  %>% 
     dplyr::arrange(desc(edit_date))
 
@@ -94,30 +91,18 @@ return_lookup_query_url <- function(x, y, year_x = NULL, year_y = NULL, country_
             ") ",
             results$service_name),
           collapse = "\n"),
-        "Using option {option}. (Change the `option` parameter to use a different one.)", sep = "\n") %>% 
+        "Using option {option}. ",
+        "(Change the `option` parameter to use a different one.)",
+        sep = "\n") %>% 
     usethis::ui_info()
   }
 
-  # return query URL and x_field and y_fiel in a list,
-  # to be passed on to create_lookup_table()
-  results %>%
+  query_url <- results %>%
     dplyr::slice(option) %>%
-    dplyr::select(service_url, x_code = .env[["x_field"]], y_code = .env[["y_field"]]) %>%
-    as.list()
+    dplyr::pull(service_url)
+  
+  # return query URL and lookup_field and within_field in a list,
+  # to be passed on to create_lookup_table()
+  list(query_url, lookup_field, within_field) %>%
+    purrr::set_names()
 }
-
-
-
-query_opengeo_api <- function(url, append = "0") {
-  url %>%
-    httr2::request() %>%
-    httr2::req_headers(UserAgent = "boundr R package") %>%
-    httr2::req_url_path_append(append) %>%
-    httr2::req_url_query(f = "pjson") %>%
-    httr2::req_retry(max_tries = 3) %>% 
-    httr2::req_perform()
-}
-
-# safely_query_opengeo_api <- purrr::safely(query_opengeo_api)
-safely_query_opengeo_api <- function(...) "dummy"
-

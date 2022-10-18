@@ -28,23 +28,23 @@ pull_fields <- function(dtf, url) {
     has_geometry = purrr::pluck(dtf, "hasGeometryProperties", .default = FALSE),
     fields = purrr::pluck(dtf, "fields", .default = list(name = NULL))
   ) %>%
-  tidyr::hoist(fields, "name") %>% 
-  tidyr::pivot_wider(names_from = name, values_from = name) %>%
-  janitor::clean_names() %>% 
-  dplyr::mutate(service_url = url, .before = 1) %>%
-  dplyr::select(service_url:has_geometry, ends_with("cd"))
+    tidyr::hoist(fields, "name") %>%
+    tidyr::pivot_wider(names_from = name, values_from = name) %>%
+    janitor::clean_names() %>%
+    dplyr::mutate(service_url = url, .before = 1) %>%
+    dplyr::select(service_url:has_geometry, ends_with("cd"))
 }
 
 # build_schema() -----------------------
 
 
 build_schema <- function() {
-  server_url <- paste0(
+  api_base_url <- paste0(
     "https://services1.arcgis.com/ESMARspQHYMw9BZ9/",
     "ArcGIS/rest/services"
   )
-
-  urls <- server_url %>%
+  
+  urls <- api_base_url %>% 
     safely_query_opengeo_api(append = "") %>%
     purrr::pluck("result") %>%
     httr2::resp_body_json() %>%

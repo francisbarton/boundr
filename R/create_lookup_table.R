@@ -1,3 +1,8 @@
+#' Create a lookup table by querying the ONS OpenGeography API
+#' @inheritParams return_lookup_query_info
+#' @param within_names,within_codes In order to restrict data returned to a specific area, either `within_names` or `within_codes` must be provided. Otherwise all boundaries within the country at that level will be retrieved. Use place names eg "Essex" to restrict to a certain geographical area. Use ONS area codes eg "W02000103" likewise (this is useful with wards, where there are many that share identical names). A vector of multiple names or codes can be supplied.
+#' @param return_width How many of the possible columns in the returned table to keep. Options are "tidy", "basic", "full" or "minimal".
+#' @returns a tibble 
 #' @export
 create_lookup_table <- function(lookup, within, within_names = NULL, within_codes = NULL, return_width = c("tidy", "basic", "full", "minimal"), lookup_year = NULL, within_year = NULL, country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"), option = 1) {
 
@@ -5,18 +10,20 @@ create_lookup_table <- function(lookup, within, within_names = NULL, within_code
   # enterprise/query-feature-service-layer-.htm
 
   country_filter <- match.arg(country_filter)
+  assertthat::assert_that(length(country_filter) == 1)
   return_width <- match.arg(return_width)
+  assertthat::assert_that(length(return_width) == 1)
   
-  lookup_query_data <- return_lookup_query_url(lookup, within, lookup_year, within_year, country_filter, option)
+  lookup_query_info <- return_lookup_query_info(lookup, within, lookup_year, within_year, country_filter, option)
 
-  query_base_url <- lookup_query_data[["service_url"]]
+  query_base_url <- lookup_query_info[["query_url"]]
 
-  lookup_code_field <- lookup_query_data[["x_code"]]
+  lookup_code_field <- lookup_query_info[["lookup_field"]]
   lookup_name_field <- lookup_code_field %>%
-    gsub("CD$", "NM", .)
-  within_code_field <- lookup_query_data[["y_code"]]
+    gsub("cd$", "nm", .)
+  within_code_field <- lookup_query_info[["within_field"]]
   within_name_field <- within_code_field %>%
-    gsub("CD$", "NM", .)
+    gsub("cd$", "nm", .)
 
   if (is.null(within_names) & is.null(within_codes)) {
     within <- "1=1"
@@ -41,8 +48,9 @@ create_lookup_table <- function(lookup, within, within_names = NULL, within_code
 
   ids <- query_base_url %>%
     return_result_ids(where = within) %>%
-    unique() %>%
-    batch_it(500)
+    unique()
+
+
 
   fields <- switch(return_width,
                    "tidy" = "*",
@@ -51,65 +59,21 @@ create_lookup_table <- function(lookup, within, within_names = NULL, within_code
                    "minimal" = c(lookup_code_field, lookup_name_field)) %>%
     paste(., collapse = ",")
 
+
+
   out <- ids %>%
-    purrr::map_df(return_query_data, query_base_url, fields)
+    batch_it(500) %>% 
+    purrr::map_df(return_table_data, query_base_url, fields)
+
+
 
   if (return_width == "tidy") {
     out <- out %>%
-      dplyr::select(!!rlang::sym(tolower(lookup_code_field)):!!rlang::sym(tolower(within_name_field)))
+      dplyr::select(
+        !!rlang::sym(lookup_code_field):!!rlang::sym(within_name_field))
   }
 
   out %>%
     dplyr::distinct() %>%
     janitor::remove_empty("cols")
-}
-
-
-return_result_ids <- function(url, where) {
-  url %>%
-    httr2::request() %>%
-    httr2::req_url_path_append("/0/query") %>%
-    httr2::req_url_query(where = where) %>%
-    httr2::req_url_query(returnGeometry = "false") %>%
-    httr2::req_url_query(returnIdsOnly = "true") %>%
-    httr2::req_url_query(f = "json") %>%
-    httr2::req_perform() %>%
-    httr2::resp_body_json(check_type = FALSE) %>%
-    purrr::pluck("objectIds") %>%
-    purrr::flatten_int()
-}
-
-return_id_query <- function(url, where) {
-  url %>%
-    httr2::request() %>%
-    httr2::req_url_path_append("/0/query") %>%
-    httr2::req_url_query(where = where) %>%
-    httr2::req_url_query(returnGeometry = "false") %>%
-    httr2::req_url_query(returnIdsOnly = "true") %>%
-    httr2::req_url_query(f = "json")
-}
-
-
-return_query_data <- function(ids, url, fields) {
-  ids <- stringr::str_c(ids, collapse = ",")
-  url %>%
-    httr2::request() %>%
-    httr2::req_url_path_append("/0/query") %>%
-    httr2::req_url_query(objectIds = ids) %>%
-    httr2::req_url_query(outFields = fields) %>%
-    httr2::req_url_query(returnGeometry = "false") %>%
-    httr2::req_url_query(returnIdsOnly = "false") %>%
-    httr2::req_url_query(returnCountOnly = "false") %>%
-    httr2::req_url_query(f = "json") %>%
-    httr2::req_perform() %>%
-    httr2::resp_body_json() %>%
-    purrr::pluck("features") %>%
-    purrr::map_df("attributes") %>%
-    janitor::clean_names()
-}
-
-batch_it <- function(x, batch_size) {
-  f <- rep(1:ceiling(length(x) / batch_size), each = batch_size) %>%
-    utils::head(length(x))
-  split(x, f)
 }
