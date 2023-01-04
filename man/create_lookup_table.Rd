@@ -2,7 +2,8 @@
 % Please edit documentation in R/create_lookup_table.R
 \name{create_lookup_table}
 \alias{create_lookup_table}
-\title{Create a lookup table by querying the ONS OpenGeography API}
+\title{Create a lookup table by querying the ONS OpenGeography API
+Calls \code{return_lookup_query_info()} and processes the output, returning a tibble}
 \usage{
 create_lookup_table(
   lookup,
@@ -38,4 +39,5 @@ a tibble
 }
 \description{
 Create a lookup table by querying the ONS OpenGeography API
+Calls \code{return_lookup_query_info()} and processes the output, returning a tibble
 }

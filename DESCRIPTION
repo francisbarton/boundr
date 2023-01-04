@@ -14,7 +14,7 @@ Imports:
     dplyr,
     httr2,
     janitor,
-    purrr,
+    purrr (>= 1.0.0),
     readr,
     rlang (>= 0.1.2),
     sf,

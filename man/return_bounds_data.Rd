@@ -4,7 +4,7 @@
 \alias{return_bounds_data}
 \title{Perform an API query and handle the returned spatial data}
 \usage{
-return_bounds_data(ids, url, crs, max_tries = 3, verbosity = 0, ...)
+return_bounds_data(ids, url, crs = 4326, max_tries = 3, verbosity = 0, ...)
 }
 \arguments{
 \item{ids}{the IDs of the data to be requested}
