@@ -4,10 +4,14 @@
 \alias{query_opengeo_api}
 \title{Perform an API query using a request object}
 \usage{
-query_opengeo_api(req)
+query_opengeo_api(req, max_tries = 3, verbosity = 0)
 }
 \arguments{
 \item{req}{An \code{httr2} request object}
+
+\item{max_tries}{integer. 3 by default (for now). Passed to \code{httr2::req_retry()} and controls how many times to try to perform the request, should initial attempt(s) fail.}
+
+\item{verbosity}{integer. 0 by default. Passed to \code{httr2::req_perform()} and controls the verbosity of the printed output from performing the request. Can be any integer from 0 to 3, or \code{NULL}. See \code{?req_perform} for more detail.}
 }
 \description{
 Perform an API query using a request object

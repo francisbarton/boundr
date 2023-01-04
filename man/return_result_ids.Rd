@@ -5,12 +5,18 @@
 \title{Perform an API query and extract the returned IDs
 For large queries, just return IDs that can then be batched for full queries}
 \usage{
-return_result_ids(url, where)
+return_result_ids(url, where, max_tries = 3, verbosity = 0, ...)
 }
 \arguments{
 \item{url}{The API URL to query}
 
 \item{where}{any geographical filters to be applied}
+
+\item{max_tries}{integer. 3 by default (for now). Passed to \code{httr2::req_retry()} and controls how many times to try to perform the request, should initial attempt(s) fail.}
+
+\item{verbosity}{integer. 0 by default. Passed to \code{httr2::req_perform()} and controls the verbosity of the printed output from performing the request. Can be any integer from 0 to 3, or \code{NULL}. See \code{?req_perform} for more detail.}
+
+\item{...}{any arguments to be passed to \code{opengeo_api_req()}}
 }
 \description{
 Perform an API query and extract the returned IDs

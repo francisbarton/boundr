@@ -37,7 +37,7 @@ bounds(
 
 \item{option}{Defaults to 1, which means that the URL will just be the first one from the list of possible services resulting from the level and year filters above. If this does not give you what you want, you can run the script again with a different option from the list.}
 
-\item{crs}{the Coordinate Reference System (CRS) code to use}
+\item{crs}{the Coordinate Reference System (CRS) code to use. 4326 by default}
 }
 \description{
 Return boundary data at a specified level and area from the ONS OG API

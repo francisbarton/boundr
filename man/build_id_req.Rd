@@ -4,12 +4,14 @@
 \alias{build_id_req}
 \title{Build an API request for IDs only}
 \usage{
-build_id_req(url, where)
+build_id_req(url, where, ...)
 }
 \arguments{
 \item{url}{The API URL to query}
 
 \item{where}{any geographical filters to be applied}
+
+\item{...}{any arguments to be passed to \code{opengeo_api_req()}}
 }
 \description{
 Build an API request for IDs only

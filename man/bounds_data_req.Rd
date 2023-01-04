@@ -4,14 +4,16 @@
 \alias{bounds_data_req}
 \title{Build an API request for spatial boundary (geojson) data}
 \usage{
-bounds_data_req(ids, url, crs = 4326)
+bounds_data_req(ids, url, crs = 4326, ...)
 }
 \arguments{
 \item{ids}{the IDs of the data to be requested}
 
 \item{url}{The API URL to query}
 
-\item{crs}{the Coordinate Reference System (CRS) code to use}
+\item{crs}{the Coordinate Reference System (CRS) code to use. 4326 by default}
+
+\item{...}{any arguments to be passed to \code{opengeo_api_req()}}
 }
 \description{
 Build an API request for spatial boundary (geojson) data
