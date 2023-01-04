@@ -40,7 +40,7 @@ build_id_req <- function(url, where, ...) {
 #' @param fields which fields to include in the table returned
 #' @param ... any arguments to be passed to `opengeo_api_req()`
 table_data_req <- function(ids, url, fields, ...) {
-  ids <- stringr::str_c(ids, collapse = ",")
+  ids <- stringr::str_flatten(ids, collapse = ",")
   url |>
     opengeo_api_req(...) |>
     httr2::req_url_query(objectIds = ids) |>
@@ -55,7 +55,7 @@ table_data_req <- function(ids, url, fields, ...) {
 #' @inheritParams table_data_req
 #' @param crs the Coordinate Reference System (CRS) code to use. 4326 by default
 bounds_data_req <- function(ids, url, crs = 4326, ...) {
-  ids <- stringr::str_c(ids, collapse = ",")
+  ids <- stringr::str_flatten(ids, collapse = ",")
   url |>
     opengeo_api_req(format = "geojson", ...) |>
     httr2::req_url_query(objectIds = ids) |>
@@ -119,7 +119,14 @@ return_result_ids <- function(url, where, max_tries = 3, verbosity = 0, ...) {
 #' Perform an API query and handle the returned table data
 #' @inheritParams table_data_req
 #' @inheritParams query_opengeo_api
-return_table_data <- function(ids, url, fields, max_tries = 3, verbosity = 0, ...) {
+return_table_data <- function(
+    ids,
+    url,
+    fields,
+    max_tries = 3,
+    verbosity = 0,
+    ...
+  ) {
   ret <- table_data_req(ids, url, fields, ...) |>
     possibly_query_opengeo_api(max_tries = max_tries, verbosity = verbosity)
 
@@ -127,7 +134,8 @@ return_table_data <- function(ids, url, fields, max_tries = 3, verbosity = 0, ..
     ret |>
       httr2::resp_body_json() |>
       purrr::pluck("features") |>
-      purrr::map_df("attributes") |>
+      purrr::map("attributes") |>
+      purrr::list_rbind() |>
       janitor::clean_names()
   } else ret
 }
@@ -135,7 +143,14 @@ return_table_data <- function(ids, url, fields, max_tries = 3, verbosity = 0, ..
 #' Perform an API query and handle the returned spatial data
 #' @inheritParams bounds_data_req
 #' @inheritParams query_opengeo_api
-return_bounds_data <- function(ids, url, crs = 4326, max_tries = 3, verbosity = 0, ...) {
+return_bounds_data <- function(
+    ids,
+    url,
+    crs = 4326,
+    max_tries = 3,
+    verbosity = 0,
+    ...
+  ) {
   ret <- bounds_data_req(ids, url, crs, ...) |>
     possibly_query_opengeo_api(max_tries = max_tries, verbosity = verbosity)
   if (!is.null(ret)) {

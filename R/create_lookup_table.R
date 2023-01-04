@@ -31,11 +31,9 @@ create_lookup_table <- function(
   query_base_url <- lookup_query_info[["query_url"]]
 
   lookup_code_field <- lookup_query_info[["lookup_field"]]
-  lookup_name_field <- lookup_code_field |>
-    gsub("cd$", "nm", .)
+  lookup_name_field <- gsub("cd$", "nm", lookup_code_field)
   within_code_field <- lookup_query_info[["within_field"]]
-  within_name_field <- within_code_field |>
-    gsub("cd$", "nm", .)
+  within_name_field <- gsub("cd$", "nm", within_code_field)
 
   if (is.null(within_names) & is.null(within_codes)) {
     within <- "1=1"
@@ -54,7 +52,7 @@ create_lookup_table <- function(
         ) |>
         utils::head(length(within_codes))
     ) |>
-      stringr::str_c(collapse = " OR ")
+      stringr::str_flatten(collapse = " OR ")
   }
 
   ids <- query_base_url |>

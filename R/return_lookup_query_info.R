@@ -21,8 +21,8 @@ return_lookup_query_info <- function(
   # filter only lookup tables from the schema
   # and those with the right country filter
   schema_lookups <- opengeo_schema |>
-    dplyr::filter(stringr::str_detect(service_name, "_LU$")) |>
-    dplyr::filter(stringr::str_detect(service_name, country_filter)) |>
+    dplyr::filter(if_any("service_name", \(x) stringr::str_detect(x, "_LU$"))) |>
+    dplyr::filter(if_any("service_name", \(x) stringr::str_detect(x, country_filter))) |>
     janitor::remove_empty("cols")
 
   # make list of codes used in lookups
@@ -48,7 +48,7 @@ return_lookup_query_info <- function(
       stringr::str_pad(width = 2, "left", pad = "0")
     }
 
-    field_code <- stringr::str_glue("{prefix}{year_out}cd")
+    field_code <- paste0(prefix, year_out, "cd")
     assertthat::assert_that(field_code %in% names_vec,
     msg = "return_lookup_query_info: That combination of area levels and years has not returned a result. Please try a different year.")
 
@@ -83,20 +83,24 @@ return_lookup_query_info <- function(
   results <- schema2 |>
     dplyr::filter(!is.na(!!rlang::sym(within_field))) |>
     janitor::remove_empty("cols")  |>
-    dplyr::arrange(desc(edit_date))
+    dplyr::arrange(desc(across("edit_date")))
 
-  msg <- "return_lookup_query_info: No result was found for the parameters supplied. Try a different year or a different country filter?"
-  assertthat::assert_that(nrow(results) > 0, msg = msg)
+  assertthat::assert_that(
+    nrow(results) > 0,
+    msg = paste0(
+      "return_lookup_query_info: ",
+      "No result was found for the parameters supplied. ",
+      "Try a different year or a different country filter?"))
 
   if (nrow(results) > 1) {
       stringr::str_c(
         "More than 1 result found:",
-        stringr::str_c(
+        stringr::str_flatten(
           paste0(
             "\t(",
             seq(nrow(results)),
             ") ",
-            results$service_name),
+            results[["service_name"]]),
           collapse = "\n"),
         "Using option {option}. ",
         "(Change the `option` parameter to use a different one.)",
@@ -106,7 +110,7 @@ return_lookup_query_info <- function(
 
   query_url <- results |>
     dplyr::slice(option) |>
-    dplyr::pull(service_url)
+    dplyr::pull("service_url")
 
   # return query URL and lookup_field and within_field in a list,
   # to be passed on to create_lookup_table()

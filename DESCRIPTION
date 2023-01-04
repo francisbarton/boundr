@@ -11,14 +11,14 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Imports: 
     assertthat,
-    dplyr,
+    dplyr (>= 1.0.0),
     httr2,
     janitor,
     purrr (>= 1.0.0),
     readr,
     rlang (>= 0.1.2),
     sf,
-    stringr,
+    stringr (>= 1.5.0),
     usethis,
     utils
 Depends: 

@@ -53,7 +53,7 @@ bounds <- function(
   bounds_data |>
     dplyr::left_join(lookup_table, by = join_vars) |>
     dplyr::relocate(names(lookup_table)) |>
-    dplyr::select(!objectid) |>
+    dplyr::select(!any_of(c("objectid"))) |>
     janitor::remove_empty("cols") |>
     dplyr::distinct()
 }
@@ -67,12 +67,12 @@ bounds <- function(
 #' @noRd
 pull_geo_query_url <- function(field, resolution, option) {
   opengeo_schema |>
-    dplyr::arrange(desc(edit_date)) |>
-    dplyr::filter(has_geometry) |>
-    dplyr::filter(!is.na(field)) |>
-    dplyr::filter(stringr::str_ends(service_name, resolution)) |>
+    dplyr::arrange(desc(across("edit_date"))) |>
+    dplyr::filter(if_any("has_geometry")) |>
+    dplyr::filter(if_any("field", \(x) !is.na(x))) |>
+    dplyr::filter(if_any("service_name", \(x) stringr::str_ends(x, resolution))) |>
     dplyr::slice(1) |>
-    dplyr::pull(service_url)
+    dplyr::pull("service_url")
 }
 
 
@@ -84,7 +84,7 @@ paste_area_codes <- function(vec, var, join_string = " OR ") {
       " = ",
       (paste0("'", unique(vec), "'"))) |>
     toupper() |>
-    stringr::str_c(collapse = join_string)
+    stringr::str_flatten(collapse = join_string)
 }
 
 
