@@ -1,11 +1,26 @@
 #' Return lookup query URL and lower and higher field codes
-#' @param lookup Lower level area code eg "lsoa", "wd", "lad". Equivalent to the `lookup` parameter in `bounds()`.
-#' @param within Higher level area code eg "lad", "cty". Equivalent to the `within` parameter in `bounds()`.
-#' @param lookup_year A specific year for data relating to parameter `x`, if needed. Defaults to `NULL`, which will return the most recent data.
-#' @param within_year A specific year for data relating to parameter `y`, if needed. Defaults to `NULL`, which will return the most recent data.
-#' @param country_filter Open Geography datasets are sometimes available just within certain countries. Specify a country code if you want your results restricted to a certain country only - eg "WA" for Wales, "EW" for England and Wales. By default returns all options.
-#' @param option Defaults to 1, which means that the URL will just be the first one from the list of possible services resulting from the level and year filters above. If this does not give you what you want, you can run the script again with a different option from the list.
-#' @returns A list of length 3: the query URL, the lower level (`lookup`) field code (eg `lsoa11cd`), and the higher level (`within`) field code.
+#' 
+#' @param lookup character. Lower level area code eg "lsoa", "wd", "lad".
+#'  Equivalent to the `lookup` parameter in `bounds()`.
+#' @param within character. Higher level area code eg "lad", "cty". Equivalent
+#' to the `within` parameter in `bounds()`.
+#' @param lookup_year numeric or character. A specific year for data relating
+#'  to parameter `x`, if needed. Defaults to `NULL`, which will return the most 
+#'  recent data.
+#' @param within_year numeric or character. A specific year for data relating
+#'  to parameter `y`, if needed. Defaults to `NULL`, which will return the most 
+#'  recent data.
+#' @param country_filter character. Open Geography datasets are sometimes 
+#'  available just within certain countries. Specify a country code if you want 
+#'  your results restricted to a certain country only - eg "WA" for Wales, "EW" 
+#'  for England and Wales. By default returns all options.
+#' @param option numeric. Defaults to 1, which means that the URL will just be
+#'  the first one from the list of possible services resulting from the level
+#'  and year filters above. If this does not give you what you want, you can
+#'  run the script again with a different option from the list.
+#' 
+#' @returns A list of length 3: the query URL, the lower level (`lookup`) field
+#'  code (eg `lsoa11cd`), and the higher level (`within`) field code.
 return_lookup_query_info <- function(
     lookup,
     within,
@@ -21,8 +36,12 @@ return_lookup_query_info <- function(
   # filter only lookup tables from the schema
   # and those with the right country filter
   schema_lookups <- opengeo_schema |>
-    dplyr::filter(if_any("service_name", \(x) stringr::str_detect(x, "_LU$"))) |>
-    dplyr::filter(if_any("service_name", \(x) stringr::str_detect(x, country_filter))) |>
+    dplyr::filter(
+      if_any("service_name", \(x) stringr::str_detect(x, "_LU$"))
+      ) |>
+    dplyr::filter(
+      if_any("service_name", \(x) stringr::str_detect(x, country_filter))
+      ) |>
     janitor::remove_empty("cols")
 
   # make list of codes used in lookups
@@ -49,6 +68,14 @@ return_lookup_query_info <- function(
     }
 
     field_code <- paste0(prefix, year_out, "cd")
+
+    # some lookups contain LSOA but not MSOA. If the user has requested MSOA
+    # and it's not available, we can search for LSOA instead, and later convert
+    # back to MSOA.
+    if (prefix == "msoa" & !field_code %in% names_vec) {
+      field_code <- sub("^msoa", "lsoa", field_code)
+    }
+
     assertthat::assert_that(field_code %in% names_vec,
     msg = "return_lookup_query_info: That combination of area levels and years has not returned a result. Please try a different year.")
 
@@ -61,9 +88,9 @@ return_lookup_query_info <- function(
 
 
 
-  # reduce schema to only those matching x_field
+  # reduce schema to only those matching lookup_field
   schema2 <- schema_lookups |>
-    dplyr::filter(!is.na(!!rlang::sym(lookup_field))) |>
+    dplyr::filter(!is.na({{ lookup_field }})) |>
     janitor::remove_empty("cols")
 
   schema2_names <- schema2 |>
@@ -81,7 +108,7 @@ return_lookup_query_info <- function(
 
 
   results <- schema2 |>
-    dplyr::filter(!is.na(!!rlang::sym(within_field))) |>
+    dplyr::filter(!is.na({{ within_field }})) |>
     janitor::remove_empty("cols")  |>
     dplyr::arrange(desc(across("edit_date")))
 

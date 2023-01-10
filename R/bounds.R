@@ -1,7 +1,13 @@
 #' Return boundary data at a specified level and area from the ONS OG API
+#' 
 #' @inheritParams create_lookup_table
 #' @inheritParams bounds_data_req
-#' @param resolution how generalised should the boundary be, and should coastal boundaries adhere to the coastline or to the full territorial extent
+#' @param resolution character. How generalised should the boundary be, and
+#'  whether coastal boundaries should adhere to the coastline or to the full
+#'  territorial extent. BGC by default (G = Generalised (20m), C = limited to
+#'  the coastline.) F indicates Full resolution; S indicates Super-generalised
+#'  (200m); U indicates Ultra-generalised (500m) boundary resolution.
+#' 
 #' @export
 bounds <- function(
     lookup,
@@ -20,10 +26,6 @@ bounds <- function(
   resolution <- match.arg(resolution)
   country_filter <- match.arg(country_filter)
   return_width <- match.arg(return_width)
-
-  # !!!!!!!!!!!!!!!!
-  # add in subroutine to deal with LSOA -> MSOA conversion
-  # in lookup table creation process
 
   lookup_table <- create_lookup_table(lookup, within, within_names, within_codes, return_width, lookup_year, within_year, country_filter, option)
 

@@ -1,4 +1,4 @@
 library(testthat)
-library(jogger)
+library(boundr)
 
-test_check("jogger")
+test_check("boundr")
