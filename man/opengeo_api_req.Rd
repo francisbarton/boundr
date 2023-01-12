@@ -6,7 +6,7 @@
 \usage{
 opengeo_api_req(
   url,
-  append = "/0/query",
+  append = "0/query",
   format = "pjson",
   user_agent = "boundr R package (github.com/francisbarton/boundr)"
 )

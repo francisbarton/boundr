@@ -3,8 +3,8 @@
     lookup_query_data <- return_lookup_query_info(lookup = "wd", within = "lad", country_filter = "EN")
     within_names <- "Stroud"
     within_codes <- NULL
-    within_code_field <- lookup_query_data[["y_code"]]
-    within_name_field <- gsub("CD$", "NM", within_code_field)
+    within_code_field <- lookup_query_data[["within_field"]]
+    within_name_field <- sub("cd$", "nm", within_code_field)
 
     within <- c(
       within_name_field |>
@@ -24,14 +24,14 @@
 
     expect_identical(
       within_name_field,
-      "LAD20NM"
+      "lad22nm"
     )
     expect_identical(
       within,
-      "LAD20NM = 'STROUD'"
+      "lad22nm = 'STROUD'"
     )
 
-    ids <- lookup_query_data[["service_url"]] |>
+    ids <- lookup_query_data[["query_url"]] |>
       return_result_ids(within) |>
       unique()
 
@@ -50,9 +50,9 @@
     within_codes <- NULL
 
     lookup_code_field <- lookup_query_data[["lookup_field"]]
-    lookup_name_field <- gsub("CD$", "NM", lookup_code_field)
+    lookup_name_field <- sub("cd$", "nm", lookup_code_field)
     within_code_field <- lookup_query_data[["within_field"]]
-    within_name_field <- gsub("CD$", "NM", within_code_field)
+    within_name_field <- sub("cd$", "nm", within_code_field)
 
     within <- c(
       within_name_field |>

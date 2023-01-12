@@ -11,7 +11,8 @@ bounds_data_req(ids, url, crs = 4326, ...)
 
 \item{url}{The API URL to query}
 
-\item{crs}{the Coordinate Reference System (CRS) code to use. 4326 by default}
+\item{crs}{the Coordinate Reference System (CRS) code to use. 4326 by
+default.}
 
 \item{...}{any arguments to be passed to \code{opengeo_api_req()}}
 }

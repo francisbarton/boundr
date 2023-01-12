@@ -14,20 +14,33 @@ return_lookup_query_info(
 )
 }
 \arguments{
-\item{lookup}{Lower level area code eg "lsoa", "wd", "lad". Equivalent to the \code{lookup} parameter in \code{bounds()}.}
+\item{lookup}{character. Lower level area code eg "lsoa", "wd", "lad".
+Equivalent to the \code{lookup} parameter in \code{bounds()}.}
 
-\item{within}{Higher level area code eg "lad", "cty". Equivalent to the \code{within} parameter in \code{bounds()}.}
+\item{within}{character. Higher level area code eg "lad", "cty". Equivalent
+to the \code{within} parameter in \code{bounds()}.}
 
-\item{lookup_year}{A specific year for data relating to parameter \code{x}, if needed. Defaults to \code{NULL}, which will return the most recent data.}
+\item{lookup_year}{numeric or character. A specific year for data relating
+to parameter \code{x}, if needed. Defaults to \code{NULL}, which will return the most
+recent data.}
 
-\item{within_year}{A specific year for data relating to parameter \code{y}, if needed. Defaults to \code{NULL}, which will return the most recent data.}
+\item{within_year}{numeric or character. A specific year for data relating
+to parameter \code{y}, if needed. Defaults to \code{NULL}, which will return the most
+recent data.}
 
-\item{country_filter}{Open Geography datasets are sometimes available just within certain countries. Specify a country code if you want your results restricted to a certain country only - eg "WA" for Wales, "EW" for England and Wales. By default returns all options.}
+\item{country_filter}{character. Open Geography datasets are sometimes
+available just within certain countries. Specify a country code if you want
+your results restricted to a certain country only - eg "WA" for Wales, "EW"
+for England and Wales. By default returns all options.}
 
-\item{option}{Defaults to 1, which means that the URL will just be the first one from the list of possible services resulting from the level and year filters above. If this does not give you what you want, you can run the script again with a different option from the list.}
+\item{option}{numeric. Defaults to 1, which means that the URL will just be
+the first one from the list of possible services resulting from the level
+and year filters above. If this does not give you what you want, you can
+run the script again with a different option from the list.}
 }
 \value{
-A list of length 3: the query URL, the lower level (\code{lookup}) field code (eg \code{lsoa11cd}), and the higher level (\code{within}) field code.
+A list of length 3: the query URL, the lower level (\code{lookup}) field
+code (eg \code{lsoa11cd}), and the higher level (\code{within}) field code.
 }
 \description{
 Return lookup query URL and lower and higher field codes

@@ -44,6 +44,9 @@ return_lookup_query_info <- function(
       ) |>
     janitor::remove_empty("cols")
 
+  assertthat::assert_that(nrow(schema_lookups) > 0,
+    msg = "return_lookup_query_info: no lookup tables found.")
+
   # make list of codes used in lookups
   schema_names <- schema_lookups |>
     dplyr::select(ends_with("cd")) |>
@@ -52,7 +55,7 @@ return_lookup_query_info <- function(
   return_field_code <- function(prefix, year = NULL, names_vec) {
     if (is.null(year)) {
       years <- names_vec |>
-        stringr::str_extract(stringr::str_glue("(?<=^{prefix})\\d+"))  |>
+        stringr::str_extract(str_glue("(?<=^{prefix})\\d+"))  |>
         as.numeric()
       year_out <- dplyr::case_when(
         years > 30 ~ years + 1900, # needs updating in 2030 ;-)
@@ -71,7 +74,7 @@ return_lookup_query_info <- function(
 
     # some lookups contain LSOA but not MSOA. If the user has requested MSOA
     # and it's not available, we can search for LSOA instead, and later convert
-    # back to MSOA.
+    # back to MSOA, because LSOAs and MSOAs play nicely together of course
     if (prefix == "msoa" & !field_code %in% names_vec) {
       field_code <- sub("^msoa", "lsoa", field_code)
     }
@@ -102,9 +105,7 @@ return_lookup_query_info <- function(
 
 
 
-  usethis::ui_info(
-    stringr::str_glue("Using codes {lookup_field}, {within_field}.")
-  )
+  ui_info(str_glue("Using codes {lookup_field}, {within_field}."))
 
 
   results <- schema2 |>
@@ -142,5 +143,5 @@ return_lookup_query_info <- function(
   # return query URL and lookup_field and within_field in a list,
   # to be passed on to create_lookup_table()
   list(query_url, lookup_field, within_field) |>
-    purrr::set_names()
+    rlang::set_names(c("query_url", "lookup_field", "within_field"))
 }
