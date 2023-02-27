@@ -1,3 +1,10 @@
+# 0.3.2 (February 25, 2023)
+
+* After a lot of intervals of not working on this very much, I have finally pushed a lot of further work on the new style. The package is now named `boundr` and the work has been done in the main branch.
+* Functions are now better documented and the core workflow is quite nice now.
+* Basic tests are written but further tests of core behaviours need to be written still.
+* TODO: Make centroid queries eg MSOA centroids work
+
 # 0.3.0 (January 18, 2022)
 
 * Rebuilt whole program around a schema approach (git branch: `schema`)

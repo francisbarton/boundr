@@ -10,7 +10,8 @@ return_lookup_query_info(
   lookup_year = NULL,
   within_year = NULL,
   country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"),
-  option = 1
+  option = NULL,
+  quiet = FALSE
 )
 }
 \arguments{

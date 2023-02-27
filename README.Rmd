@@ -16,7 +16,6 @@ knitr::opts_chunk$set(
   out.width = "100%"
 )
 
-
 ```
 
 # boundr
@@ -62,11 +61,9 @@ The structure of the project looks a bit like this:
 
 When you call `bounds()` you specify a lower level area (eg ward) and a higher level area (eg local authority), and you specify either the name of the higher level area (or areas) or its code.
 
-`return_lookup_query_info()` then finds the API query URL of a suitable lookup table - one that contains columns for both your lower and higher level areas. It does this by filtering `opengeo_schema`, which is a downloaded copy of the various datasets available from the Open Geography API Services list. This schema is available as internal data in the package - but may need updating.
+`return_lookup_query_info()` then finds the API query URL of a suitable lookup table - one that contains columns for both your lower and higher level areas. It does this by filtering `opengeo_schema`, which is a cached copy of the various datasets available from the Open Geography API Services list. This schema is available as internal data in the package - but may need updating.
 
-`create_lookup_table()` then builds a lookup table (tibble) based on all the areas you have said you are interested in. At the same time, `return_bounds_data()` will - if you have specified you want spatial boundaries data for your areas - be retrieving the boundary data at your chosen resolution for your lower level areas.
-
-These will then be joined onto the lookup table and provided to you as an `sf` tibble. 
+`create_lookup_table()` then builds a lookup table (a tibble) based on all the areas you have said you are interested in. At the same time, `return_bounds_data()` will - if you have specified you want spatial boundaries data for your areas - retrieve the boundary data at your chosen resolution for your lower level areas. These will then be joined onto the lookup table and provided to you as an `sf` tibble. 
 
 
 ## Installation

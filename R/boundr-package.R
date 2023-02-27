@@ -2,10 +2,10 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @importFrom dplyr any_of all_of contains ends_with starts_with everything
-#' @importFrom dplyr last_col matches num_range one_of across if_any if_all
-#' @importFrom dplyr first last nth desc
-#' @importFrom usethis ui_info ui_oops ui_warn ui_yeah ui_nope
+#' @importFrom assertthat assert_that
+#' @importFrom dplyr across all_of any_of desc if_all if_any
+#' @importFrom dplyr contains matches ends_with starts_with
+#' @importFrom usethis ui_info
 #' @importFrom stringr str_glue
 
 ## usethis namespace: end

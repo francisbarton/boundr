@@ -2,6 +2,7 @@
 % Please edit documentation in R/create_lookup_table.R
 \name{create_lookup_table}
 \alias{create_lookup_table}
+\alias{lookup}
 \title{Create a lookup table by querying the ONS OpenGeography API}
 \usage{
 create_lookup_table(
@@ -9,11 +10,23 @@ create_lookup_table(
   within,
   within_names = NULL,
   within_codes = NULL,
-  return_width = c("tidy", "basic", "full", "minimal"),
+  return_width = c("tidy", "full", "minimal"),
   lookup_year = NULL,
   within_year = NULL,
   country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"),
-  option = 1
+  option = NULL
+)
+
+lookup(
+  lookup,
+  within,
+  within_names = NULL,
+  within_codes = NULL,
+  return_width = c("tidy", "full", "minimal"),
+  lookup_year = NULL,
+  within_year = NULL,
+  country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"),
+  option = NULL
 )
 }
 \arguments{
@@ -58,4 +71,8 @@ A tibble.
 \description{
 Calls \code{return_lookup_query_info()} and processes the output, returning a
 tibble.
+}
+\examples{
+lookup("pcon", "utla", "South Gloucestershire")
+
 }
