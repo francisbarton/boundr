@@ -19,67 +19,82 @@ hocl_msoa21_names <- paste0(
 # Open Geography schema build -------------
 
 build_schema <- function() {
-  api_base_url <- paste0(
-    "https://services1.arcgis.com/ESMARspQHYMw9BZ9/",
-    "ArcGIS/rest/services"
-  )
 
-  api_services_data <- api_base_url |> 
-    opengeo_api_req(append = "") |>
-    query_opengeo_api() |>
-    httr2::resp_body_json() |>
-    purrr::pluck("services") |>
-    purrr::map_df(unlist) |>
-    dplyr::rename(service_url = url)
-
+  # Helper functions
   api_data_return <- function(url) {
     url |>
       opengeo_api_req(append = "0") |>
-      possibly_query_opengeo_api() |>
-      httr2::resp_body_json()
+      possibly_query_opengeo_api()
   }
 
   pluck_api_data <- function(dat, url) {
     tibble::tibble(
       service_name = purrr::pluck(dat, "name", .default = ""),
       service_url = url,
-      version = purrr::pluck(dat, "currentVersion"),
+      # version = purrr::pluck(dat, "currentVersion"),
       edit_date = purrr::pluck(dat, "editingInfo", "lastEditDate"),
       data_edit_date = purrr::pluck(dat, "editingInfo", "dataLastEditDate"),
       max_record_count = purrr::pluck(dat, "maxRecordCount", .default = 500),
-      has_geometry = purrr::pluck(dat, "hasGeometryProperties", .default = FALSE),
-      field_names = purrr::pluck(dat, "fields", .default = NULL) |> purrr::map_chr("name")
+      has_geometry = purrr::pluck(dat, "hasGeometryProperties",
+                                  .default = FALSE),
+      field_names = purrr::pluck(dat, "fields", .default = NULL) |>
+        purrr::map_chr("name")
     ) |>
-      tidyr::pivot_wider(names_from = field_names, values_from = field_names) |>
+      tidyr::pivot_wider(
+        names_from = field_names,
+        values_from = field_names) |>
       janitor::clean_names() |>
       dplyr::select(service_name:has_geometry, ends_with("cd"))
   }
+
+  # Data pipeline
+  api_base_url <- paste0(
+    "https://services1.arcgis.com/ESMARspQHYMw9BZ9/",
+    "ArcGIS/rest/services"
+  )
+
+  api_services_data <- api_base_url |>
+    opengeo_api_req(append = "") |>
+    query_opengeo_api() |>
+    httr2::resp_body_json() |>
+    purrr::pluck("services") |>
+    purrr::map_df(unlist) |>
+    dplyr::rename(service_url = url) |>
+    dplyr::filter(type == "FeatureServer") |>
+    dplyr::select(!type)
 
   data_from_api <- api_services_data |>
     dplyr::pull(service_url) |>
     purrr::map(api_data_return, .progress = rlang::is_interactive())
 
-  success_index <- data_from_api |>
-    purrr::map_lgl(rlang::is_list)
+  # Deal with any URLs that don't return data
+  fails <- which(purrr::map_lgl(data_from_api, is.null))
 
-  if (sum(success_index) < nrow(api_services_data)) {
-    fails <- api_services_data |>
-      dplyr::filter(!success_index)
-    ui_info(str_glue("{nrow(fails)} service URLs did not successfully return data this time. Examples:")
-    cat(head(fails)))
+  if (length(fails)) {
+    info <- stringr::str_c("* ", head(api_services_data$name[fails]),
+      collapse = ",\n")
+    ui_info(
+      stringr::str_glue(
+        "{length(fails)} services ",
+        "did not successfully return data this time. Examples:\n",
+        "{info}"))
   }
 
-  service_urls <- api_services_data$url[which(success_index)]
+  service_urls <- api_services_data$service_url[-fails]
 
-  api_data_df <- data_from_api |>
+  # Final data format process
+  data_from_api |>
     purrr::compact() |>
+    purrr::map(httr2::resp_body_json) |>
     purrr::map2(service_urls, pluck_api_data,
       .progress = rlang::is_interactive()) |>
-    purrr::list_rbind()
-
-  opengeo_schema <- api_services_data |>
-    dplyr::left_join(api_data_df) |>
-    dplyr::filter(!if_all(ends_with("cd"), is.na))
+    purrr::list_rbind() |>
+    dplyr::filter(!if_all(ends_with("cd"), is.na)) |>
+    janitor::remove_empty("cols") |>
+    dplyr::select(
+      "service_name":"has_geometry", ends_with("cd")
+    ) |>
+    dplyr::arrange(desc(data_edit_date))
 }
 
 opengeo_schema <- build_schema()
