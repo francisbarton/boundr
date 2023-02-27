@@ -48,18 +48,16 @@ of the higher level area (or areas) or its code.
 `return_lookup_query_info()` then finds the API query URL of a suitable
 lookup table - one that contains columns for both your lower and higher
 level areas. It does this by filtering `opengeo_schema`, which is a
-downloaded copy of the various datasets available from the Open
-Geography API Services list. This schema is available as internal data
-in the package - but may need updating.
+cached copy of the various datasets available from the Open Geography
+API Services list. This schema is available as internal data in the
+package - but may need updating.
 
-`create_lookup_table()` then builds a lookup table (tibble) based on all
-the areas you have said you are interested in. At the same time,
+`create_lookup_table()` then builds a lookup table (a tibble) based on
+all the areas you have said you are interested in. At the same time,
 `return_bounds_data()` will - if you have specified you want spatial
-boundaries data for your areas - be retrieving the boundary data at your
-chosen resolution for your lower level areas.
-
-These will then be joined onto the lookup table and provided to you as
-an `sf` tibble.
+boundaries data for your areas - retrieve the boundary data at your
+chosen resolution for your lower level areas. These will then be joined
+onto the lookup table and provided to you as an `sf` tibble.
 
 ## Installation
 
@@ -93,13 +91,13 @@ The code in this repo is MIT licensed.
 The data that the code helps you retrieve is issued under a variety of
 licences, including:
 
--   the [Open Government Licence
-    v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
+- the [Open Government Licence
+  v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
 
 > Licensing statement [as stipulated by the
 > ONS](https://www.ons.gov.uk/methodology/geography/licences):
 >
-> -   Source: Office for National Statistics licensed under the [Open
->     Government Licence
->     v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
-> -   Contains OS data © Crown copyright and database right 2021.
+> - Source: Office for National Statistics licensed under the [Open
+>   Government Licence
+>   v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
+> - Contains OS data © Crown copyright and database right 2021.
