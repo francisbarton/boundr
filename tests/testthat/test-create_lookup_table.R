@@ -1,6 +1,6 @@
 "create lookup 1" |>
   test_that({
-    lookup_query_data <- return_lookup_query_info(lookup = "wd", within = "lad", country_filter = "EN")
+    lookup_query_data <- return_lookup_query_info(lookup = "wd", within = "lad", country_filter = "EN", option = 1)
     within_names <- "Stroud"
     within_codes <- NULL
     within_code_field <- lookup_query_data[["within_field"]]
@@ -35,17 +35,58 @@
       return_result_ids(within) |>
       unique()
 
-    expect_identical(
-      ids,
-      c(1202L, 1207L, 1217L, 1221L, 1228L, 1273L, 1278L, 1283L, 1289L, 1295L, 1301L, 1311L, 1315L, 1321L, 1327L, 1333L, 1339L, 1340L, 1341L, 1342L, 1492L, 1493L, 1494L, 1495L, 1496L, 1497L, 1498L, 1499L, 1500L, 1501L, 1502L, 1503L, 1504L, 1505L, 1506L))
+    expect_equal(length(ids), 37L)
+  })
 
+
+"create lookup 2" |>
+  test_that({
+    lookup_query_data <- return_lookup_query_info(
+      lookup = "lsoa",
+      within = "lad",
+      option = 1)
+    within_names <- "Swindon"
+    within_codes <- NULL
+    within_code_field <- lookup_query_data[["within_field"]]
+    within_name_field <- sub("cd$", "nm", within_code_field)
+
+    within <- c(
+      within_name_field |>
+        paste0(
+          " = ",
+          (paste0("'", toupper(within_names), "'"))
+        ) |>
+        utils::head(length(within_names)),
+      within_code_field |>
+        paste0(
+          " = ",
+          (paste0("'", toupper(within_codes), "'"))
+        ) |>
+        utils::head(length(within_codes))
+    ) |>
+      stringr::str_c(collapse = " OR ")
+
+    expect_identical(
+      within_name_field,
+      "lad22nm"
+    )
+    expect_identical(
+      within,
+      "lad22nm = 'SWINDON'"
+    )
+
+    ids <- lookup_query_data[["query_url"]] |>
+      return_result_ids(within) |>
+      unique()
+
+    expect_equal(length(ids), 140L)
   })
 
 
 "create lookup 4" |>
   test_that({
 
-    lookup_query_data <- return_lookup_query_info(lookup = "wd", within = "lad", country_filter = "EN")
+    lookup_query_data <- return_lookup_query_info(lookup = "wd", within = "lad", country_filter = "EN", option = 1)
     within_names <- "Stroud"
     within_codes <- NULL
 
@@ -75,19 +116,23 @@
 
     fields <- switch(return_width,
                      "tidy" = "*",
-                     "basic" = paste(lookup_code_field, lookup_name_field, within_code_field, within_name_field, collapse = ","),
+                     "basic" = c(lookup_code_field, lookup_name_field, within_code_field, within_name_field),
                      "full" = "*",
-                     "minimal" = paste(lookup_code_field, lookup_name_field, collapse = ","))
+                     "minimal" = c(lookup_code_field, lookup_name_field))
 
     expect_identical(
       fields,
-      "WD20CD,WD20NM"
+      c("wd22cd", "wd22nm")
     )
 
-    out <- ids |>
-      purrr::map(\(ids) return_table_data(ids, lookup_query_data[["service_url"]], fields)) |>
-      purrr::list_rbind()
+    ids <- lookup_query_data[["query_url"]] |>
+      return_result_ids(within) |>
+      unique()
 
-    expect_equal(nrow(out), 35)
-    expect_equal(length(out), 2)
+    expect_equal(length(ids), 37L)
+
+    out <- return_table_data(ids, lookup_query_data[["query_url"]], fields)
+
+    expect_equal(nrow(out), 37L)
+    expect_equal(ncol(out), 2L)
   })

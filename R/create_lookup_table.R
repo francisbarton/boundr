@@ -1,8 +1,8 @@
 #' Create a lookup table by querying the ONS OpenGeography API
-#' 
+#'
 #' Calls `return_lookup_query_info()` and processes the output, returning a
 #'  tibble.
-#' 
+#'
 #' @inheritParams return_lookup_query_info
 #' @param within_names,within_codes character. In order to restrict data
 #'  returned to a specific area, either `within_names` or `within_codes` must
@@ -14,6 +14,9 @@
 #' @param return_width character. How many of the possible columns in the
 #'  returned table to keep. Options are "tidy", "basic", "full" or "minimal".
 #'
+#' @examples
+#' lookup("pcon", "utla", "South Gloucestershire")
+#'
 #' @returns A tibble.
 #' @export
 create_lookup_table <- function(
@@ -21,22 +24,21 @@ create_lookup_table <- function(
     within,
     within_names = NULL,
     within_codes = NULL,
-    return_width = c("tidy", "basic", "full", "minimal"),
+    return_width = c("tidy", "full", "minimal"),
     lookup_year = NULL,
     within_year = NULL,
     country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"),
-    option = 1
+    option = NULL
   ) {
 
   # https://developers.arcgis.com/rest/services-reference/
   # enterprise/query-feature-service-layer-.htm
 
-  country_filter <- match.arg(country_filter)
-  assertthat::assert_that(length(country_filter) == 1)
   return_width <- match.arg(return_width)
-  assertthat::assert_that(length(return_width) == 1)
+  assert_that(length(return_width) == 1)
+  country_filter <- match.arg(country_filter)
+  assert_that(length(country_filter) == 1)
 
-  # call subsidiary function
   lookup_query_info <- return_lookup_query_info(
     lookup,
     within,
@@ -52,20 +54,29 @@ create_lookup_table <- function(
   within_code_field <- lookup_query_info[["within_field"]]
   within_name_field <- sub("cd$", "nm", within_code_field)
 
+
+
   if (is.null(within_names) & is.null(within_codes)) {
-    within <- "1=1"
+    # within_string <- "1=1"
+    within_string <- ""
   } else {
-    within <- c(
+    within_string <- c(
       within_name_field |>
         paste0(
-          " = ",
-          (paste0("'", toupper(within_names), "'"))
+          " IN (",
+          stringr::str_flatten(
+            paste0("'", within_names, "'"),
+          collapse = ","),
+          ")"
         ) |>
         utils::head(length(within_names)),
       within_code_field |>
         paste0(
-          " = ",
-          (paste0("'", toupper(within_codes), "'"))
+          " IN (",
+          stringr::str_flatten(
+            paste0("'", within_codes, "'"),
+            collapse = ","),
+          ")"
         ) |>
         utils::head(length(within_codes))
     ) |>
@@ -73,55 +84,91 @@ create_lookup_table <- function(
   }
 
   ids <- query_base_url |>
-    return_result_ids(where = within) |>
+    return_result_ids(where = within_string) |>
     unique()
 
 
-
   fields <- switch(return_width,
-                   "tidy" = "*",
-                   "basic" = paste(lookup_code_field, lookup_name_field, within_code_field, within_name_field, collapse = ","),
+                   "tidy" = c(
+                     lookup_code_field,
+                     lookup_name_field,
+                     within_code_field,
+                     within_name_field),
                    "full" = "*",
-                   "minimal" = paste(lookup_code_field, lookup_name_field, collapse = ","))
+                   "minimal" = c(lookup_code_field, lookup_name_field))
 
 
 
-  # actually retrieve the data (in batches of 500 ids if necessary)
+  # Actually retrieve the data (in batches if necessary).
+  # (100 seems to be safe? 500 is ok in theory but sometimes we get a 404 -
+  # not to do with maxRecordCount but just query URL too long??)
   out <- ids |>
-    batch_it(500) |>
-    purrr::map(
-      \(ids) return_table_data(ids, query_base_url, fields),
+    batch_it(100) |>
+    purrr::map(\(x) return_table_data(x, query_base_url, fields),
       .progress = "Lookup table data") |>
     purrr::list_rbind()
 
-  if (tolower(lookup) == "msoa" &
-    grepl("^lsoa", lookup_code_field)) {
-    lookup_code_field <- lookup_code_field |>
-      stringr::str_replace("^lsoa", "msoa")
-    lookup_name_field <- lookup_name_field |>
-      stringr::str_replace("^lsoa", "msoa")
-    msoa_names <- switch(key,
-      msoa11nm = hocl_msoa11_names,
-      msoa21nm = hocl_msoa21_names)
-    out <- out |>
-      dplyr::select(!lookup_code_field) |>
-      dplyr::rename_with(\(x) sub("^lsoa", "msoa", x)) |>
-      dplyr::mutate(across(lookup_name_field,
-        \(x) sub("[:upper:]{1}$", "", x))) |>
-      dplyr::distinct() |>
-      dplyr::left_join(msoa_names, by = lookup_name_field) |>
-      dplyr::relocate(starts_with("msoa")) |>
-      dplyr::relocate(lookup_code_field) |>
-      janitor::remove_empty("cols")
+
+  # More hacks to handle the MSOAs issue
+
+  # if our leftmost columns are lsoa* but we need to convert them to msoa*
+  if (lookup == "msoa") {
+    out_left <- out |>
+      dplyr::select(starts_with("lsoa") & ends_with("nm")) |>
+      dplyr::select(1)
+
+    msoa_name_field <- sub("^lsoa", "msoa", names(out_left))
+    if (msoa_name_field == "msoa11nm") hocl_msoa_names <- hocl_msoa11_names
+    else if (msoa_name_field == "msoa21nm") hocl_msoa_names <- hocl_msoa21_names
+    else hocl_msoa_names <- NULL
+
+    out <- out_left |>
+      dplyr::mutate(
+        {{ msoa_name_field }} := sub("[A-Z]{1}$", "", out_left[[1]])) |>
+      dplyr::left_join(hocl_msoa_names) |>
+      dplyr::left_join(out) |>
+      dplyr::select(!starts_with("lsoa"))
+
+
+  } else if (within == "msoa") {
+    out_right <- out |>
+      dplyr::select(starts_with("lsoa") & ends_with("nm")) |>
+      dplyr::select(1)
+
+    msoa_name_field <- sub("^lsoa", "msoa", names(out_right))
+    if (msoa_name_field == "msoa11nm") hocl_msoa_names <- hocl_msoa11_names
+    else if (msoa_name_field == "msoa21nm") hocl_msoa_names <- hocl_msoa21_names
+    # won't work if user wants msoa01 (2001) lookup
+    else hocl_msoa_names <- NULL
+
+
+    out_all <- out_right |>
+      dplyr::mutate({{ msoa_name_field }} := sub("[A-Z]{1}$", "", out_right[[1]])) |>
+      dplyr::left_join(hocl_msoa_names) |>
+      dplyr::left_join(out) |>
+      dplyr::select(all_of(c(names(out), names(hocl_msoa_names))))
+
+    if (lookup == "lsoa") {
+      out <- out_all |>
+        dplyr::distinct()
+    } else {
+      out <- out_all |>
+        dplyr::select(!starts_with("lsoa"))
+    }
   }
 
 
-  if (return_width == "tidy") {
-    out <- out |>
-      dplyr::select(lookup_code_field:within_name_field)
-  }
+  # if (return_width == "tidy") {
+  #   out <- out |>
+  #     dplyr::select({{ lookup_code_field }}:{{ within_name_field }})
+  # }
 
   out |>
+    dplyr::select(!any_of(c("object_id", "global_id", "chgind"))) |>
     dplyr::distinct() |>
     janitor::remove_empty("cols")
 }
+
+#' @rdname create_lookup_table
+#' @export
+lookup <- create_lookup_table
