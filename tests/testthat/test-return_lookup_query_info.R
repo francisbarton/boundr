@@ -4,7 +4,7 @@
 
   # filter only lookup tables from the schema
   schema_lookups <- opengeo_schema |>
-    dplyr::filter(if_any("service_name", \(x) stringr::str_detect(x, "_LU$"))) |>
+    dplyr::filter(stringr::str_detect(service_name, "_LU$")) |>
     janitor::remove_empty("cols")
 
   # make list of codes used in lookups
@@ -43,8 +43,12 @@
       field_code <- sub("^msoa", "lsoa", field_code)
     }
 
-    assertthat::assert_that(field_code %in% names_vec,
-    msg = "return_lookup_query_info: That combination of area levels and years has not returned a result. Please try a different year.")
+    assertthat::assert_that(
+      field_code %in% names_vec,
+      msg = paste0(
+        "return_lookup_query_info: ",
+        "That combination of area levels and years has not returned a result. ",
+        "Please try a different year."))
 
     # return
     field_code
@@ -79,7 +83,7 @@
   x_name2 <- str_glue("{x}{x_year}cd")
   expect_identical(x_name, x_name2)
 
-  x_name3 <- return_field_code(x)
+  x_name3 <- return_field_code(x, names_vec = schema_names)
   expect_identical(x_name3, "wd22cd")
 
   expect_error(return_field_code("msoa", 2022, schema_names))
