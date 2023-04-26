@@ -9,6 +9,19 @@
 #'  (200m); U indicates Ultra-generalised (500m) boundary resolution.
 #' @param centroids Boolean. If TRUE, return centroids rather than boundaries.
 #'
+#' @examples
+#' lookup("pcon", "utla", "South Gloucestershire") |>
+#'  dplyr::select(starts_with("pcon") & ends_with("nm")) |>
+#'  dplyr::pull(1) |>
+#'  lookup(lookup = "wd", within = "pcon") |>
+#'  dplyr::select(starts_with("wd") & ends_with("cd")) |>
+#'  dplyr::pull(1) |>
+#'  bounds(
+#'   lookup = "lsoa",
+#'   within = "wd",
+#'   within_names = NULL,
+#'   return_width = "full")
+#'
 #' @export
 create_bounds_table <- function(
     lookup,
@@ -121,7 +134,7 @@ pull_bounds_query_url <- function(field, resolution) {
   results |>
     # We assume any row of results will give the desired geo data. So take #1.
     dplyr::slice(1) |>
-    dplyr::pull(service_url)
+    dplyr::pull("service_url")
 }
 
 #' @noRd
