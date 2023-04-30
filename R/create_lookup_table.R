@@ -15,7 +15,7 @@
 #'  returned table to keep. Options are "tidy", "basic", "full" or "minimal".
 #'
 #' @examples
-#' lookup("pcon", "utla", "South Gloucestershire")
+#' create_lookup_table("pcon", "utla", "South Gloucestershire")
 #'
 #' @returns A tibble.
 #' @export
@@ -28,7 +28,8 @@ create_lookup_table <- function(
     lookup_year = NULL,
     within_year = NULL,
     country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"),
-    option = NULL
+    option = NULL,
+    chatty = rlang::is_interactive()
   ) {
 
   # https://developers.arcgis.com/rest/services-reference/
@@ -168,7 +169,3 @@ create_lookup_table <- function(
     dplyr::distinct() |>
     janitor::remove_empty("cols")
 }
-
-#' @rdname create_lookup_table
-#' @export
-lookup <- create_lookup_table

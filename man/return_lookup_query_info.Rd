@@ -11,7 +11,7 @@ return_lookup_query_info(
   within_year = NULL,
   country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"),
   option = NULL,
-  quiet = FALSE
+  chatty = rlang::is_interactive()
 )
 }
 \arguments{
@@ -38,6 +38,10 @@ for England and Wales. By default returns all options.}
 the first one from the list of possible services resulting from the level
 and year filters above. If this does not give you what you want, you can
 run the script again with a different option from the list.}
+
+\item{chatty}{Boolean. Whether to print feedback on the 'decisions' the
+function has taken about which table to query. Default \code{TRUE} when the
+function is run in an interactive session, \code{FALSE} otherwise.}
 }
 \value{
 A list of length 3: the query URL, the lower level (\code{lookup}) field

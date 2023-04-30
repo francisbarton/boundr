@@ -18,6 +18,9 @@
 #'  the first one from the list of possible services resulting from the level
 #'  and year filters above. If this does not give you what you want, you can
 #'  run the script again with a different option from the list.
+#' @param chatty Boolean. Whether to print feedback on the 'decisions' the
+#'  function has taken about which table to query. Default `TRUE` when the 
+#'  function is run in an interactive session, `FALSE` otherwise.
 #'
 #' @returns A list of length 3: the query URL, the lower level (`lookup`) field
 #'  code (eg `lsoa11cd`), and the higher level (`within`) field code.
@@ -28,7 +31,7 @@ return_lookup_query_info <- function(
     within_year = NULL,
     country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"),
     option = NULL,
-    quiet = FALSE
+    chatty = rlang::is_interactive()
   ) {
 
   country_filter <- match.arg(country_filter)
@@ -87,22 +90,22 @@ return_lookup_query_info <- function(
 
   within_field <- return_field_code(within, within_year, schema2_names)
 
-  if (!quiet) {
-    ui_info(str_glue("Using codes {lookup_field}, {within_field}."))
+  if (chatty) {
+    ui_info("Using codes {lookup_field}, {within_field}.")
   }
 
 
   results_0 <- schema2 |>
     dplyr::filter(if_any({{ within_field }}, \(x) !is.na(x))) |>
     janitor::remove_empty("cols") |>
-    dplyr::arrange(desc(data_edit_date))
+    dplyr::arrange(desc(across("data_edit_date")))
 
   lookup_stub <- toupper(sub("cd$", "", lookup_field))
 
   # Prioritise results where lookup_field is at the lefthand end
   results <- results_0 |>
-    dplyr::filter(
-      stringr::str_starts(service_name, lookup_stub))
+    dplyr::filter(if_any(
+      "service_name", \(x) stringr::str_starts(x, lookup_stub)))
 
   if (nrow(results) == 0) results <- results_0
 
@@ -112,7 +115,8 @@ return_lookup_query_info <- function(
       "No result was found for the parameters supplied. ",
       "Try a different year or a different country filter?"))
 
-  if (nrow(results) > 1 & is.null(option) & !quiet) {
+  if (nrow(results) > 1 & is.null(option) & chatty) {
+    ui_info(
       stringr::str_c(
         "More than 1 result found:",
         stringr::str_flatten(
@@ -122,15 +126,15 @@ return_lookup_query_info <- function(
             ") ",
             results[["service_name"]]),
           collapse = "\n"),
-        "Using option {tbl_option}. ",
-        "(Change the `option` parameter to use a different one.)",
-        sep = "\n") |>
-    usethis::ui_info()
+      "Using option {tbl_option}. ",
+      "(Change the `option` parameter to use a different one.)",
+      sep = "\n")
+    )
   }
 
   query_url <- results |>
     dplyr::slice(tbl_option) |>
-    dplyr::pull("service_url")
+    dplyr::pull(all_of("service_url"))
 
   # return query URL and lookup_field and within_field in a list,
   # to be passed on to create_lookup_table()
@@ -148,7 +152,7 @@ return_field_code <- function(prefix, year, names_vec) {
 
   if (is.null(year)) {
     years <- names_vec |>
-      stringr::str_extract(str_glue("(?<=^{prefix})\\d+"))  |>
+      stringr::str_extract(glue("(?<=^{prefix})\\d+"))  |>
       as.numeric()
 
     # needs updating in 2030 ;-)

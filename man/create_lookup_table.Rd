@@ -2,7 +2,6 @@
 % Please edit documentation in R/create_lookup_table.R
 \name{create_lookup_table}
 \alias{create_lookup_table}
-\alias{lookup}
 \title{Create a lookup table by querying the ONS OpenGeography API}
 \usage{
 create_lookup_table(
@@ -14,19 +13,8 @@ create_lookup_table(
   lookup_year = NULL,
   within_year = NULL,
   country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"),
-  option = NULL
-)
-
-lookup(
-  lookup,
-  within,
-  within_names = NULL,
-  within_codes = NULL,
-  return_width = c("tidy", "full", "minimal"),
-  lookup_year = NULL,
-  within_year = NULL,
-  country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"),
-  option = NULL
+  option = NULL,
+  chatty = rlang::is_interactive()
 )
 }
 \arguments{
@@ -64,6 +52,10 @@ for England and Wales. By default returns all options.}
 the first one from the list of possible services resulting from the level
 and year filters above. If this does not give you what you want, you can
 run the script again with a different option from the list.}
+
+\item{chatty}{Boolean. Whether to print feedback on the 'decisions' the
+function has taken about which table to query. Default \code{TRUE} when the
+function is run in an interactive session, \code{FALSE} otherwise.}
 }
 \value{
 A tibble.
@@ -73,6 +65,6 @@ Calls \code{return_lookup_query_info()} and processes the output, returning a
 tibble.
 }
 \examples{
-lookup("pcon", "utla", "South Gloucestershire")
+create_lookup_table("pcon", "utla", "South Gloucestershire")
 
 }
