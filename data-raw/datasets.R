@@ -1,16 +1,15 @@
 # House of Commons Library MSOA Names data -------------
 
-
 hocl_msoa11_names <- paste0(
-  "https://houseofcommonslibrary.github.io",
-  "/msoanames/MSOA-Names-Latest.csv"
+  "https://houseofcommonslibrary.github.io/msoanames/",
+  "MSOA-Names-Latest.csv"
 ) |>
   readr::read_csv(col_types = "cccccc") |>
   dplyr::select(!"Laname")
 
 hocl_msoa21_names <- paste0(
-  "https://houseofcommonslibrary.github.io",
-  "/msoanames/MSOA-Names-Latest2.csv"
+  "https://houseofcommonslibrary.github.io/msoanames/",
+  "MSOA-Names-Latest2.csv"
 ) |>
   readr::read_csv(col_types = "cccccc") |>
   dplyr::select(!c("localauthorityname", "type"))
@@ -48,10 +47,8 @@ build_schema <- function() {
   }
 
   # Data pipeline
-  api_base_url <- paste0(
-    "https://services1.arcgis.com/ESMARspQHYMw9BZ9/",
-    "ArcGIS/rest/services"
-  )
+  api_base_url <-
+    "https://services1.arcgis.com/ESMARspQHYMw9BZ9/ArcGIS/rest/services"
 
   api_services_data <- api_base_url |>
     opengeo_api_req(append = "") |>
@@ -64,7 +61,7 @@ build_schema <- function() {
     dplyr::select(!type)
 
   data_from_api <- api_services_data |>
-    dplyr::pull(service_url) |>
+    dplyr::pull(all_of("service_url")) |>
     purrr::map(api_data_return, .progress = rlang::is_interactive())
 
   # Deal with any URLs that don't return data
@@ -73,11 +70,8 @@ build_schema <- function() {
   if (length(fails)) {
     info <- stringr::str_c("* ", head(api_services_data$name[fails]),
       collapse = ",\n")
-    ui_info(
-      stringr::str_glue(
-        "{length(fails)} services ",
-        "did not successfully return data this time. Examples:\n",
-        "{info}"))
+    ui_info("{length(fails)} services did not successfully return data ",
+      "this time. Examples: {info}")
   }
 
   service_urls <- api_services_data$service_url[-fails]
@@ -91,9 +85,7 @@ build_schema <- function() {
     purrr::list_rbind() |>
     dplyr::filter(!if_all(ends_with("cd"), is.na)) |>
     janitor::remove_empty("cols") |>
-    dplyr::select(
-      "service_name":"has_geometry", ends_with("cd")
-    ) |>
+    dplyr::select("service_name":"has_geometry", ends_with("cd")) |>
     dplyr::arrange(desc(data_edit_date))
 }
 
