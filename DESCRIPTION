@@ -11,23 +11,26 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Imports: 
     assertthat,
-    dplyr (>= 1.0.0),
+    dplyr (>= 1.1.0),
+    glue,
     httr2,
-    janitor,
+    janitor (>= 1.2.0),
+    jsonlite,
     purrr (>= 1.0.0),
     rlang (>= 0.1.2),
     sf,
     stringr (>= 1.5.0),
-    usethis,
+    tibble,
+    tidyr (>= 1.0.0),
+    tidyselect (>= 1.0.0),
+    usethis (>= 1.5.0),
     utils
 Depends: 
     R (>= 4.0.0)
 Suggests: 
     covr,
-    readr,
     roxygen2,
     testthat (>= 3.0.0),
-    tmap
 Config/testthat/edition: 3
 URL: https://github.com/francisbarton/boundr
 BugReports: https://github.com/francisbarton/boundr/issues
