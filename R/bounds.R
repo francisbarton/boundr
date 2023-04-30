@@ -10,10 +10,10 @@
 #' @param centroids Boolean. If TRUE, return centroids rather than boundaries.
 #'
 #' @examples
-#' lookup("pcon", "utla", "South Gloucestershire") |>
+#' create_lookup_table("pcon", "utla", "South Gloucestershire") |>
 #'  dplyr::select(starts_with("pcon") & ends_with("nm")) |>
 #'  dplyr::pull(1) |>
-#'  lookup(lookup = "wd", within = "pcon") |>
+#'  create_lookup_table(lookup = "wd", within = "pcon") |>
 #'  dplyr::select(starts_with("wd") & ends_with("cd")) |>
 #'  dplyr::pull(1) |>
 #'  bounds(
@@ -21,9 +21,9 @@
 #'   within = "wd",
 #'   within_names = NULL,
 #'   return_width = "full")
-#'
+#' @returns an `sfc` tibble (data frame with geometry)
 #' @export
-create_bounds_table <- function(
+bounds <- function(
     lookup,
     within,
     within_names = NULL,
@@ -83,7 +83,8 @@ create_bounds_table <- function(
     purrr::map(\(x) paste_area_codes(var = geo_code_field, vec = x))
 
   ids <- area_codes |>
-    purrr::map(\(x) return_result_ids(url = query_base_url, where = x))
+    purrr::map(\(x) return_result_ids(url = query_base_url, where = x)) |>
+    purrr::list_c()
 
   bounds_data <- ids |>
     purrr::map(\(x) return_bounds_data(x, query_base_url, crs)) |>
@@ -108,11 +109,6 @@ create_bounds_table <- function(
 
 
 
-#' @rdname create_bounds_table
-#' @export
-bounds <- create_bounds_table
-
-
 
 
 
@@ -123,7 +119,7 @@ pull_bounds_query_url <- function(field, resolution) {
   results <- opengeo_schema |>
     dplyr::filter(if_any("has_geometry")) |>
     dplyr::filter(if_any({{ field }}, \(x) !is.na(x))) |>
-    dplyr::filter(stringr::str_detect(service_name, toupper(resolution))) |>
+    dplyr::filter(if_any("service_name", \(x) stringr::str_detect(x, toupper(resolution)))) |>
     janitor::remove_empty("cols")
 
   assert_that(nrow(results) > 0,
@@ -134,14 +130,14 @@ pull_bounds_query_url <- function(field, resolution) {
   results |>
     # We assume any row of results will give the desired geo data. So take #1.
     dplyr::slice(1) |>
-    dplyr::pull("service_url")
+    dplyr::pull(all_of("service_url"))
 }
 
 #' @noRd
 pull_centroid_query_url <- function(field) {
   results <- opengeo_schema |>
     dplyr::filter(if_any({{ field }}, \(x) !is.na(x))) |>
-    dplyr::filter(stringr::str_detect(service_name, "PWC|Centroids")) |>
+    dplyr::filter(if_any("service_name", \(x) stringr::str_detect(x, "PWC|Centroids"))) |>
     janitor::remove_empty("cols")
 
   assert_that(nrow(results) > 0,
@@ -152,7 +148,7 @@ pull_centroid_query_url <- function(field) {
   results |>
     # We assume any row of results will give the desired geo data. So take #1.
     dplyr::slice(1) |>
-    dplyr::pull(service_url)
+    dplyr::pull(all_of("service_url"))
 }
 
 #' @noRd
