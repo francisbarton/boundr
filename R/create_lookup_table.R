@@ -150,8 +150,7 @@ create_lookup_table <- function(
       dplyr::select(all_of(c(names(out), names(hocl_msoa_names))))
 
     if (lookup == "lsoa") {
-      out <- out_all |>
-        dplyr::distinct()
+      out <- out_all
     } else {
       out <- out_all |>
         dplyr::select(!starts_with("lsoa"))

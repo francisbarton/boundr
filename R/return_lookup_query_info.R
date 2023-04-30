@@ -91,7 +91,7 @@ return_lookup_query_info <- function(
   within_field <- return_field_code(within, within_year, schema2_names)
 
   if (chatty) {
-    ui_info("Using codes {lookup_field}, {within_field}.")
+    ui_info("Using codes {lookup_field}, {within_field}")
   }
 
 
@@ -100,12 +100,10 @@ return_lookup_query_info <- function(
     janitor::remove_empty("cols") |>
     dplyr::arrange(desc(across("data_edit_date")))
 
-  lookup_stub <- toupper(sub("cd$", "", lookup_field))
-
   # Prioritise results where lookup_field is at the lefthand end
   results <- results_0 |>
     dplyr::filter(if_any(
-      "service_name", \(x) stringr::str_starts(x, lookup_stub)))
+      "service_name", \(x) stringr::str_starts(x, lookup)))
 
   if (nrow(results) == 0) results <- results_0
 
