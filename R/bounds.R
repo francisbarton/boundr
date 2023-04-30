@@ -24,20 +24,19 @@
 #' @returns an `sfc` tibble (data frame with geometry)
 #' @export
 bounds <- function(
-    lookup,
-    within,
-    within_names = NULL,
-    within_codes = NULL,
-    return_width = c("tidy", "full", "minimal"),
-    lookup_year = NULL,
-    within_year = NULL,
-    country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"),
-    resolution = c("BGC", "BSC", "BUC", "BFC", "BFE"),
-    centroids = FALSE,
-    option = NULL,
-    crs = 4326
-  ) {
-
+  lookup,
+  within,
+  within_names = NULL,
+  within_codes = NULL,
+  return_width = c("tidy", "full", "minimal"),
+  lookup_year = NULL,
+  within_year = NULL,
+  country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"),
+  resolution = c("BGC", "BSC", "BUC", "BFC", "BFE"),
+  centroids = FALSE,
+  option = NULL,
+  crs = 4326
+) {
   lookup <- tolower(lookup)
   within <- tolower(within)
   return_width <- match.arg(return_width)
@@ -59,6 +58,9 @@ bounds <- function(
     country_filter,
     option)
 
+  assert_that(nrow(lookup_table) > 0,
+    msg = "bounds: create_lookup_table() has returned a table with 0 rows")
+
   # This isn't watertight: if you have a table with eg "lad16cd" and "lad21cd"
   # columns, it will pull the leftmost column to use for the geometry query,
   # which may not be what you want.
@@ -70,11 +72,14 @@ bounds <- function(
     dplyr::select(1) |> # select the leftmost matching column
     names()
 
+  assert_that(length(geo_code_field) == 1 & !is.na(geo_code_field),
+    msg = "bounds: suitable geo_code_field not found from lookup table")
+
 
   if (centroids) {
-    query_base_url <- pull_centroid_query_url(geo_code_field)
+    query_base_url <- pull_centroid_query_url(geo_code_field, lookup)
   } else {
-    query_base_url <- pull_bounds_query_url(geo_code_field, resolution)
+    query_base_url <- pull_bounds_query_url(geo_code_field, lookup, resolution)
   }
 
   area_codes <- lookup_table |>
@@ -86,19 +91,36 @@ bounds <- function(
     purrr::map(\(x) return_result_ids(url = query_base_url, where = x)) |>
     purrr::list_c()
 
-  bounds_data <- ids |>
-    purrr::map(\(x) return_bounds_data(x, query_base_url, crs)) |>
-    purrr::list_rbind() |>
-    janitor::clean_names()
+  assert_that(is.vector(ids) & !is.list(ids) & length(ids),
+    msg = "bounds: return_result_ids() has not returned a vector of IDs.")
 
-  join_vars <- intersect(names(lookup_table), names(bounds_data))
+  bounds_data <- ids |>
+    purrr::map(\(x) return_bounds_data(x, query_base_url, crs))
+
+  assert_that(is.list(bounds_data) & length(bounds_data),
+    msg = "bounds: return_bounds_data() has not returned a list of length > 0")
+  
+  bounds_data_df <- bounds_data |>
+    purrr::list_rbind() |>
+    dplyr::distinct() |>
+    janitor::clean_names() |>
+    sf::st_sf()
+
+  assert_that(inherits(bounds_data_df, "data.frame"),
+    msg = "bounds: bounds_data could not be row-bound into a data frame")
+
+  assert_that(inherits(bounds_data_df, "sf"),
+    msg = "bounds: the data frame bounds_data_df does not have 'sf' class")
+    
+
+  join_vars <- intersect(names(lookup_table), names(bounds_data_df))
 
   if (return_width %in% c("tidy", "minimal")) {
-    bounds_data <- bounds_data |>
+    bounds_data_df <- bounds_data_df |>
       dplyr::select(all_of(c(join_vars, "geometry")))
   }
 
-  bounds_data |>
+  bounds_data_df |>
     dplyr::left_join(lookup_table, join_vars) |>
     dplyr::relocate(names(lookup_table)) |>
     dplyr::select(!any_of(c("fid", "objectid", "global_id"))) |>
@@ -115,11 +137,14 @@ bounds <- function(
 # Helper functions --------------------------------
 
 #' @noRd
-pull_bounds_query_url <- function(field, resolution) {
+pull_bounds_query_url <- function(field, lookup, resolution) {
   results <- opengeo_schema |>
     dplyr::filter(if_any("has_geometry")) |>
     dplyr::filter(if_any({{ field }}, \(x) !is.na(x))) |>
-    dplyr::filter(if_any("service_name", \(x) stringr::str_detect(x, toupper(resolution)))) |>
+    dplyr::filter(if_any(
+      "service_name", \(x) stringr::str_starts(x, toupper(lookup)))) |>
+    dplyr::filter(if_any(
+      "service_name", \(x) stringr::str_detect(x, toupper(resolution)))) |>
     janitor::remove_empty("cols")
 
   assert_that(nrow(results) > 0,
@@ -134,10 +159,13 @@ pull_bounds_query_url <- function(field, resolution) {
 }
 
 #' @noRd
-pull_centroid_query_url <- function(field) {
+pull_centroid_query_url <- function(field, lookup) {
   results <- opengeo_schema |>
     dplyr::filter(if_any({{ field }}, \(x) !is.na(x))) |>
-    dplyr::filter(if_any("service_name", \(x) stringr::str_detect(x, "PWC|Centroids"))) |>
+    dplyr::filter(
+      if_any("service_name", \(x) stringr::str_starts(x, toupper(lookup)))) |>
+    dplyr::filter(
+      if_any("service_name", \(x) stringr::str_detect(x, "PWC|Centroids"))) |>
     janitor::remove_empty("cols")
 
   assert_that(nrow(results) > 0,
