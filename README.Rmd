@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 
 ```
 
-# boundr
+# welcome to boundr
 
 <!-- badges: start -->
 
@@ -59,18 +59,31 @@ The structure of the project looks a bit like this:
                                                                |
                                                          build_schema()
 
-When you call `bounds()` you specify a lower level area (eg ward) and a higher level area (eg local authority), and you specify either the name of the higher level area (or areas) or its code.
+When you call `bounds()` you specify a lower level area (eg ward) and a higher
+level area (eg local authority), and you specify either the name of the higher
+level area (or areas) or its code.
 
-`return_lookup_query_info()` then finds the API query URL of a suitable lookup table - one that contains columns for both your lower and higher level areas. It does this by filtering `opengeo_schema`, which is a cached copy of the various datasets available from the Open Geography API Services list. This schema is available as internal data in the package - but may need updating.
+`return_lookup_query_info()` then finds the API query URL of a suitable lookup
+table - one that contains columns for both your lower and higher level areas.
+It does this by filtering `opengeo_schema`, which is a cached copy of the
+various datasets available from the Open Geography API Services list.
+This schema is available as internal data in the package - but may need
+updating.
 
-`create_lookup_table()` then builds a lookup table (a tibble) based on all the areas you have said you are interested in. At the same time, `return_bounds_data()` will - if you have specified you want spatial boundaries data for your areas - retrieve the boundary data at your chosen resolution for your lower level areas. These will then be joined onto the lookup table and provided to you as an `sf` tibble. 
+`create_lookup_table()` then builds a lookup table (a tibble) based on all the
+areas you have said you are interested in.
+At the same time, `return_bounds_data()` will - if you have specified you want
+spatial boundaries data for your areas - retrieve the boundary data at your
+chosen resolution for your lower level areas.
+These will then be joined onto the lookup table and provided to you as an
+`sf` tibble. 
 
 
 ## Installation
 
 You can install this package from the `R` console by entering
 
-    remotes::install_github("francisbarton/boundr")
+  `remotes::install_github("francisbarton/boundr")`
 
 if you have the `remotes` package installed.
 
@@ -81,7 +94,8 @@ if you have the `remotes` package installed.
 ## Contributing
 
 Suggestions for improvements are welcome, preferably posted as an issue
-here on GitHub. Contributions as pull requests are also welcome.
+here on GitHub.
+Contributions as pull requests are also welcome.
 
 Please note that `boundr` is released with a [Contributor Code of
 Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html).

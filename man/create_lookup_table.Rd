@@ -33,7 +33,7 @@ useful with wards, where there are many that share identical names). A
 vector of multiple names or codes can be supplied.}
 
 \item{return_width}{character. How many of the possible columns in the
-returned table to keep. Options are "tidy", "basic", "full" or "minimal".}
+returned table to keep. Options are "tidy", "full" or "minimal".}
 
 \item{lookup_year}{numeric or character. A specific year for data relating
 to parameter \code{x}, if needed. Defaults to \code{NULL}, which will return the most

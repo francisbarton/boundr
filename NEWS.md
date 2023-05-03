@@ -1,8 +1,23 @@
+# 0.3.4 (as at May 3, 2023)
+
+* Deleted all tests as they were useless. Will start again from scratch.
+* Added `add_bounds_to_table()` function - for when you already have a lookup
+    table and you just want to add geo data to it. It uses the lefthandmost
+    column as the source for the geometry codes, so if they are not there it
+    will just fail - that's for the user to sort out.
+* This version adds centroid support and some fixes to the MSOA-LSOA-MSOA round
+    trip hack
+* The opengeo_schema internal data object has been refreshed
+* I can't remember what happened to 0.3.3
+
 # 0.3.2 (February 25, 2023)
 
-* After a lot of intervals of not working on this very much, I have finally pushed a lot of further work on the new style. The package is now named `boundr` and the work has been done in the main branch.
+* After a lot of intervals of not working on this very much, I have finally
+    pushed a lot of further work on the new style. The package is now named
+    `boundr` and the work has been done in the main branch.
 * Functions are now better documented and the core workflow is quite nice now.
-* Basic tests are written but further tests of core behaviours need to be written still.
+* Basic tests are written but further tests of core behaviours need to be
+    written still.
 * TODO: Make centroid queries eg MSOA centroids work
 
 # 0.3.0 (January 18, 2022)

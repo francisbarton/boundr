@@ -100,12 +100,14 @@ return_lookup_query_info <- function(
     janitor::remove_empty("cols") |>
     dplyr::arrange(desc(across("data_edit_date")))
 
+  lookup_stub <- toupper(sub("cd$", "", lookup_field))
+
   # Prioritise results where lookup_field is at the lefthand end
   results <- results_0 |>
     dplyr::filter(if_any(
-      "service_name", \(x) stringr::str_starts(x, lookup)))
-
-  if (nrow(results) == 0) results <- results_0
+      "service_name", \(x) stringr::str_starts(x, lookup_stub))) |>
+    dplyr::bind_rows(results_0) |>
+    dplyr::distinct()
 
   assert_that(nrow(results) > 0,
     msg = paste0(
@@ -153,7 +155,7 @@ return_field_code <- function(prefix, year, names_vec) {
       stringr::str_extract(glue("(?<=^{prefix})\\d+"))  |>
       as.numeric()
 
-    # needs updating in 2030 ;-)
+    # will need updating in 2030 ;-)
     year_out <- dplyr::if_else(years > 30, years + 1900, years + 2000) |>
       sort() |>
       # choose most recent year
@@ -168,10 +170,9 @@ return_field_code <- function(prefix, year, names_vec) {
   field_code <- paste0(prefix, year_out, "cd")
 
   assert_that(field_code %in% names_vec,
-              msg = paste0(
-                "return_lookup_query_info: ",
-                "That combination of area levels and years has not returned ",
-                "a result. Perhaps try a different year?"))
+    msg = paste0("return_lookup_query_info: ",
+      "That combination of area levels and years has not returned ",
+      "a result. Perhaps try a different year?"))
 
   # return
   field_code

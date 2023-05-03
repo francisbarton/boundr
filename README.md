@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# boundr
+# welcome to boundr
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -63,7 +63,7 @@ onto the lookup table and provided to you as an `sf` tibble.
 
 You can install this package from the `R` console by entering
 
-    remotes::install_github("francisbarton/boundr")
+`remotes::install_github("francisbarton/boundr")`
 
 if you have the `remotes` package installed.
 

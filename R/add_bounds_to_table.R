@@ -1,0 +1,67 @@
+#' @export
+add_bounds_to_table <- function(
+  tbl,
+  resolution = c("BGC", "BSC", "BUC", "BFC", "BFE"),
+  centroids = FALSE,
+  crs = NULL) {
+
+  if (is.null(crs)) {
+    if (!is.null(sf::st_crs(tbl))) {
+      crs <- sf::st_crs(tbl)
+    } else {
+      crs <- 4326 # default
+    }
+  }
+
+  tbl <- sf::st_drop_geometry(tbl)
+
+  geo_code_field <- tbl |>
+    dplyr::select(ends_with("cd")) |>
+    dplyr::select(1) |> # select the leftmost matching column
+    names()
+
+  lookup <- grep("^[Aa-Zz]+", geo_code_field, value = TRUE)
+  
+  if (centroids) {
+    query_base_url <- pull_centroid_query_url(geo_code_field, lookup)
+  } else {
+    query_base_url <- pull_bounds_query_url(geo_code_field, lookup, resolution)
+  }
+
+  area_codes <- tbl |>
+    dplyr::pull({{ geo_code_field }}) |>
+    batch_it(50) |> # turns out this limit is rather crucial!
+    purrr::map(\(x) paste_area_codes(var = geo_code_field, vec = x))
+
+  ids <- area_codes |>
+    purrr::map(\(x) return_result_ids(url = query_base_url, where = x)) |>
+    purrr::list_c()
+
+  assert_that(is.vector(ids) & !is.list(ids) & length(ids),
+    msg = "bounds: return_result_ids() has not returned a vector of IDs.")
+
+  bounds_data <- ids |>
+    purrr::map(\(x) return_bounds_data(x, query_base_url, crs))
+
+  assert_that(is.list(bounds_data) & length(bounds_data),
+    msg = "bounds: return_bounds_data() has not returned a list of length > 0")
+  
+  bounds_data_df <- bounds_data |>
+    # purrr::list_rbind() |>
+    dplyr::bind_rows() |>
+    dplyr::distinct() |>
+    janitor::clean_names() |>
+    dplyr::select(all_of(c(geo_code_field, "geometry")))
+
+  assert_that(inherits(bounds_data_df, "data.frame"),
+    msg = "bounds: bounds_data could not be row-bound into a data frame")
+
+  assert_that(inherits(bounds_data_df, "sf"),
+    msg = "bounds: the data frame bounds_data_df does not have 'sf' class")
+
+  bounds_data_df |>
+    dplyr::left_join(tbl, {{ geo_code_field }}) |>
+    dplyr::relocate(names(tbl)) |>
+    dplyr::distinct()
+  }
+

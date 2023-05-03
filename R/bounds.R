@@ -101,10 +101,10 @@ bounds <- function(
     msg = "bounds: return_bounds_data() has not returned a list of length > 0")
   
   bounds_data_df <- bounds_data |>
-    purrr::list_rbind() |>
+    dplyr::bind_rows() |>
+    # purrr::list_rbind() |>
     dplyr::distinct() |>
-    janitor::clean_names() |>
-    sf::st_sf()
+    janitor::clean_names()
 
   assert_that(inherits(bounds_data_df, "data.frame"),
     msg = "bounds: bounds_data could not be row-bound into a data frame")

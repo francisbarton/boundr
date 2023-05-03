@@ -12,7 +12,7 @@
 #'  useful with wards, where there are many that share identical names). A
 #'  vector of multiple names or codes can be supplied.
 #' @param return_width character. How many of the possible columns in the
-#'  returned table to keep. Options are "tidy", "basic", "full" or "minimal".
+#'  returned table to keep. Options are "tidy", "full" or "minimal".
 #'
 #' @examples
 #' create_lookup_table("pcon", "utla", "South Gloucestershire")
@@ -111,57 +111,43 @@ create_lookup_table <- function(
 
 
   # More hacks to handle the MSOAs issue
-
-  # if our leftmost columns are lsoa* but we need to convert them to msoa*
   if (lookup == "msoa") {
-    out_left <- out |>
-      dplyr::select(starts_with("lsoa") & ends_with("nm")) |>
-      dplyr::select(1)
-
-    msoa_name_field <- sub("^lsoa", "msoa", names(out_left))
+    msoa_name_field <- sub("^lsoa", "msoa", lookup_name_field)
     if (msoa_name_field == "msoa11nm") hocl_msoa_names <- hocl_msoa11_names
     else if (msoa_name_field == "msoa21nm") hocl_msoa_names <- hocl_msoa21_names
     else hocl_msoa_names <- NULL
-
-    out <- out_left |>
+    out <- out |>
+      # dplyr::select(all_of(c(lookup_code_field, lookup_name_field))) |>
+      dplyr::select(all_of(lookup_name_field)) |>
       dplyr::mutate(
-        {{ msoa_name_field }} := sub("[A-Z]{1}$", "", out_left[[1]])) |>
-      dplyr::left_join(hocl_msoa_names) |>
-      dplyr::left_join(out) |>
-      dplyr::select(!starts_with("lsoa"))
-
+        {{ msoa_name_field }} := unlist(across(all_of(lookup_name_field), \(x) sub("[A-Z]{1}$", "", x)))
+      ) |>
+      dplyr::left_join(hocl_msoa_names, msoa_name_field) |>
+      # dplyr::left_join(out, c(lookup_code_field, lookup_name_field)) |>
+      dplyr::left_join(out, lookup_name_field) |>
+      dplyr::select(names(hocl_msoa_names), !starts_with("lsoa"))
 
   } else if (within == "msoa") {
-    out_right <- out |>
-      dplyr::select(starts_with("lsoa") & ends_with("nm")) |>
-      dplyr::select(1)
-
-    msoa_name_field <- sub("^lsoa", "msoa", names(out_right))
+    msoa_name_field <- sub("^lsoa", "msoa", within_name_field)
     if (msoa_name_field == "msoa11nm") hocl_msoa_names <- hocl_msoa11_names
     else if (msoa_name_field == "msoa21nm") hocl_msoa_names <- hocl_msoa21_names
-    # won't work if user wants msoa01 (2001) lookup
     else hocl_msoa_names <- NULL
-
-
-    out_all <- out_right |>
-      dplyr::mutate({{ msoa_name_field }} := sub("[A-Z]{1}$", "", out_right[[1]])) |>
-      dplyr::left_join(hocl_msoa_names) |>
-      dplyr::left_join(out) |>
+    out <- out |>
+      # dplyr::select(all_of(c(within_code_field, within_name_field))) |>
+      dplyr::select(all_of(within_name_field)) |>
+      dplyr::mutate(
+        {{ msoa_name_field }} := unlist(across(all_of(within_name_field), \(x) sub("[A-Z]{1}$", "", x)))
+      ) |>
+      dplyr::left_join(hocl_msoa_names, msoa_name_field) |>
+      # dplyr::left_join(out, c(within_code_field, within_name_field)) |>
+      dplyr::left_join(out, within_name_field) |>
       dplyr::select(all_of(c(names(out), names(hocl_msoa_names))))
 
-    if (lookup == "lsoa") {
-      out <- out_all
-    } else {
-      out <- out_all |>
+    if (lookup != "lsoa" | return_width != "full") {
+      out <- out |>
         dplyr::select(!starts_with("lsoa"))
     }
   }
-
-
-  # if (return_width == "tidy") {
-  #   out <- out |>
-  #     dplyr::select({{ lookup_code_field }}:{{ within_name_field }})
-  # }
 
   out |>
     dplyr::select(!any_of(c("object_id", "global_id", "chgind"))) |>
