@@ -88,6 +88,9 @@ create_lookup_table <- function(
     return_result_ids(where = within_string) |>
     unique()
 
+  assertthat::assert_that(is.vector(ids),
+                          msg = "No IDs returned by `return_result_ids()`")
+
 
   fields <- switch(return_width,
                    "tidy" = c(
