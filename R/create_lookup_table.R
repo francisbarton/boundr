@@ -18,7 +18,6 @@
 #' create_lookup_table("pcon", "utla", "South Gloucestershire")
 #'
 #' @returns A tibble.
-#' @export
 create_lookup_table <- function(
     lookup,
     within,
@@ -123,7 +122,7 @@ create_lookup_table <- function(
       # dplyr::select(all_of(c(lookup_code_field, lookup_name_field))) |>
       dplyr::select(all_of(lookup_name_field)) |>
       dplyr::mutate(
-        {{ msoa_name_field }} := unlist(across(all_of(lookup_name_field), \(x) sub("[A-Z]{1}$", "", x)))
+        {{ msoa_name_field }} := unname(unlist(across(all_of(lookup_name_field), \(x) sub("[A-Z]{1}$", "", x))))
       ) |>
       dplyr::left_join(hocl_msoa_names, msoa_name_field) |>
       # dplyr::left_join(out, c(lookup_code_field, lookup_name_field)) |>
@@ -139,7 +138,7 @@ create_lookup_table <- function(
       # dplyr::select(all_of(c(within_code_field, within_name_field))) |>
       dplyr::select(all_of(within_name_field)) |>
       dplyr::mutate(
-        {{ msoa_name_field }} := unlist(across(all_of(within_name_field), \(x) sub("[A-Z]{1}$", "", x)))
+        {{ msoa_name_field }} := unname(unlist(across(all_of(within_name_field), \(x) sub("[A-Z]{1}$", "", x))))
       ) |>
       dplyr::left_join(hocl_msoa_names, msoa_name_field) |>
       # dplyr::left_join(out, c(within_code_field, within_name_field)) |>

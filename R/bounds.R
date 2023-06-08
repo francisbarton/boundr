@@ -8,6 +8,8 @@
 #'  the coastline.) F indicates Full resolution; S indicates Super-generalised
 #'  (200m); U indicates Ultra-generalised (500m) boundary resolution.
 #' @param centroids Boolean. If TRUE, return centroids rather than boundaries.
+#' @param lookup_only Boolean. If `TRUE`, only return a lookup table, without
+#'  any boundary geometry data attached. Default FALSE.
 #'
 #' @examples
 #' create_lookup_table("pcon", "utla", "South Gloucestershire") |>
@@ -35,7 +37,8 @@ bounds <- function(
   resolution = c("BGC", "BSC", "BUC", "BFC", "BFE"),
   centroids = FALSE,
   option = NULL,
-  crs = 4326
+  crs = 4326,
+  lookup_only = FALSE
 ) {
   lookup <- tolower(lookup)
   within <- tolower(within)
@@ -45,6 +48,19 @@ bounds <- function(
   assert_that(length(country_filter) == 1)
   resolution <- match.arg(resolution)
   assert_that(length(resolution) == 1)
+
+
+  # Useful aliases
+  if (lookup == "parish") lookup <- "par"
+  if (within == "parish") within <- "par"
+  if (lookup == "ward") lookup <- "wd"
+  if (within == "ward") within <- "wd"
+  if (lookup == "county") lookup <- "cty"
+  if (within == "county") within <- "cty"
+  if (lookup == "region") lookup <- "rgn"
+  if (within == "region") within <- "rgn"
+  if (lookup == "country") lookup <- "ctry"
+  if (within == "country") within <- "ctry"
 
 
   lookup_table <- create_lookup_table(
@@ -61,71 +77,75 @@ bounds <- function(
   assert_that(nrow(lookup_table) > 0,
     msg = "bounds: create_lookup_table() has returned a table with 0 rows")
 
-  # This isn't watertight: if you have a table with eg "lad16cd" and "lad21cd"
-  # columns, it will pull the leftmost column to use for the geometry query,
-  # which may not be what you want.
-  # It is fairly rare that more than 1 column name will match, and it can be
-  # avoided in most cases by choosing a more appropriate 'option' parameter.
-  # A 'tidy' or 'minimal' return_width parameter will eliminate this risk.
-  geo_code_field <- lookup_table |>
-    dplyr::select(starts_with(lookup) & ends_with("cd")) |>
-    dplyr::select(1) |> # select the leftmost matching column
-    names()
-
-  assert_that(length(geo_code_field) == 1 & !is.na(geo_code_field),
-    msg = "bounds: suitable geo_code_field not found from lookup table")
-
-
-  if (centroids) {
-    query_base_url <- pull_centroid_query_url(geo_code_field, lookup)
+  if (lookup_only) {
+    lookup_table
   } else {
-    query_base_url <- pull_bounds_query_url(geo_code_field, lookup, resolution)
+    # This isn't watertight: if you have a table with eg "lad16cd" and
+    # "lad21cd" columns, it will pull the leftmost column to use for the
+    # geometry query, which may not be what you want.
+    # It is fairly rare that more than 1 column name will match, and it can be
+    # avoided in most cases by choosing a more appropriate 'option' parameter.
+    # A 'tidy' or 'minimal' return_width parameter will eliminate this risk.
+    geo_code_field <- lookup_table |>
+      dplyr::select(starts_with(lookup) & ends_with("cd")) |>
+      dplyr::select(1) |> # select the leftmost matching column
+      names()
+
+    assert_that(length(geo_code_field) == 1 & !is.na(geo_code_field),
+                msg = "bounds: suitable geo_code_field not found from lookup table")
+
+
+    if (centroids) {
+      query_base_url <- pull_centroid_query_url(geo_code_field, lookup)
+    } else {
+      query_base_url <- pull_bounds_query_url(geo_code_field, lookup, resolution)
+    }
+
+    area_codes <- lookup_table |>
+      dplyr::pull({{ geo_code_field }}) |>
+      batch_it(50) |> # turns out this limit is rather crucial!
+      purrr::map(\(x) paste_area_codes(var = geo_code_field, vec = x))
+
+    ids <- area_codes |>
+      purrr::map(\(x) return_result_ids(url = query_base_url, where = x)) |>
+      purrr::list_c()
+
+    assert_that(is.vector(ids) & !is.list(ids) & length(ids),
+                msg = "bounds: return_result_ids() has not returned a vector of IDs.")
+
+    bounds_data <- ids |>
+      purrr::map(\(x) return_bounds_data(x, query_base_url, crs))
+
+    assert_that(is.list(bounds_data) & length(bounds_data),
+                msg = "bounds: return_bounds_data() has not returned a list of length > 0")
+
+    bounds_data_df <- bounds_data |>
+      # purrr::list_rbind() |>
+      dplyr::bind_rows() |>
+      dplyr::distinct() |>
+      janitor::clean_names()
+
+    assert_that(inherits(bounds_data_df, "data.frame"),
+                msg = "bounds: bounds_data could not be row-bound into a data frame")
+
+    assert_that(inherits(bounds_data_df, "sf"),
+                msg = "bounds: the data frame bounds_data_df does not have 'sf' class")
+
+
+    join_vars <- intersect(names(lookup_table), names(bounds_data_df))
+
+    if (return_width %in% c("tidy", "minimal")) {
+      bounds_data_df <- bounds_data_df |>
+        dplyr::select(all_of(c(join_vars, "geometry")))
+    }
+
+    bounds_data_df |>
+      dplyr::left_join(lookup_table, join_vars) |>
+      dplyr::relocate(names(lookup_table)) |>
+      dplyr::select(!any_of(c("fid", "objectid", "global_id"))) |>
+      janitor::remove_empty("cols") |>
+      dplyr::distinct()
   }
-
-  area_codes <- lookup_table |>
-    dplyr::pull({{ geo_code_field }}) |>
-    batch_it(50) |> # turns out this limit is rather crucial!
-    purrr::map(\(x) paste_area_codes(var = geo_code_field, vec = x))
-
-  ids <- area_codes |>
-    purrr::map(\(x) return_result_ids(url = query_base_url, where = x)) |>
-    purrr::list_c()
-
-  assert_that(is.vector(ids) & !is.list(ids) & length(ids),
-    msg = "bounds: return_result_ids() has not returned a vector of IDs.")
-
-  bounds_data <- ids |>
-    purrr::map(\(x) return_bounds_data(x, query_base_url, crs))
-
-  assert_that(is.list(bounds_data) & length(bounds_data),
-    msg = "bounds: return_bounds_data() has not returned a list of length > 0")
-  
-  bounds_data_df <- bounds_data |>
-    dplyr::bind_rows() |>
-    # purrr::list_rbind() |>
-    dplyr::distinct() |>
-    janitor::clean_names()
-
-  assert_that(inherits(bounds_data_df, "data.frame"),
-    msg = "bounds: bounds_data could not be row-bound into a data frame")
-
-  assert_that(inherits(bounds_data_df, "sf"),
-    msg = "bounds: the data frame bounds_data_df does not have 'sf' class")
-    
-
-  join_vars <- intersect(names(lookup_table), names(bounds_data_df))
-
-  if (return_width %in% c("tidy", "minimal")) {
-    bounds_data_df <- bounds_data_df |>
-      dplyr::select(all_of(c(join_vars, "geometry")))
-  }
-
-  bounds_data_df |>
-    dplyr::left_join(lookup_table, join_vars) |>
-    dplyr::relocate(names(lookup_table)) |>
-    dplyr::select(!any_of(c("fid", "objectid", "global_id"))) |>
-    janitor::remove_empty("cols") |>
-    dplyr::distinct()
 }
 
 

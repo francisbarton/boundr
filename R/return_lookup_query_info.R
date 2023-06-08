@@ -19,7 +19,7 @@
 #'  and year filters above. If this does not give you what you want, you can
 #'  run the script again with a different option from the list.
 #' @param chatty Boolean. Whether to print feedback on the 'decisions' the
-#'  function has taken about which table to query. Default `TRUE` when the 
+#'  function has taken about which table to query. Default `TRUE` when the
 #'  function is run in an interactive session, `FALSE` otherwise.
 #'
 #' @returns A list of length 3: the query URL, the lower level (`lookup`) field
@@ -37,17 +37,6 @@ return_lookup_query_info <- function(
   country_filter <- match.arg(country_filter)
   if (is.null(option)) tbl_option <- 1 else tbl_option <- option
 
-  # Useful aliases
-  if (lookup == "parish") lookup <- "par"
-  if (within == "parish") within <- "par"
-  if (lookup == "ward") lookup <- "wd"
-  if (within == "ward") within <- "wd"
-  if (lookup == "county") lookup <- "cty"
-  if (within == "county") within <- "cty"
-  if (lookup == "region") lookup <- "rgn"
-  if (within == "region") within <- "rgn"
-  if (lookup == "country") lookup <- "ctry"
-  if (within == "country") within <- "ctry"
 
   # Some lookups contain LSOA but not MSOA. If the user has requested MSOA
   # we can search for LSOA instead, and later convert back to MSOA, because
