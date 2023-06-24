@@ -19,7 +19,7 @@
 #'  and year filters above. If this does not give you what you want, you can
 #'  run the script again with a different option from the list.
 #' @param chatty Boolean. Whether to print feedback on the 'decisions' the
-#'  function has taken about which table to query. Default `TRUE` when the 
+#'  function has taken about which table to query. Default `TRUE` when the
 #'  function is run in an interactive session, `FALSE` otherwise.
 #'
 #' @returns A list of length 3: the query URL, the lower level (`lookup`) field
@@ -33,30 +33,6 @@ return_lookup_query_info <- function(
     option = NULL,
     chatty = rlang::is_interactive()
   ) {
-
-  country_filter <- match.arg(country_filter)
-  if (is.null(option)) tbl_option <- 1 else tbl_option <- option
-
-  # Useful aliases
-  if (lookup == "parish") lookup <- "par"
-  if (within == "parish") within <- "par"
-  if (lookup == "ward") lookup <- "wd"
-  if (within == "ward") within <- "wd"
-  if (lookup == "county") lookup <- "cty"
-  if (within == "county") within <- "cty"
-  if (lookup == "region") lookup <- "rgn"
-  if (within == "region") within <- "rgn"
-  if (lookup == "country") lookup <- "ctry"
-  if (within == "country") within <- "ctry"
-
-  # Some lookups contain LSOA but not MSOA. If the user has requested MSOA
-  # we can search for LSOA instead, and later convert back to MSOA, because
-  # LSOA and MSOA names play nicely together
-  if (lookup == "msoa") lookup <- "lsoa"
-  if (within == "msoa") within <- "lsoa"
-
-
-
   # filter only lookup tables from the schema
   # and those with the right country filter
   schema_lookups <- opengeo_schema |>
@@ -77,7 +53,6 @@ return_lookup_query_info <- function(
     names()
 
   lookup_field <- return_field_code(lookup, lookup_year, schema_names)
-
 
   # reduce schema to only those matching lookup_field
   schema2 <- schema_lookups |>
@@ -102,7 +77,7 @@ return_lookup_query_info <- function(
 
   lookup_stub <- toupper(sub("cd$", "", lookup_field))
 
-  # Prioritise results where lookup_field is at the lefthand end
+  # Prioritise results where lookup_field is at the left-hand end
   results <- results_0 |>
     dplyr::filter(if_any(
       "service_name", \(x) stringr::str_starts(x, lookup_stub))) |>
@@ -110,10 +85,7 @@ return_lookup_query_info <- function(
     dplyr::distinct()
 
   assert_that(nrow(results) > 0,
-    msg = paste0(
-      "return_lookup_query_info: ",
-      "No result was found for the parameters supplied. ",
-      "Try a different year or a different country filter?"))
+    msg = "return_lookup_query_info: No result was found for the parameters supplied. Try a different year or a different country filter?")
 
   if (nrow(results) > 1 & is.null(option) & chatty) {
     ui_info(
@@ -149,7 +121,6 @@ return_lookup_query_info <- function(
 
 #' @noRd
 return_field_code <- function(prefix, year, names_vec) {
-
   if (is.null(year)) {
     years <- names_vec |>
       stringr::str_extract(glue("(?<=^{prefix})\\d+"))  |>
@@ -159,7 +130,7 @@ return_field_code <- function(prefix, year, names_vec) {
     year_out <- dplyr::if_else(years > 30, years + 1900, years + 2000) |>
       sort() |>
       # choose most recent year
-      utils::tail(1) |>
+      tail(1) |>
       stringr::str_extract("\\d{2}$")
   } else {
     year_out <- year |>
@@ -170,10 +141,10 @@ return_field_code <- function(prefix, year, names_vec) {
   field_code <- paste0(prefix, year_out, "cd")
 
   assert_that(field_code %in% names_vec,
-    msg = paste0("return_lookup_query_info: ",
-      "That combination of area levels and years has not returned ",
-      "a result. Perhaps try a different year?"))
+    msg = paste0("return_lookup_query_info: That combination of area levels and years has not returned a result. Perhaps try a different year?"))
 
-  # return
   field_code
 }
+
+
+

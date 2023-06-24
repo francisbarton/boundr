@@ -55,12 +55,12 @@ table_data_req <- function(ids, url, fields, ...) {
 
 
 
-#' Build an API request for spatial boundary (geojson) data
+#' Build an API request for spatial (geojson) data
 #'
 #' @inheritParams table_data_req
 #' @param crs the Coordinate Reference System (CRS) code to use. 4326 by
 #'  default.
-bounds_data_req <- function(ids, url, crs = 4326, ...) {
+spatial_data_req <- function(ids, url, crs = 4326, ...) {
   ids <- stringr::str_flatten(ids, collapse = ",")
   url |>
     opengeo_api_req(format = "geojson", ...) |>
@@ -172,9 +172,9 @@ return_table_data <- function(
 
 #' Perform an API query and handle the returned spatial data
 #'
-#' @inheritParams bounds_data_req
+#' @inheritParams spatial_data_req
 #' @inheritParams query_opengeo_api
-return_bounds_data <- function(
+return_spatial_data <- function(
     ids,
     url,
     crs = 4326,
@@ -182,7 +182,7 @@ return_bounds_data <- function(
     verbosity = 0,
     ...
   ) {
-  ret <- bounds_data_req(ids, url, crs, ...) |>
+  ret <- spatial_data_req(ids, url, crs, ...) |>
     possibly_query_opengeo_api(max_tries = max_tries, verbosity = verbosity)
   if (!is.null(ret)) {
     ret |>
