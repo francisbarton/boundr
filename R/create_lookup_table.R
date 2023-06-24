@@ -20,7 +20,7 @@
 #' @examples
 #' create_lookup_table("msoa", "utla", "Swindon")
 #'
-#' @returns A tibble.
+#' @returns A tibble
 #' @export
 create_lookup_table <- function(
     lookup,
