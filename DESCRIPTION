@@ -1,5 +1,5 @@
 Package: boundr
-Version: 0.3.4
+Version: 0.3.5
 Title: Retrieve Area Boundaries and Data from the ONS Open Geography Portal
 Description: The main purpose of this package is to download area lookups and boundaries (in GeoJSON format) using the ONS Open Geography API, for all areas at a specified level within a specified area.
 Authors@R: person("Francis", "Barton",
