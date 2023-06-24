@@ -14,8 +14,8 @@ bounds(
   within_year = NULL,
   country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"),
   resolution = c("BGC", "BSC", "BUC", "BFC", "BFE"),
-  centroids = FALSE,
   option = NULL,
+  include_welsh = FALSE,
   crs = 4326
 )
 }
@@ -56,12 +56,14 @@ territorial extent. BGC by default (G = Generalised (20m), C = limited to
 the coastline.) F indicates Full resolution; S indicates Super-generalised
 (200m); U indicates Ultra-generalised (500m) boundary resolution.}
 
-\item{centroids}{Boolean. If TRUE, return centroids rather than boundaries.}
-
 \item{option}{numeric. Defaults to 1, which means that the URL will just be
 the first one from the list of possible services resulting from the level
 and year filters above. If this does not give you what you want, you can
 run the script again with a different option from the list.}
+
+\item{include_welsh}{logical. Whether to attempt to include Welsh language
+name fields in the lookup table (fields ending in 'nmw') where available.
+Default \code{FALSE}.}
 
 \item{crs}{the Coordinate Reference System (CRS) code to use. 4326 by
 default.}
@@ -71,17 +73,4 @@ an \code{sfc} tibble (data frame with geometry)
 }
 \description{
 Return boundary data at a specified level and area from the ONS OG API
-}
-\examples{
-create_lookup_table("pcon", "utla", "South Gloucestershire") |>
- dplyr::select(starts_with("pcon") & ends_with("nm")) |>
- dplyr::pull(1) |>
- create_lookup_table(lookup = "wd", within = "pcon") |>
- dplyr::select(starts_with("wd") & ends_with("cd")) |>
- dplyr::pull(1) |>
- bounds(
-  lookup = "lsoa",
-  within = "wd",
-  within_names = NULL,
-  return_width = "full")
 }
