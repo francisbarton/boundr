@@ -6,16 +6,15 @@
 \usage{
 bounds(
   lookup,
-  within,
+  within = NULL,
   within_names = NULL,
   within_codes = NULL,
   return_width = c("tidy", "full", "minimal"),
   lookup_year = NULL,
   within_year = NULL,
-  country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"),
+  country_filter = c("UK|EW|EN|SC|WA", "UK", "EW", "EN", "SC", "WA"),
   resolution = c("BGC", "BSC", "BUC", "BFC", "BFE"),
   option = NULL,
-  include_welsh = FALSE,
   crs = 4326
 )
 }
@@ -50,20 +49,17 @@ available just within certain countries. Specify a country code if you want
 your results restricted to a certain country only - eg "WA" for Wales, "EW"
 for England and Wales. By default returns all options.}
 
-\item{resolution}{character. How generalised should the boundary be, and
-whether coastal boundaries should adhere to the coastline or to the full
-territorial extent. BGC by default (G = Generalised (20m), C = limited to
-the coastline.) F indicates Full resolution; S indicates Super-generalised
-(200m); U indicates Ultra-generalised (500m) boundary resolution.}
+\item{resolution}{character. See argument options for available options. How
+generalised should the boundary be, and whether coastal boundaries should
+adhere to the coastline or to the full territorial extent. BGC by default
+(G = Generalised (20m), C = limited to the coastline.) F indicates Full
+resolution; S indicates Super-generalised (200m); U indicates Ultra-
+generalised (500m) boundary resolution.}
 
 \item{option}{numeric. Defaults to 1, which means that the URL will just be
 the first one from the list of possible services resulting from the level
 and year filters above. If this does not give you what you want, you can
 run the script again with a different option from the list.}
-
-\item{include_welsh}{logical. Whether to attempt to include Welsh language
-name fields in the lookup table (fields ending in 'nmw') where available.
-Default \code{FALSE}.}
 
 \item{crs}{the Coordinate Reference System (CRS) code to use. 4326 by
 default.}
@@ -73,4 +69,14 @@ an \code{sfc} tibble (data frame with geometry)
 }
 \description{
 Return boundary data at a specified level and area from the ONS OG API
+}
+\examples{
+bounds("msoa", "lad", "Swansea")
+bounds("msoa", "lad", "Shepway", lookup_year = 2011, within_year = 2015)
+bounds("rgn", country_filter = "EN", resolution = "BUC")
+bounds("parish", "utla", "Isles of Scilly")
+bounds("spr")
+bounds("npark", within_names = "Bannau Brycheiniog")
+
+
 }

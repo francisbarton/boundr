@@ -6,15 +6,15 @@
 \usage{
 points(
   lookup,
-  within,
+  within = NULL,
   within_names = NULL,
   within_codes = NULL,
   return_width = c("tidy", "full", "minimal"),
   lookup_year = NULL,
   within_year = NULL,
-  country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"),
+  country_filter = c("UK|EW|EN|SC|WA", "UK", "EW", "EN", "SC", "WA"),
+  resolution = c("BGC", "BSC", "BUC", "BFC", "BFE"),
   option = NULL,
-  include_welsh = FALSE,
   crs = 4326
 )
 }
@@ -53,10 +53,6 @@ for England and Wales. By default returns all options.}
 the first one from the list of possible services resulting from the level
 and year filters above. If this does not give you what you want, you can
 run the script again with a different option from the list.}
-
-\item{include_welsh}{logical. Whether to attempt to include Welsh language
-name fields in the lookup table (fields ending in 'nmw') where available.
-Default \code{FALSE}.}
 
 \item{crs}{the Coordinate Reference System (CRS) code to use. 4326 by
 default.}
