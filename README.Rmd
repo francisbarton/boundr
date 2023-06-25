@@ -7,7 +7,9 @@ editor_options:
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r setup, include = FALSE}
+```{r setup}
+#| include: false
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   cache = FALSE,
@@ -16,6 +18,9 @@ knitr::opts_chunk$set(
   out.width = "100%"
 )
 
+library(boundr)
+library(tmap)
+library(ggplot2)
 ```
 
 # welcome to boundr
@@ -89,7 +94,99 @@ if you have the `remotes` package installed.
 
 ## Examples
 
-`jogger` examples removed. New `boundr` examples to come!
+### Basic lookup of areas within a larger area, by name
+
+Returns sfc tibble with latest available data
+
+```{r example-1}
+#| cache: true
+
+bounds("msoa", "lad", "Swansea")
+
+```
+
+
+### Lookup areas with older dates
+
+Trial and error may be required - or start by looking up what is available on the OpenGeography site.
+
+```{r example-2}
+#| cache: true
+
+bounds("msoa", "lad", "Shepway", lookup_year = 2011, within_year = 2015)
+```
+
+
+### Alternative ways to achieve a goal
+
+In this case, the first option is notably quicker than the second, because they use different tables to create the lookup table.
+
+The second option fails to return boundaries unless the year option is included, as it creates a lookup table for rgn23 and ctry23 but boundaries are not available for rgn23 (only rgn22).
+
+Different columns are returned by each command.
+
+```{r example-3}
+#| cache: true
+
+bounds("rgn", country_filter = "EN", resolution = "BUC")
+bounds("rgn", "ctry", "England", lookup_year = 2022, resolution = "BUC")
+```
+
+
+### A lookup table for Welsh local authorities to Senedd electoral regions
+
+Using `return_with = "full"` includes the Welsh language data columns.
+
+```{r example-4}
+#| cache: true
+
+create_lookup_table("ua", "sener", return_width = "full") |>
+  dplyr::filter(sener22nm == "South Wales West")
+
+```
+
+
+```{r example-5}
+#| cache: true
+#| messages: false
+
+bounds("parish", "utla", "Isles of Scilly") |>
+  tmap::qtm()
+```
+
+
+```{r example-6}
+#| cache: true
+
+bounds("spr")
+```
+
+
+
+```{r example-7}
+#| cache: true
+#| messages: false
+
+sb <- bounds("msoa", "lad", "Swindon")
+sp <- points("msoa", "utla", "Swindon")
+
+sb |>
+  ggplot2::ggplot() +
+  ggplot2::geom_sf() +
+  ggplot2::geom_sf(data = sp, colour = "orange") +
+  ggplot2::theme_void()
+
+```
+
+
+
+```{r example-8}
+#| cache: true
+
+bounds("npark", within_names = "Bannau Brycheiniog", resolution = "BUC") |>
+  ggplot2::ggplot() +
+  ggplot2::geom_sf()
+```
 
 ## Contributing
 
