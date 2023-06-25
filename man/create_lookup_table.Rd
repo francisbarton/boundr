@@ -6,15 +6,14 @@
 \usage{
 create_lookup_table(
   lookup,
-  within,
+  within = NULL,
   within_names = NULL,
   within_codes = NULL,
   return_width = c("tidy", "full", "minimal"),
   lookup_year = NULL,
   within_year = NULL,
-  country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"),
+  country_filter = c("UK|EW|EN|SC|WA", "UK", "EW", "EN", "SC", "WA"),
   option = NULL,
-  include_welsh = FALSE,
   chatty = rlang::is_interactive()
 )
 }
@@ -54,22 +53,18 @@ the first one from the list of possible services resulting from the level
 and year filters above. If this does not give you what you want, you can
 run the script again with a different option from the list.}
 
-\item{include_welsh}{logical. Whether to attempt to include Welsh language
-name fields in the lookup table (fields ending in 'nmw') where available.
-Default \code{FALSE}.}
-
 \item{chatty}{Boolean. Whether to print feedback on the 'decisions' the
 function has taken about which table to query. Default \code{TRUE} when the
 function is run in an interactive session, \code{FALSE} otherwise.}
 }
 \value{
-A tibble.
+A tibble
 }
 \description{
 Calls \code{return_lookup_query_info()} and processes the output, returning a
 tibble.
 }
 \examples{
-create_lookup_table("msoa", "utla", "Swindon")
+create_lookup_table("msoa", "lad", "Swindon")
 
 }

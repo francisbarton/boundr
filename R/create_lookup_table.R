@@ -13,26 +13,22 @@
 #'  vector of multiple names or codes can be supplied.
 #' @param return_width character. How many of the possible columns in the
 #'  returned table to keep. Options are "tidy", "full" or "minimal".
-#' @param include_welsh logical. Whether to attempt to include Welsh language
-#'  name fields in the lookup table (fields ending in 'nmw') where available.
-#'  Default `FALSE`.
 #'
 #' @examples
-#' create_lookup_table("msoa", "utla", "Swindon")
+#' create_lookup_table("msoa", "lad", "Swindon")
 #'
 #' @returns A tibble
 #' @export
 create_lookup_table <- function(
     lookup,
-    within,
+    within = NULL,
     within_names = NULL,
     within_codes = NULL,
     return_width = c("tidy", "full", "minimal"),
     lookup_year = NULL,
     within_year = NULL,
-    country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"),
+    country_filter = c("UK|EW|EN|SC|WA", "UK", "EW", "EN", "SC", "WA"),
     option = NULL,
-    include_welsh = FALSE,
     chatty = rlang::is_interactive()
   ) {
 
@@ -40,10 +36,13 @@ create_lookup_table <- function(
   # enterprise/query-feature-service-layer-.htm
 
   new_lookup <- process_aliases(lookup)
+  if (lookup == "msoa") new_lookup <- "lsoa"
+  if (is.null(within)) within <- lookup
   new_within <- process_aliases(within)
+  if (within == "msoa") new_within <- "lsoa"
   return_width <- match.arg(return_width)
   country_filter <- match.arg(country_filter)
-  if (is.null(option)) tbl_option <- 1 else tbl_option <- option
+  if (is.null(option)) option <- 1
 
   lookup_query_info <- return_lookup_query_info(
     new_lookup,
@@ -51,7 +50,7 @@ create_lookup_table <- function(
     lookup_year,
     within_year,
     country_filter,
-    tbl_option,
+    option,
     chatty)
 
   query_base_url <- lookup_query_info[["query_url"]]
@@ -61,31 +60,21 @@ create_lookup_table <- function(
   within_code_field <- lookup_query_info[["within_field"]]
   within_name_field <- sub("cd$", "nm", within_code_field)
 
-  if (include_welsh) {
-    lookup_name_field_cy <- sub("cd$", "nmw", lookup_code_field)
-    within_name_field_cy <- sub("cd$", "nmw", within_code_field)
-  } else {
-    lookup_name_field_cy <- NULL
-    within_name_field_cy <- NULL
-  }
-
-
   fields <- switch(return_width,
                    "tidy" = c(
                      lookup_code_field,
                      lookup_name_field,
-                     lookup_name_field_cy,
                      within_code_field,
-                     within_name_field,
-                     within_name_field_cy),
+                     within_name_field),
                    "full" = "*",
-                   "minimal" = c(lookup_code_field, lookup_name_field, lookup_name_field_cy))
+                   "minimal" = c(
+                     lookup_code_field,
+                     lookup_name_field))
 
 
 
   if (is.null(within_names) & is.null(within_codes)) {
-    # within_string <- "1=1"
-    within_string <- ""
+    within_string <- "1=1"
   } else if (!is.null(within_names)) {
     within_string <- within_name_field |>
         paste0(
@@ -140,21 +129,29 @@ create_lookup_table <- function(
   if (lookup == "msoa") {
     if (grepl("^lsoa11", lookup_name_field)) hocl_tbl <- hocl_msoa11_names
     if (grepl("^lsoa21", lookup_name_field)) hocl_tbl <- hocl_msoa21_names
-    out2 <- join_msoa_table(out, lookup_name_field, hocl_tbl, type = "lookup")
+    if (!any(stringr::str_detect(names(out), "nmw$"))) {
+      hocl_tbl <- hocl_tbl |>
+        dplyr::select(!any_of(matches("nmw$")))
+    }
+    out <- join_msoa_table(out, lookup_name_field, hocl_tbl, type = "lookup")
   }
 
   if (within == "msoa") {
     if (grepl("^lsoa11", within_name_field)) hocl_tbl <- hocl_msoa11_names
     if (grepl("^lsoa21", within_name_field)) hocl_tbl <- hocl_msoa21_names
-    out2 <- join_msoa_table(out, within_name_field, hocl_tbl, type = "within")
+    if (!any(stringr::str_detect(names(out), "nmw$"))) {
+      hocl_tbl <- hocl_tbl |>
+        dplyr::select(!any_of(matches("nmw$")))
+    }
+    out <- join_msoa_table(out, within_name_field, hocl_tbl, type = "within")
 
     if (lookup != "lsoa" | return_width != "full") {
-      out2 <- out2 |>
+      out <- out |>
         dplyr::select(!starts_with("lsoa"))
     }
   }
 
-  out2 |>
+  out |>
     dplyr::distinct() |>
     janitor::remove_empty("cols")
 }
@@ -170,12 +167,7 @@ process_aliases <- function(x) {
       "ward" = "wd",
       "county" = "cty",
       "region" = "rgn",
-      "country" = "ctry",
-
-      # Some lookups contain LSOA but not MSOA. If the user has requested MSOA
-      # we can search for LSOA instead, and later convert back to MSOA, because
-      # LSOA and MSOA names play nicely together
-      "msoa" = "lsoa"
+      "country" = "ctry"
     ))
 }
 
