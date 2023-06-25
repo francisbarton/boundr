@@ -7,11 +7,11 @@
 return_lookup_query_info(
   lookup,
   within,
-  lookup_year = NULL,
-  within_year = NULL,
-  country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"),
-  option = NULL,
-  chatty = rlang::is_interactive()
+  lookup_year,
+  within_year,
+  country_filter,
+  option,
+  chatty
 )
 }
 \arguments{

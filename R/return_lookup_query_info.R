@@ -27,11 +27,11 @@
 return_lookup_query_info <- function(
     lookup,
     within,
-    lookup_year = NULL,
-    within_year = NULL,
-    country_filter = c("UK|EW|EN|WA", "UK", "EW", "EN", "WA"),
-    option = NULL,
-    chatty = rlang::is_interactive()
+    lookup_year,
+    within_year,
+    country_filter,
+    option,
+    chatty
   ) {
   # filter only lookup tables from the schema
   # and those with the right country filter
@@ -105,7 +105,7 @@ return_lookup_query_info <- function(
   }
 
   query_url <- results |>
-    dplyr::slice(tbl_option) |>
+    dplyr::slice(option) |>
     dplyr::pull(all_of("service_url"))
 
   # return query URL and lookup_field and within_field in a list,
@@ -128,9 +128,8 @@ return_field_code <- function(prefix, year, names_vec) {
 
     # will need updating in 2030 ;-)
     year_out <- dplyr::if_else(years > 30, years + 1900, years + 2000) |>
-      sort() |>
-      # choose most recent year
-      tail(1) |>
+      # choose most recent year available
+      max(na.rm = TRUE) |>
       stringr::str_extract("\\d{2}$")
   } else {
     year_out <- year |>
