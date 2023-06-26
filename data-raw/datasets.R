@@ -62,7 +62,7 @@ build_schema <- function() {
 
   data_from_api <- api_services_data |>
     dplyr::pull(all_of("service_url")) |>
-    purrr::map(api_data_return, .progress = "Retrieving services data")
+    purrr::map(api_data_return, .progress = {if (chatty) "Retrieving services data"})
 
   # Deal with any URLs that don't return data
   fails <- which(purrr::map_lgl(data_from_api, is.null))
@@ -80,7 +80,7 @@ build_schema <- function() {
     purrr::compact() |>
     purrr::map(httr2::resp_body_json) |>
     purrr::map2(service_urls, pluck_api_data,
-      .progress = "Retrieving schema data") |>
+      .progress = {if (chatty) "Retrieving schema data"}) |>
     purrr::list_rbind() |>
     dplyr::filter(!if_all(ends_with("cd"), is.na)) |>
     janitor::remove_empty("cols") |>

@@ -16,6 +16,7 @@
 #'
 #' @examples
 #' create_lookup_table("msoa", "lad", "Swindon")
+#' create_lookup_table("wd", "sener", lookup_year = 2022, return_width = "full")
 #'
 #' @returns A tibble
 #' @export
@@ -118,7 +119,7 @@ create_lookup_table <- function(
   out <- ids |>
     batch_it(100) |>
     purrr::map(\(x) return_table_data(x, query_base_url, fields),
-      .progress = "Lookup table data") |>
+      .progress = {if (chatty) "Lookup table data"}) |>
     purrr::list_rbind() |>
     dplyr::select(!any_of(c("object_id", "global_id", "chgind")))
 
@@ -129,20 +130,14 @@ create_lookup_table <- function(
   if (lookup == "msoa") {
     if (grepl("^lsoa11", lookup_name_field)) hocl_tbl <- hocl_msoa11_names
     if (grepl("^lsoa21", lookup_name_field)) hocl_tbl <- hocl_msoa21_names
-    if (!any(stringr::str_detect(names(out), "nmw$"))) {
-      hocl_tbl <- hocl_tbl |>
-        dplyr::select(!any_of(matches("nmw$")))
-    }
+
     out <- join_msoa_table(out, lookup_name_field, hocl_tbl, type = "lookup")
   }
 
   if (within == "msoa") {
     if (grepl("^lsoa11", within_name_field)) hocl_tbl <- hocl_msoa11_names
     if (grepl("^lsoa21", within_name_field)) hocl_tbl <- hocl_msoa21_names
-    if (!any(stringr::str_detect(names(out), "nmw$"))) {
-      hocl_tbl <- hocl_tbl |>
-        dplyr::select(!any_of(matches("nmw$")))
-    }
+
     out <- join_msoa_table(out, within_name_field, hocl_tbl, type = "within")
 
     if (lookup != "lsoa" | return_width != "full") {
@@ -150,6 +145,14 @@ create_lookup_table <- function(
         dplyr::select(!starts_with("lsoa"))
     }
   }
+
+  any_welsh <- out |>
+    dplyr::select(all_of(ends_with("cd"))) |>
+    dplyr::pull(1) |>
+    purrr::some(\(x) grepl("^W", x))
+
+  if (!any_welsh) out <- out |>
+    dplyr::select(!ends_with("nmw"))
 
   out |>
     dplyr::distinct() |>
