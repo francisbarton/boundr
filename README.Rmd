@@ -125,6 +125,7 @@ Different columns are returned by each command.
 
 ```{r example-3}
 #| cache: false
+#| message: false
 
 bounds("rgn", country_filter = "EN", resolution = "BUC")
 bounds("region", "country", "England", lookup_year = 2022, resolution = "BUC")
@@ -165,7 +166,7 @@ create_lookup_table("wd", "sener", country_filter = "WA", return_width = "full")
 ### The sfc tibble is ready to be passed to a mapping function:
 
 ```{r example-5}
-#| messages: false
+#| message: false
 
 bounds("parish", "utla", "Isles of Scilly") |>
   tmap::qtm(fill = "par22nm", palette = "Accent")
@@ -186,7 +187,7 @@ bounds("spr")
 (Check the OG website).
 
 ```{r example-7}
-#| messages: false
+#| message: false
 
 sb <- bounds("msoa", "lad", "Swindon")
 sp <- points("msoa", "utla", "Swindon")
