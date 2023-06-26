@@ -1,8 +1,5 @@
 ---
 output: github_document
-editor_options: 
-  markdown: 
-    wrap: 72
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -57,7 +54,7 @@ The structure of the project looks a bit like this:
        |                 <--------- return_lookup_query_info() 
        |                                       \
        |                                        \
-        <-------  return_bounds_data()           <----- opengeo_schema [data]
+        <-------  return_spatial_data()           <----- opengeo_schema [data]
                         ^                       /              ^
                         |                      /               |
                          <--------  pull_geo_query_url()       |
@@ -77,11 +74,11 @@ updating.
 
 `create_lookup_table()` then builds a lookup table (a tibble) based on all the
 areas you have said you are interested in.
-At the same time, `return_bounds_data()` will - if you have specified you want
+At the same time, `return_spatial_data()` will - if you have specified you want
 spatial boundaries data for your areas - retrieve the boundary data at your
 chosen resolution for your lower level areas.
 These will then be joined onto the lookup table and provided to you as an
-`sf` tibble. 
+`sfc` tibble.
 
 
 ## Installation
@@ -124,7 +121,6 @@ The second option fails to return boundaries unless the year option is included,
 Different columns are returned by each command.
 
 ```{r example-3}
-#| cache: false
 #| message: false
 
 bounds("rgn", country_filter = "EN", resolution = "BUC")

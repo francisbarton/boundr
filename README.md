@@ -34,7 +34,7 @@ The structure of the project looks a bit like this:
        |                 <--------- return_lookup_query_info() 
        |                                       \
        |                                        \
-        <-------  return_bounds_data()           <----- opengeo_schema [data]
+        <-------  return_spatial_data()           <----- opengeo_schema [data]
                         ^                       /              ^
                         |                      /               |
                          <--------  pull_geo_query_url()       |
@@ -54,10 +54,10 @@ package - but may need updating.
 
 `create_lookup_table()` then builds a lookup table (a tibble) based on
 all the areas you have said you are interested in. At the same time,
-`return_bounds_data()` will - if you have specified you want spatial
+`return_spatial_data()` will - if you have specified you want spatial
 boundaries data for your areas - retrieve the boundary data at your
 chosen resolution for your lower level areas. These will then be joined
-onto the lookup table and provided to you as an `sf` tibble.
+onto the lookup table and provided to you as an `sfc` tibble.
 
 ## Installation
 
