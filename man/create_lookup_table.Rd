@@ -66,5 +66,6 @@ tibble.
 }
 \examples{
 create_lookup_table("msoa", "lad", "Swindon")
+create_lookup_table("wd", "sener", lookup_year = 2022, return_width = "full")
 
 }
