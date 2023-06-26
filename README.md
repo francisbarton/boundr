@@ -22,11 +22,11 @@ column, as an `sf` object ready to be visualised as a map.
 
 The structure of the project looks a bit like this:
 
-    bounds() [main UI function]
+    bounds() / points() [main UI functions]
        ^
        |
        |
-        <-------  create_lookup_table()
+        <-------  create_lookup_table() [available to the user]
        |                ^
        |                |
        |                 <--------- return_query_data()
@@ -63,7 +63,7 @@ onto the lookup table and provided to you as an `sf` tibble.
 
 You can install this package from the `R` console by entering
 
-`remotes::install_github("francisbarton/boundr")`
+> `remotes::install_github("francisbarton/boundr")`
 
 if you have the `remotes` package installed.
 
@@ -74,24 +74,36 @@ if you have the `remotes` package installed.
 Returns sfc tibble with latest available data
 
 ``` r
+
 bounds("msoa", "lad", "Swansea")
-#> Simple feature collection with 150 features and 4 fields
+#> Simple feature collection with 30 features and 7 fields
 #> Geometry type: GEOMETRY
 #> Dimension:     XY
 #> Bounding box:  xmin: -4.333587 ymin: 51.53577 xmax: -3.842747 ymax: 51.77423
 #> Geodetic CRS:  WGS 84
 #> First 10 features:
-#>     lsoa21cd     lsoa21nm   lad23cd lad23nm                       geometry
-#> 1  W01000736 Swansea 028A W06000011 Swansea POLYGON ((-4.040871 51.5853...
-#> 2  W01000737 Swansea 028B W06000011 Swansea MULTIPOLYGON (((-4.0361 51....
-#> 3  W01000738 Swansea 014A W06000011 Swansea POLYGON ((-3.874889 51.6505...
-#> 4  W01000739 Swansea 014B W06000011 Swansea POLYGON ((-3.914009 51.6401...
-#> 5  W01000740 Swansea 014C W06000011 Swansea POLYGON ((-3.904865 51.6542...
-#> 6  W01000741 Swansea 014D W06000011 Swansea POLYGON ((-3.90558 51.65353...
-#> 7  W01000742 Swansea 016A W06000011 Swansea POLYGON ((-3.943777 51.6373...
-#> 8  W01000744 Swansea 016B W06000011 Swansea POLYGON ((-3.948747 51.6326...
-#> 9  W01000745 Swansea 025B W06000011 Swansea POLYGON ((-3.946384 51.6211...
-#> 10 W01000746 Swansea 025C W06000011 Swansea POLYGON ((-3.946375 51.6278...
+#>     msoa21cd    msoa21nm    msoa21nmw            msoa21hclnm
+#> 1  W02000168 Swansea 001 Abertawe 001          Pontarddulais
+#> 2  W02000169 Swansea 002 Abertawe 002         Clydach & Mawr
+#> 3  W02000170 Swansea 003 Abertawe 003        Morriston North
+#> 4  W02000171 Swansea 004 Abertawe 004 Llangyfelach & Tircoed
+#> 5  W02000172 Swansea 005 Abertawe 005              Gorseinon
+#> 6  W02000173 Swansea 006 Abertawe 006             Birchgrove
+#> 7  W02000174 Swansea 007 Abertawe 007                Loughor
+#> 8  W02000175 Swansea 008 Abertawe 008        Morriston South
+#> 9  W02000176 Swansea 009 Abertawe 009            Mynydd-bach
+#> 10 W02000177 Swansea 010 Abertawe 010             Llansamlet
+#>               msoa21hclnmw   lad23cd lad23nm                       geometry
+#> 1            Pontarddulais W06000011 Swansea MULTIPOLYGON (((-4.044836 5...
+#> 2           Clydach a Mawr W06000011 Swansea POLYGON ((-3.976283 51.7646...
+#> 3         Gogledd Treforys W06000011 Swansea POLYGON ((-3.913253 51.6935...
+#> 4  Llangyfelach a Thircoed W06000011 Swansea POLYGON ((-4.011018 51.7080...
+#> 5                Gorseinon W06000011 Swansea MULTIPOLYGON (((-4.062941 5...
+#> 6                Gellifedw W06000011 Swansea POLYGON ((-3.875069 51.6875...
+#> 7               Casllwchwr W06000011 Swansea MULTIPOLYGON (((-4.053356 5...
+#> 8              De Treforys W06000011 Swansea POLYGON ((-3.929819 51.6721...
+#> 9              Mynydd-bach W06000011 Swansea POLYGON ((-3.933911 51.6730...
+#> 10              Llansamlet W06000011 Swansea POLYGON ((-3.898853 51.6750...
 ```
 
 ### Lookup areas with older dates
@@ -100,24 +112,36 @@ Trial and error may be required - or start by looking up what is
 available on the OpenGeography site.
 
 ``` r
+
 bounds("msoa", "lad", "Shepway", lookup_year = 2011, within_year = 2015)
-#> Simple feature collection with 67 features and 4 fields
+#> Simple feature collection with 14 features and 5 fields
 #> Geometry type: POLYGON
 #> Dimension:     XY
 #> Bounding box:  xmin: 0.7770266 ymin: 50.91095 xmax: 1.221137 ymax: 51.205
 #> Geodetic CRS:  WGS 84
 #> First 10 features:
-#>     lsoa11cd     lsoa11nm   lad15cd lad15nm                       geometry
-#> 1  E01024486 Shepway 011A E07000112 Shepway POLYGON ((0.9871731 51.0385...
-#> 2  E01024487 Shepway 011B E07000112 Shepway POLYGON ((0.977373 51.0179,...
-#> 3  E01024488 Shepway 011C E07000112 Shepway POLYGON ((0.9724648 51.0127...
-#> 4  E01024489 Shepway 009A E07000112 Shepway POLYGON ((1.02856 51.05629,...
-#> 5  E01024490 Shepway 001A E07000112 Shepway POLYGON ((1.089762 51.18973...
-#> 6  E01024491 Shepway 005A E07000112 Shepway POLYGON ((1.13853 51.0908, ...
-#> 7  E01024492 Shepway 002A E07000112 Shepway POLYGON ((1.141129 51.10232...
-#> 8  E01024493 Shepway 005B E07000112 Shepway POLYGON ((1.146521 51.09351...
-#> 9  E01024494 Shepway 005C E07000112 Shepway POLYGON ((1.135277 51.09801...
-#> 10 E01024495 Shepway 005D E07000112 Shepway POLYGON ((1.1419 51.08616, ...
+#>     msoa11cd    msoa11nm                          msoa11hclnm   lad15cd lad15nm
+#> 1  E02005102 Shepway 001             Lyminge, Densole & Elham E07000112 Shepway
+#> 2  E02005103 Shepway 002                             Hawkinge E07000112 Shepway
+#> 3  E02005104 Shepway 003                Folkestone North East E07000112 Shepway
+#> 4  E02005105 Shepway 004                     Folkestone Foord E07000112 Shepway
+#> 5  E02005106 Shepway 005               Cheriton & Horn Street E07000112 Shepway
+#> 6  E02005107 Shepway 006       Folkestone Morehall & Sandgate E07000112 Shepway
+#> 7  E02005109 Shepway 008     Saltwood, Seabrook & Etchinghill E07000112 Shepway
+#> 8  E02005110 Shepway 009                    Lympne & Palmarsh E07000112 Shepway
+#> 9  E02005111 Shepway 010                                Hythe E07000112 Shepway
+#> 10 E02005112 Shepway 011 Dymchurch, St Mary's Bay & Brookland E07000112 Shepway
+#>                          geometry
+#> 1  POLYGON ((1.089762 51.18973...
+#> 2  POLYGON ((1.170835 51.13259...
+#> 3  POLYGON ((1.184798 51.09985...
+#> 4  POLYGON ((1.189394 51.08954...
+#> 5  POLYGON ((1.135277 51.09801...
+#> 6  POLYGON ((1.17032 51.0953, ...
+#> 7  POLYGON ((1.111727 51.12941...
+#> 8  POLYGON ((1.000461 51.1184,...
+#> 9  POLYGON ((1.062613 51.07642...
+#> 10 POLYGON ((0.9884286 51.0706...
 ```
 
 ### Alternative ways to achieve a goal
@@ -158,47 +182,7 @@ bounds("rgn", country_filter = "EN", resolution = "BUC")
 #> 7 14913854032    1066984.7 POLYGON ((-2.675591 55.1733...
 #> 8 19399927121    1389475.4 MULTIPOLYGON (((-1.590507 5...
 #> 9 24385283189    2378388.7 MULTIPOLYGON (((-6.398846 4...
-bounds("rgn", "ctry", "England", lookup_year = 2022, resolution = "BUC")
-#> Lookup table data ■■■■ 9% | ETA: 12sLookup table data ■■■■ 10% | ETA: 15sLookup
-#> table data ■■■■ 11% | ETA: 14sLookup table data ■■■■■ 13% | ETA: 13sLookup
-#> table data ■■■■■ 14% | ETA: 13sLookup table data ■■■■■■ 16% | ETA: 12sLookup
-#> table data ■■■■■■ 17% | ETA: 12sLookup table data ■■■■■■■ 20% | ETA: 11sLookup
-#> table data ■■■■■■■ 21% | ETA: 11sLookup table data ■■■■■■■■ 23% | ETA:
-#> 11sLookup table data ■■■■■■■■ 24% | ETA: 10sLookup table data ■■■■■■■■■ 26% |
-#> ETA: 10sLookup table data ■■■■■■■■■ 27% | ETA: 10sLookup table data ■■■■■■■■■■
-#> 30% | ETA: 9sLookup table data ■■■■■■■■■■ 31% | ETA: 9sLookup table data
-#> ■■■■■■■■■■■ 33% | ETA: 9sLookup table data ■■■■■■■■■■■ 34% | ETA: 9sLookup
-#> table data ■■■■■■■■■■■■ 36% | ETA: 9sLookup table data ■■■■■■■■■■■■ 37% | ETA:
-#> 8sLookup table data ■■■■■■■■■■■■■ 39% | ETA: 8sLookup table data ■■■■■■■■■■■■■
-#> 40% | ETA: 8sLookup table data ■■■■■■■■■■■■■ 41% | ETA: 8sLookup table data
-#> ■■■■■■■■■■■■■■ 43% | ETA: 8sLookup table data ■■■■■■■■■■■■■■ 44% | ETA:
-#> 7sLookup table data ■■■■■■■■■■■■■■■ 46% | ETA: 7sLookup table data
-#> ■■■■■■■■■■■■■■■ 47% | ETA: 7sLookup table data ■■■■■■■■■■■■■■■■ 50% | ETA:
-#> 7sLookup table data ■■■■■■■■■■■■■■■■ 51% | ETA: 6sLookup table data
-#> ■■■■■■■■■■■■■■■■■ 53% | ETA: 6sLookup table data ■■■■■■■■■■■■■■■■■ 54% | ETA:
-#> 6sLookup table data ■■■■■■■■■■■■■■■■■■ 56% | ETA: 6sLookup table data
-#> ■■■■■■■■■■■■■■■■■■ 57% | ETA: 6sLookup table data ■■■■■■■■■■■■■■■■■■■ 60% |
-#> ETA: 5sLookup table data ■■■■■■■■■■■■■■■■■■■ 61% | ETA: 5sLookup table data
-#> ■■■■■■■■■■■■■■■■■■■■ 63% | ETA: 5sLookup table data ■■■■■■■■■■■■■■■■■■■■ 64% |
-#> ETA: 5sLookup table data ■■■■■■■■■■■■■■■■■■■■■ 66% | ETA: 4sLookup table data
-#> ■■■■■■■■■■■■■■■■■■■■■ 67% | ETA: 4sLookup table data ■■■■■■■■■■■■■■■■■■■■■■ 69%
-#> | ETA: 5sLookup table data ■■■■■■■■■■■■■■■■■■■■■■ 70% | ETA: 4sLookup table
-#> data ■■■■■■■■■■■■■■■■■■■■■■ 71% | ETA: 4sLookup table data
-#> ■■■■■■■■■■■■■■■■■■■■■■■ 73% | ETA: 4sLookup table data ■■■■■■■■■■■■■■■■■■■■■■■
-#> 74% | ETA: 4sLookup table data ■■■■■■■■■■■■■■■■■■■■■■■■ 76% | ETA: 3sLookup
-#> table data ■■■■■■■■■■■■■■■■■■■■■■■■ 77% | ETA: 3sLookup table data
-#> ■■■■■■■■■■■■■■■■■■■■■■■■■ 80% | ETA: 3sLookup table data
-#> ■■■■■■■■■■■■■■■■■■■■■■■■■ 81% | ETA: 3sLookup table data
-#> ■■■■■■■■■■■■■■■■■■■■■■■■■■ 83% | ETA: 2sLookup table data
-#> ■■■■■■■■■■■■■■■■■■■■■■■■■■ 84% | ETA: 2sLookup table data
-#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■ 87% | ETA: 2sLookup table data
-#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 89% | ETA: 2sLookup table data
-#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 90% | ETA: 1sLookup table data
-#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 91% | ETA: 1sLookup table data
-#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 93% | ETA: 1sLookup table data
-#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 96% | ETA: 1sLookup table data
-#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 97% | ETA: 0sLookup table data
-#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 99% | ETA: 0s
+bounds("region", "country", "England", lookup_year = 2022, resolution = "BUC")
 #> Simple feature collection with 9 features and 4 fields
 #> Geometry type: GEOMETRY
 #> Dimension:     XY
@@ -226,12 +210,59 @@ bounds("rgn", "ctry", "England", lookup_year = 2022, resolution = "BUC")
 #> 9 MULTIPOLYGON (((-6.349051 4...
 ```
 
-### A lookup table for Welsh local authorities to Senedd electoral regions
-
-Using `return_with = "full"` includes the Welsh language data columns.
+### You can just request bare lookup tables - no spatial data attached
 
 ``` r
-create_lookup_table("ua", "sener", return_width = "full") |>
+
+create_lookup_table("spc", "spr")
+#> # A tibble: 73 × 4
+#>    spc22cd   spc22nm                        spr22cd   spr22nm              
+#>    <chr>     <chr>                          <chr>     <chr>                
+#>  1 S16000083 Argyll and Bute                S17000011 Highlands and Islands
+#>  2 S16000086 Caithness, Sutherland and Ross S17000011 Highlands and Islands
+#>  3 S16000110 Na h-Eileanan an Iar           S17000011 Highlands and Islands
+#>  4 S16000125 Inverness and Nairn            S17000011 Highlands and Islands
+#>  5 S16000132 Moray                          S17000011 Highlands and Islands
+#>  6 S16000135 Orkney Islands                 S17000011 Highlands and Islands
+#>  7 S16000142 Shetland Islands               S17000011 Highlands and Islands
+#>  8 S16000143 Skye, Lochaber and Badenoch    S17000011 Highlands and Islands
+#>  9 S16000080 Almond Valley                  S17000012 Lothian              
+#> 10 S16000104 Edinburgh Central              S17000012 Lothian              
+#> # ℹ 63 more rows
+```
+
+### A lookup table for Welsh local authorities to Senedd electoral regions
+
+Sometimes boundr needs a little help finding what you are looking for.
+Supplying a year or country filter can help get the right table.
+
+Using `return_with = "full"` includes all available columns, not just
+those referred to by the `lookup` and `within` arguments.
+
+``` r
+
+# This doesn't succeed:
+# create_lookup_table("wd", "sener")
+
+# supplying a year helps:
+create_lookup_table("wd", "sener", lookup_year = 2022, return_width = "full")
+#> # A tibble: 764 × 7
+#>    wd22cd    wd22nm          ua22cd    ua22nm        ua22nmw sener22cd sener22nm
+#>    <chr>     <chr>           <chr>     <chr>         <chr>   <chr>     <chr>    
+#>  1 W05001492 Aethwy          W06000001 Isle of Angl… Ynys M… W10000001 North Wa…
+#>  2 W05001493 Bodowyr         W06000001 Isle of Angl… Ynys M… W10000001 North Wa…
+#>  3 W05001494 Bro Aberffraw   W06000001 Isle of Angl… Ynys M… W10000001 North Wa…
+#>  4 W05001495 Bro'r Llynnoedd W06000001 Isle of Angl… Ynys M… W10000001 North Wa…
+#>  5 W05001496 Canolbarth Môn  W06000001 Isle of Angl… Ynys M… W10000001 North Wa…
+#>  6 W05001497 Cefni           W06000001 Isle of Angl… Ynys M… W10000001 North Wa…
+#>  7 W05001498 Crigyll         W06000001 Isle of Angl… Ynys M… W10000001 North Wa…
+#>  8 W05001499 Lligwy          W06000001 Isle of Angl… Ynys M… W10000001 North Wa…
+#>  9 W05001500 Parc a'r Mynydd W06000001 Isle of Angl… Ynys M… W10000001 North Wa…
+#> 10 W05001501 Seiriol         W06000001 Isle of Angl… Ynys M… W10000001 North Wa…
+#> # ℹ 754 more rows
+
+# or a country filter:
+create_lookup_table("wd", "sener", country_filter = "WA", return_width = "full") |>
   dplyr::filter(sener22nm == "South Wales West")
 #> # A tibble: 4 × 7
 #>   wd22cd    wd22nm               ua22cd    ua22nm    ua22nmw sener22cd sener22nm
@@ -242,14 +273,21 @@ create_lookup_table("ua", "sener", return_width = "full") |>
 #> 4 W05001099 Pontyclun West       W06000016 Rhondda … Rhondd… W10000009 South Wa…
 ```
 
+### The sfc tibble is ready to be passed to a mapping function:
+
 ``` r
 bounds("parish", "utla", "Isles of Scilly") |>
-  tmap::qtm()
+  tmap::qtm(fill = "par22nm", palette = "Accent")
 ```
 
 <img src="man/figures/README-example-5-1.png" width="100%" />
 
+### bounds now supports a shortcut which will return all bounds for a certain level, without having to specify a ‘within’ argument
+
+Take care - you might download a lot of data!
+
 ``` r
+
 bounds("spr")
 #> Simple feature collection with 8 features and 8 fields
 #> Geometry type: GEOMETRY
@@ -276,26 +314,53 @@ bounds("spr")
 #> 8    193925.75 POLYGON ((-3.425965 55.9938...
 ```
 
+### The points() function returns area (population-weighted) centroids where available
+
+(Check the OG website).
+
 ``` r
 sb <- bounds("msoa", "lad", "Swindon")
 sp <- points("msoa", "utla", "Swindon")
 
 sb |>
   ggplot2::ggplot() +
-  ggplot2::geom_sf() +
+  ggplot2::geom_sf(colour = "grey33", fill = "grey95") +
   ggplot2::geom_sf(data = sp, colour = "orange") +
   ggplot2::theme_void()
 ```
 
 <img src="man/figures/README-example-7-1.png" width="100%" />
 
+### A ggplot2 example
+
+Here we specify a ‘within_names’ argument alongside the ‘lookup’
+argument. There’s no ‘within’ argument to be specified because there’s
+nothing to lookup. (There aren’t any lookup tables for National Parks -
+just the boundaries).
+
 ``` r
+
 bounds("npark", within_names = "Bannau Brycheiniog", resolution = "BUC") |>
   ggplot2::ggplot() +
   ggplot2::geom_sf()
 ```
 
 <img src="man/figures/README-example-8-1.png" width="100%" />
+
+### Aliases
+
+For certain geographic levels you can supply a more human-friendly
+alias, so you don’t need to remember the abbreviated prefix.
+
+| alias   | actual argument (geo prefix) used |
+|---------|-----------------------------------|
+| parish  | par                               |
+| ward    | wd                                |
+| region  | rgn                               |
+| county  | cty                               |
+| country | ctry                              |
+
+Ideas for other useful aliases happily received.
 
 ## Contributing
 

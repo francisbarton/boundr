@@ -12,7 +12,7 @@ editor_options:
 
 knitr::opts_chunk$set(
   collapse = TRUE,
-  cache = FALSE,
+  cache = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
   out.width = "100%"
@@ -45,11 +45,11 @@ column, as an `sf` object ready to be visualised as a map.
 
 The structure of the project looks a bit like this:
 
-    bounds() [main UI function]
+    bounds() / points() [main UI functions]
        ^
        |
        |
-        <-------  create_lookup_table()
+        <-------  create_lookup_table() [available to the user]
        |                ^
        |                |
        |                 <--------- return_query_data()
@@ -88,7 +88,7 @@ These will then be joined onto the lookup table and provided to you as an
 
 You can install this package from the `R` console by entering
 
-  `remotes::install_github("francisbarton/boundr")`
+> `remotes::install_github("francisbarton/boundr")`
 
 if you have the `remotes` package installed.
 
@@ -99,7 +99,6 @@ if you have the `remotes` package installed.
 Returns sfc tibble with latest available data
 
 ```{r example-1}
-#| cache: true
 
 bounds("msoa", "lad", "Swansea")
 
@@ -111,7 +110,6 @@ bounds("msoa", "lad", "Swansea")
 Trial and error may be required - or start by looking up what is available on the OpenGeography site.
 
 ```{r example-2}
-#| cache: true
 
 bounds("msoa", "lad", "Shepway", lookup_year = 2011, within_year = 2015)
 ```
@@ -126,45 +124,68 @@ The second option fails to return boundaries unless the year option is included,
 Different columns are returned by each command.
 
 ```{r example-3}
-#| cache: true
+#| cache: false
 
 bounds("rgn", country_filter = "EN", resolution = "BUC")
-bounds("rgn", "ctry", "England", lookup_year = 2022, resolution = "BUC")
+bounds("region", "country", "England", lookup_year = 2022, resolution = "BUC")
+```
+
+
+### You can just request bare lookup tables - no spatial data attached
+
+```{r example-9}
+
+create_lookup_table("spc", "spr")
+
 ```
 
 
 ### A lookup table for Welsh local authorities to Senedd electoral regions
 
-Using `return_with = "full"` includes the Welsh language data columns.
+Sometimes boundr needs a little help finding what you are looking for.
+Supplying a year or country filter can help get the right table.
+
+Using `return_with = "full"` includes all available columns, not just those referred to by the `lookup` and `within` arguments.
 
 ```{r example-4}
-#| cache: true
 
-create_lookup_table("ua", "sener", return_width = "full") |>
+# This doesn't succeed:
+# create_lookup_table("wd", "sener")
+
+# supplying a year helps:
+create_lookup_table("wd", "sener", lookup_year = 2022, return_width = "full")
+
+# or a country filter:
+create_lookup_table("wd", "sener", country_filter = "WA", return_width = "full") |>
   dplyr::filter(sener22nm == "South Wales West")
 
 ```
 
 
+### The sfc tibble is ready to be passed to a mapping function:
+
 ```{r example-5}
-#| cache: true
 #| messages: false
 
 bounds("parish", "utla", "Isles of Scilly") |>
-  tmap::qtm()
+  tmap::qtm(fill = "par22nm", palette = "Accent")
 ```
 
 
+### bounds now supports a shortcut which will return all bounds for a certain level, without having to specify a 'within' argument
+
+Take care - you might download a lot of data!
+
 ```{r example-6}
-#| cache: true
 
 bounds("spr")
 ```
 
+### The points() function returns area (population-weighted) centroids where available
 
+(Check the OG website).
 
 ```{r example-7}
-#| cache: true
 #| messages: false
 
 sb <- bounds("msoa", "lad", "Swindon")
@@ -172,21 +193,39 @@ sp <- points("msoa", "utla", "Swindon")
 
 sb |>
   ggplot2::ggplot() +
-  ggplot2::geom_sf() +
+  ggplot2::geom_sf(colour = "grey33", fill = "grey95") +
   ggplot2::geom_sf(data = sp, colour = "orange") +
   ggplot2::theme_void()
 
 ```
 
+### A ggplot2 example
+
+Here we specify a 'within_names' argument alongside the 'lookup' argument. There's no 'within' argument to be specified because there's nothing to lookup.
+(There aren't any lookup tables for National Parks - just the boundaries).
 
 
 ```{r example-8}
-#| cache: true
 
 bounds("npark", within_names = "Bannau Brycheiniog", resolution = "BUC") |>
   ggplot2::ggplot() +
   ggplot2::geom_sf()
 ```
+
+
+### Aliases
+
+For certain geographic levels you can supply a more human-friendly alias, so you don't need to remember the abbreviated prefix.
+
+| alias   | actual argument (geo prefix) used |
+| ----    | ---- |
+| parish  | par  |
+| ward    | wd   |
+| region  | rgn  |
+| county  | cty  |
+| country | ctry |
+
+Ideas for other useful aliases happily received.
 
 ## Contributing
 
