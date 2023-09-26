@@ -1,3 +1,18 @@
+#' Use an existing tibble as the basis for a spatial query
+#'
+#' If you have a tibble such as those produced by `create_lookup_table()` -
+#' that is, there is a column of geographical ONS codes ending in 'cd' -
+#' simply use this table as the basis for retrieving the relevant boundaries.
+#'
+#' @param tbl A tibble with a column for geographical codes. This function will
+#'  use the lefthand-most column ending in 'cd' as the basis for retrieving
+#'  boundary or point data
+#' @param centroids Whether to retrieve centroids or boundaries (the default)
+#' @inheritParams bounds
+#'
+#' @returns If successful, will return the initial table with an additional
+#'  geometry column added. Duplicate rows will be removed.
+#'
 #' @export
 add_bounds_to_table <- function(
   tbl,
@@ -21,7 +36,7 @@ add_bounds_to_table <- function(
     names()
 
   lookup <- grep("^[Aa-Zz]+", geo_code_field, value = TRUE)
-  
+
   if (centroids) {
     query_base_url <- pull_centroid_query_url(geo_code_field, lookup)
   } else {
@@ -41,11 +56,11 @@ add_bounds_to_table <- function(
     msg = "bounds: return_result_ids() has not returned a vector of IDs.")
 
   bounds_data <- ids |>
-    purrr::map(\(x) return_bounds_data(x, query_base_url, crs))
+    purrr::map(\(x) return_spatial_data(x, query_base_url, crs))
 
   assert_that(is.list(bounds_data) & length(bounds_data),
-    msg = "bounds: return_bounds_data() has not returned a list of length > 0")
-  
+    msg = "bounds: return_spatial_data() has not returned a list of length > 0")
+
   bounds_data_df <- bounds_data |>
     # purrr::list_rbind() |>
     dplyr::bind_rows() |>

@@ -11,6 +11,15 @@
 #'  geographical area. Use ONS area codes eg "W02000103" likewise (this is
 #'  useful with wards, where there are many that share identical names). A
 #'  vector of multiple names or codes can be supplied.
+#' @param within character. Higher level area code eg "lad", "cty". Equivalent
+#' to the `within` parameter in `bounds()`.
+#' @param within_year numeric or character. A specific year for data relating
+#'  to parameter `y`, if needed. Defaults to `NULL`, which will return the most
+#'  recent data.
+#' @param country_filter character. Open Geography datasets are sometimes
+#'  available just within certain countries. Specify a country code if you want
+#'  your results restricted to a certain country only - eg "WA" for Wales, "EW"
+#'  for England and Wales. By default returns all options.
 #' @param return_width character. How many of the possible columns in the
 #'  returned table to keep. Options are "tidy", "full" or "minimal".
 #'

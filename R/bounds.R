@@ -7,7 +7,8 @@
 #'  adhere to the coastline or to the full territorial extent. BGC by default
 #'  (G = Generalised (20m), C = limited to the coastline.) F indicates Full
 #'  resolution; S indicates Super-generalised (200m); U indicates Ultra-
-#'  generalised (500m) boundary resolution.
+#'  generalised (500m) boundary resolution. Use E instead of C for full
+#'  extent boundaries (e.g. BFE). Not all combinations are available.
 #'
 #' @examples
 #' bounds("msoa", "lad", "Swansea")

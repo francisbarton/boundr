@@ -2,18 +2,9 @@
 #'
 #' @param lookup character. Lower level area code eg "lsoa", "wd", "lad".
 #'  Equivalent to the `lookup` parameter in `bounds()`.
-#' @param within character. Higher level area code eg "lad", "cty". Equivalent
-#' to the `within` parameter in `bounds()`.
 #' @param lookup_year numeric or character. A specific year for data relating
 #'  to parameter `x`, if needed. Defaults to `NULL`, which will return the most
 #'  recent data.
-#' @param within_year numeric or character. A specific year for data relating
-#'  to parameter `y`, if needed. Defaults to `NULL`, which will return the most
-#'  recent data.
-#' @param country_filter character. Open Geography datasets are sometimes
-#'  available just within certain countries. Specify a country code if you want
-#'  your results restricted to a certain country only - eg "WA" for Wales, "EW"
-#'  for England and Wales. By default returns all options.
 #' @param option numeric. Defaults to 1, which means that the URL will just be
 #'  the first one from the list of possible services resulting from the level
 #'  and year filters above. If this does not give you what you want, you can
@@ -85,7 +76,3 @@ return_spatial_query_info <- function(
     query_url = query_url,
     lookup_field = lookup_field)
 }
-
-
-
-

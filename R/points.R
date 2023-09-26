@@ -1,7 +1,6 @@
 #' Return centroid points at a specified level and area from the ONS OG API
 #'
-#' @inheritParams create_lookup_table
-#' @inheritParams spatial_data_req
+#' @inheritParams bounds
 #'
 #' @returns an `sfc` tibble (data frame with geometry)
 #' @export
@@ -69,7 +68,7 @@ points <- function(
   } else {
     lookup_table <- NULL
 
-    points_query_info <- return_bounds_query_info(
+    points_query_info <- return_spatial_query_info(
       lookup,
       lookup_year,
       option

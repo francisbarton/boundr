@@ -49,6 +49,14 @@ available just within certain countries. Specify a country code if you want
 your results restricted to a certain country only - eg "WA" for Wales, "EW"
 for England and Wales. By default returns all options.}
 
+\item{resolution}{character. See argument options for available options. How
+generalised should the boundary be, and whether coastal boundaries should
+adhere to the coastline or to the full territorial extent. BGC by default
+(G = Generalised (20m), C = limited to the coastline.) F indicates Full
+resolution; S indicates Super-generalised (200m); U indicates Ultra-
+generalised (500m) boundary resolution. Use E instead of C for full
+extent boundaries (e.g. BFE). Not all combinations are available.}
+
 \item{option}{numeric. Defaults to 1, which means that the URL will just be
 the first one from the list of possible services resulting from the level
 and year filters above. If this does not give you what you want, you can

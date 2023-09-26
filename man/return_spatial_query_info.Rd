@@ -27,18 +27,6 @@ run the script again with a different option from the list.}
 \item{chatty}{Boolean. Whether to print feedback on the 'decisions' the
 function has taken about which table to query. Default \code{TRUE} when the
 function is run in an interactive session, \code{FALSE} otherwise.}
-
-\item{within}{character. Higher level area code eg "lad", "cty". Equivalent
-to the \code{within} parameter in \code{bounds()}.}
-
-\item{within_year}{numeric or character. A specific year for data relating
-to parameter \code{y}, if needed. Defaults to \code{NULL}, which will return the most
-recent data.}
-
-\item{country_filter}{character. Open Geography datasets are sometimes
-available just within certain countries. Specify a country code if you want
-your results restricted to a certain country only - eg "WA" for Wales, "EW"
-for England and Wales. By default returns all options.}
 }
 \value{
 A list of length 3: the query URL, the lower level (\code{lookup}) field
