@@ -1,4 +1,3 @@
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # welcome to boundr
@@ -18,47 +17,6 @@ areas at a specified level within a specified area.
 The main script will return a data frame with the sub-area geometry
 column, as an `sf` object ready to be visualised as a map.
 
-### Package logic
-
-The structure of the project looks a bit like this:
-
-    bounds() / points() [main UI functions]
-       ^
-       |
-       |
-        <-------  create_lookup_table() [available to the user]
-       |                ^
-       |                |
-       |                 <--------- return_query_data()
-       |                |
-       |                 <--------- return_lookup_query_info() 
-       |                                       \
-       |                                        \
-        <-------  return_spatial_data()           <----- opengeo_schema [data]
-                        ^                       /              ^
-                        |                      /               |
-                         <--------  pull_geo_query_url()       |
-                                                               |
-                                                         build_schema()
-
-When you call `bounds()` you specify a lower level area (eg ward) and a
-higher level area (eg local authority), and you specify either the name
-of the higher level area (or areas) or its code.
-
-`return_lookup_query_info()` then finds the API query URL of a suitable
-lookup table - one that contains columns for both your lower and higher
-level areas. It does this by filtering `opengeo_schema`, which is a
-cached copy of the various datasets available from the Open Geography
-API Services list. This schema is available as internal data in the
-package - but may need updating.
-
-`create_lookup_table()` then builds a lookup table (a tibble) based on
-all the areas you have said you are interested in. At the same time,
-`return_spatial_data()` will - if you have specified you want spatial
-boundaries data for your areas - retrieve the boundary data at your
-chosen resolution for your lower level areas. These will then be joined
-onto the lookup table and provided to you as an `sfc` tibble.
-
 ## Installation
 
 You can install this package from the `R` console by entering
@@ -68,6 +26,23 @@ You can install this package from the `R` console by entering
 if you have the `remotes` package installed.
 
 ## Examples
+
+When you call `bounds()` you specify a lower level area (eg ward) and a
+higher level area (eg local authority), and you specify either the name
+of the higher level area (or areas), or its ONS code.
+
+The area types are specified using the standard prefix (though see the aliases section below as well).
+Examples of prefixes you might want to use are:
+
+- lsoa (Lower Layer Super Output Area)
+- wd (ward)
+- utla (Upper Tier Local Authority)
+- lad (local authority district)
+- pcon (Parliamentary constituency)
+- cty (county)
+
+and so on.
+There are many other types of area with boundaries and lookups available on the ONS OG site.
 
 ### Basic lookup of areas within a larger area, by name
 
@@ -361,6 +336,48 @@ alias, so you don’t need to remember the abbreviated prefix.
 | country | ctry                              |
 
 Ideas for other useful aliases happily received.
+
+### Package logic
+
+The structure of the project looks a bit like this:
+
+    bounds() / points() [main UI functions]
+       ^
+       |
+       |
+        <-------  create_lookup_table() [available to the user]
+       |                ^
+       |                |
+       |                 <--------- return_query_data()
+       |                |
+       |                 <--------- return_lookup_query_info() 
+       |                                       \
+       |                                        \
+        <-------  return_spatial_data()           <----- opengeo_schema [data]
+                        ^                       /              ^
+                        |                      /               |
+                         <--------  pull_geo_query_url()       |
+                                                               |
+                                                         build_schema()
+
+When you call `bounds()` you specify a lower level area (eg ward) and a
+higher level area (eg local authority), and you specify either the name
+of the higher level area (or areas) or its code.
+
+`return_lookup_query_info()` then finds the API query URL of a suitable
+lookup table - one that contains columns for both your lower and higher
+level areas. It does this by filtering `opengeo_schema`, which is a
+cached copy of the various datasets available from the Open Geography
+API Services list. This schema is available as internal data in the
+package - but may need updating.
+
+`create_lookup_table()` then builds a lookup table (a tibble) based on
+all the areas you have said you are interested in. At the same time,
+`return_spatial_data()` will - if you have specified you want spatial
+boundaries data for your areas - retrieve the boundary data at your
+chosen resolution for your lower level areas. These will then be joined
+onto the lookup table and provided to you as an `sfc` tibble.
+
 
 ## Contributing
 
