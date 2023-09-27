@@ -130,7 +130,7 @@ bounds("region", "country", "England", lookup_year = 2022, resolution = "BUC")
 
 ### You can just request bare lookup tables - no spatial data attached
 
-```{r example-9}
+```{r example-4}
 
 create_lookup_table("spc", "spr")
 
@@ -144,7 +144,7 @@ Supplying a year or country filter can help get the right table.
 
 Using `return_with = "full"` includes all available columns, not just those referred to by the `lookup` and `within` arguments.
 
-```{r example-4}
+```{r example-5}
 
 # This doesn't succeed:
 # create_lookup_table("wd", "sener")
@@ -161,7 +161,7 @@ create_lookup_table("wd", "sener", country_filter = "WA", return_width = "full")
 
 ### The sfc tibble is ready to be passed to a mapping function:
 
-```{r example-5}
+```{r example-6}
 #| message: false
 
 bounds("parish", "utla", "Isles of Scilly") |>
@@ -173,7 +173,7 @@ bounds("parish", "utla", "Isles of Scilly") |>
 
 Take care - you might download a lot of data!
 
-```{r example-6}
+```{r example-7}
 
 bounds("spr")
 ```
@@ -182,7 +182,7 @@ bounds("spr")
 
 (Check the OG website).
 
-```{r example-7}
+```{r example-8}
 #| message: false
 
 sb <- bounds("msoa", "lad", "Swindon")
@@ -202,11 +202,39 @@ Here we specify a 'within_names' argument alongside the 'lookup' argument. There
 (There aren't any lookup tables for National Parks - just the boundaries).
 
 
-```{r example-8}
+```{r example-9}
 
 bounds("npark", within_names = "Bannau Brycheiniog", resolution = "BUC") |>
   ggplot2::ggplot() +
   ggplot2::geom_sf()
+
+```
+
+
+```{r example-10}
+
+# https://github.com/francisbarton/mapirosa
+library(mapirosa)
+
+# https://dieghernan.github.io/tidyterra/reference/geom_spatraster_rgb.html
+library(tidyterra)
+
+bb <- bounds("npark", within_names = "Bannau Brycheiniog", resolution = "BUC", crs = 27700)
+
+bb_basemap <- mapirosa::build_basemap(
+  bbox = sf::st_bbox(bb),
+  zoom = 3,
+  style = "outdoor",
+  squarify = TRUE,
+  crs = 27700)
+
+ ggplot2::ggplot(bb) +
+  tidyterra::geom_spatraster_rgb(
+    data = bb_basemap,
+    maxcell = 1e7,
+    max_col_value = 1) +
+  ggplot2::theme_void() +
+  ggplot2::geom_sf(colour = "coral", fill = "aquamarine", alpha = 0.3)
 ```
 
 
@@ -254,4 +282,4 @@ licences, including:
 > -   Source: Office for National Statistics licensed under the [Open
 >     Government Licence
 >     v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
-> -   Contains OS data © Crown copyright and database right 2021.
+> -   Contains OS data © Crown copyright and database right `r format(Sys.Date(), "%Y")`

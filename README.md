@@ -1,3 +1,4 @@
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # welcome to boundr
@@ -17,6 +18,47 @@ areas at a specified level within a specified area.
 The main script will return a data frame with the sub-area geometry
 column, as an `sf` object ready to be visualised as a map.
 
+### Package logic
+
+The structure of the project looks a bit like this:
+
+    bounds() / points() [main UI functions]
+       ^
+       |
+       |
+        <-------  create_lookup_table() [available to the user]
+       |                ^
+       |                |
+       |                 <--------- return_query_data()
+       |                |
+       |                 <--------- return_lookup_query_info() 
+       |                                       \
+       |                                        \
+        <-------  return_spatial_data()           <----- opengeo_schema [data]
+                        ^                       /              ^
+                        |                      /               |
+                         <--------  pull_geo_query_url()       |
+                                                               |
+                                                         build_schema()
+
+When you call `bounds()` you specify a lower level area (eg ward) and a
+higher level area (eg local authority), and you specify either the name
+of the higher level area (or areas) or its code.
+
+`return_lookup_query_info()` then finds the API query URL of a suitable
+lookup table - one that contains columns for both your lower and higher
+level areas. It does this by filtering `opengeo_schema`, which is a
+cached copy of the various datasets available from the Open Geography
+API Services list. This schema is available as internal data in the
+package - but may need updating.
+
+`create_lookup_table()` then builds a lookup table (a tibble) based on
+all the areas you have said you are interested in. At the same time,
+`return_spatial_data()` will - if you have specified you want spatial
+boundaries data for your areas - retrieve the boundary data at your
+chosen resolution for your lower level areas. These will then be joined
+onto the lookup table and provided to you as an `sfc` tibble.
+
 ## Installation
 
 You can install this package from the `R` console by entering
@@ -26,23 +68,6 @@ You can install this package from the `R` console by entering
 if you have the `remotes` package installed.
 
 ## Examples
-
-When you call `bounds()` you specify a lower level area (eg ward) and a
-higher level area (eg local authority), and you specify either the name
-of the higher level area (or areas), or its ONS code.
-
-The area types are specified using the standard prefix (though see the aliases section below as well).
-Examples of prefixes you might want to use are:
-
-- lsoa (Lower Layer Super Output Area)
-- wd (ward)
-- utla (Upper Tier Local Authority)
-- lad (local authority district)
-- pcon (Parliamentary constituency)
-- cty (county)
-
-and so on.
-There are many other types of area with boundaries and lookups available on the ONS OG site.
 
 ### Basic lookup of areas within a larger area, by name
 
@@ -222,18 +247,18 @@ those referred to by the `lookup` and `within` arguments.
 # supplying a year helps:
 create_lookup_table("wd", "sener", lookup_year = 2022, return_width = "full")
 #> # A tibble: 764 × 7
-#>    wd22cd    wd22nm          ua22cd    ua22nm        ua22nmw sener22cd sener22nm
-#>    <chr>     <chr>           <chr>     <chr>         <chr>   <chr>     <chr>    
-#>  1 W05001492 Aethwy          W06000001 Isle of Angl… Ynys M… W10000001 North Wa…
-#>  2 W05001493 Bodowyr         W06000001 Isle of Angl… Ynys M… W10000001 North Wa…
-#>  3 W05001494 Bro Aberffraw   W06000001 Isle of Angl… Ynys M… W10000001 North Wa…
-#>  4 W05001495 Bro'r Llynnoedd W06000001 Isle of Angl… Ynys M… W10000001 North Wa…
-#>  5 W05001496 Canolbarth Môn  W06000001 Isle of Angl… Ynys M… W10000001 North Wa…
-#>  6 W05001497 Cefni           W06000001 Isle of Angl… Ynys M… W10000001 North Wa…
-#>  7 W05001498 Crigyll         W06000001 Isle of Angl… Ynys M… W10000001 North Wa…
-#>  8 W05001499 Lligwy          W06000001 Isle of Angl… Ynys M… W10000001 North Wa…
-#>  9 W05001500 Parc a'r Mynydd W06000001 Isle of Angl… Ynys M… W10000001 North Wa…
-#> 10 W05001501 Seiriol         W06000001 Isle of Angl… Ynys M… W10000001 North Wa…
+#>    wd22cd    wd22nm                ua22cd    ua22nm  ua22nmw sener22cd sener22nm
+#>    <chr>     <chr>                 <chr>     <chr>   <chr>   <chr>     <chr>    
+#>  1 W05001606 Mold West             W06000005 Flints… Sir y … W10000001 North Wa…
+#>  2 W05001605 Mold South            W06000005 Flints… Sir y … W10000001 North Wa…
+#>  3 W05001604 Mold East             W06000005 Flints… Sir y … W10000001 North Wa…
+#>  4 W05001603 Mold: Broncoed        W06000005 Flints… Sir y … W10000001 North Wa…
+#>  5 W05001602 Llanfynydd            W06000005 Flints… Sir y … W10000001 North Wa…
+#>  6 W05001601 Llanasa and Trelawnyd W06000005 Flints… Sir y … W10000001 North Wa…
+#>  7 W05001600 Leeswood              W06000005 Flints… Sir y … W10000001 North Wa…
+#>  8 W05001599 Hope                  W06000005 Flints… Sir y … W10000001 North Wa…
+#>  9 W05001598 Holywell West         W06000005 Flints… Sir y … W10000001 North Wa…
+#> 10 W05001597 Holywell East         W06000005 Flints… Sir y … W10000001 North Wa…
 #> # ℹ 754 more rows
 
 # or a country filter:
@@ -255,7 +280,7 @@ bounds("parish", "utla", "Isles of Scilly") |>
   tmap::qtm(fill = "par22nm", palette = "Accent")
 ```
 
-<img src="man/figures/README-example-5-1.png" width="100%" />
+<img src="man/figures/README-example-6-1.png" width="100%" />
 
 ### bounds now supports a shortcut which will return all bounds for a certain level, without having to specify a ‘within’ argument
 
@@ -304,7 +329,7 @@ sb |>
   ggplot2::theme_void()
 ```
 
-<img src="man/figures/README-example-7-1.png" width="100%" />
+<img src="man/figures/README-example-8-1.png" width="100%" />
 
 ### A ggplot2 example
 
@@ -320,7 +345,35 @@ bounds("npark", within_names = "Bannau Brycheiniog", resolution = "BUC") |>
   ggplot2::geom_sf()
 ```
 
-<img src="man/figures/README-example-8-1.png" width="100%" />
+<img src="man/figures/README-example-9-1.png" width="100%" />
+
+``` r
+
+# https://github.com/francisbarton/mapirosa
+library(mapirosa)
+
+# https://dieghernan.github.io/tidyterra/reference/geom_spatraster_rgb.html
+library(tidyterra)
+
+bb <- bounds("npark", within_names = "Bannau Brycheiniog", resolution = "BUC", crs = 27700)
+
+bb_basemap <- mapirosa::build_basemap(
+  bbox = sf::st_bbox(bb),
+  zoom = 3,
+  style = "outdoor",
+  squarify = TRUE,
+  crs = 27700)
+
+ ggplot2::ggplot(bb) +
+  tidyterra::geom_spatraster_rgb(
+    data = bb_basemap,
+    maxcell = 1e7,
+    max_col_value = 1) +
+  ggplot2::theme_void() +
+  ggplot2::geom_sf(colour = "coral", fill = "aquamarine", alpha = 0.3)
+```
+
+<img src="man/figures/README-example-10-1.png" width="100%" />
 
 ### Aliases
 
@@ -336,48 +389,6 @@ alias, so you don’t need to remember the abbreviated prefix.
 | country | ctry                              |
 
 Ideas for other useful aliases happily received.
-
-### Package logic
-
-The structure of the project looks a bit like this:
-
-    bounds() / points() [main UI functions]
-       ^
-       |
-       |
-        <-------  create_lookup_table() [available to the user]
-       |                ^
-       |                |
-       |                 <--------- return_query_data()
-       |                |
-       |                 <--------- return_lookup_query_info() 
-       |                                       \
-       |                                        \
-        <-------  return_spatial_data()           <----- opengeo_schema [data]
-                        ^                       /              ^
-                        |                      /               |
-                         <--------  pull_geo_query_url()       |
-                                                               |
-                                                         build_schema()
-
-When you call `bounds()` you specify a lower level area (eg ward) and a
-higher level area (eg local authority), and you specify either the name
-of the higher level area (or areas) or its code.
-
-`return_lookup_query_info()` then finds the API query URL of a suitable
-lookup table - one that contains columns for both your lower and higher
-level areas. It does this by filtering `opengeo_schema`, which is a
-cached copy of the various datasets available from the Open Geography
-API Services list. This schema is available as internal data in the
-package - but may need updating.
-
-`create_lookup_table()` then builds a lookup table (a tibble) based on
-all the areas you have said you are interested in. At the same time,
-`return_spatial_data()` will - if you have specified you want spatial
-boundaries data for your areas - retrieve the boundary data at your
-chosen resolution for your lower level areas. These will then be joined
-onto the lookup table and provided to you as an `sfc` tibble.
-
 
 ## Contributing
 
@@ -408,4 +419,4 @@ licences, including:
 > - Source: Office for National Statistics licensed under the [Open
 >   Government Licence
 >   v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
-> - Contains OS data © Crown copyright and database right 2021.
+> - Contains OS data © Crown copyright and database right 2023
