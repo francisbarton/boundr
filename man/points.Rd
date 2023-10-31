@@ -12,7 +12,7 @@ points(
   return_width = c("tidy", "full", "minimal"),
   lookup_year = NULL,
   within_year = NULL,
-  country_filter = c("UK|EW|EN|SC|WA", "UK", "EW", "EN", "SC", "WA"),
+  country_filter = c("UK|GB|EW|EN|SC|WA", "UK", "GB", "EW", "EN", "SC", "WA"),
   resolution = c("BGC", "BSC", "BUC", "BFC", "BFE"),
   option = NULL,
   crs = 4326

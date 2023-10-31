@@ -30,6 +30,8 @@ Depends:
 Suggests:
     ggplot2,
     roxygen2,
+    testthat (>= 3.0.0),
     tmap
 URL: https://github.com/francisbarton/boundr
 BugReports: https://github.com/francisbarton/boundr/issues
+Config/testthat/edition: 3

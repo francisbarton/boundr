@@ -37,7 +37,7 @@ create_lookup_table <- function(
     return_width = c("tidy", "full", "minimal"),
     lookup_year = NULL,
     within_year = NULL,
-    country_filter = c("UK|EW|EN|SC|WA", "UK", "EW", "EN", "SC", "WA"),
+    country_filter = c("UK|GB|EW|EN|SC|WA", "UK", "GB", "EW", "EN", "SC", "WA"),
     option = NULL,
     chatty = rlang::is_interactive()
   ) {
@@ -49,7 +49,7 @@ create_lookup_table <- function(
   if (lookup == "msoa") new_lookup <- "lsoa"
   if (is.null(within)) within <- lookup
   new_within <- process_aliases(within)
-  if (within == "msoa") new_within <- "lsoa"
+  # if (within == "msoa") new_within <- "lsoa"
   return_width <- match.arg(return_width)
   country_filter <- match.arg(country_filter)
   if (is.null(option)) option <- 1
@@ -80,6 +80,10 @@ create_lookup_table <- function(
                    "minimal" = c(
                      lookup_code_field,
                      lookup_name_field))
+
+  if (lookup == "oa") {
+    fields <- stringr::str_subset(fields, "^oa.+nm$", negate = TRUE)
+  }
 
 
 
@@ -129,34 +133,40 @@ create_lookup_table <- function(
     batch_it(100) |>
     purrr::map(\(x) return_table_data(x, query_base_url, fields),
       .progress = {if (chatty) "Lookup table data"}) |>
-    purrr::list_rbind() |>
-    dplyr::select(!any_of(c("object_id", "global_id", "chgind")))
+    dplyr::bind_rows() |>
+    dplyr::select(!any_of(c("object_id", "global_id", "chgind"))) |>
+    dplyr::distinct()
 
 
-  # More hacks to handle the MSOAs issue
-  hocl_msoa_names <- NULL
-
+  # A hack to handle the MSOAs issue
   if (lookup == "msoa") {
-    if (grepl("^lsoa11", lookup_name_field)) hocl_tbl <- hocl_msoa11_names
-    if (grepl("^lsoa21", lookup_name_field)) hocl_tbl <- hocl_msoa21_names
+    msoanm_col <- sub("^lsoa", "msoa", lookup_name_field)
+    msoacd_col <- sub("nm$", "cd", msoanm_col)
 
-    out <- join_msoa_table(out, lookup_name_field, hocl_tbl, type = "lookup")
+    out <- out |>
+      dplyr::mutate({{ msoanm_col }} := c_across(all_of(lookup_name_field))) |>
+      dplyr::mutate(across({{ msoanm_col }}, \(x) sub("[A-Z]{1}$", "", x))) |>
+      dplyr::select(!starts_with("lsoa")) |>
+      dplyr::distinct()
   }
 
-  if (within == "msoa") {
-    if (grepl("^lsoa11", within_name_field)) hocl_tbl <- hocl_msoa11_names
-    if (grepl("^lsoa21", within_name_field)) hocl_tbl <- hocl_msoa21_names
+  if (any(grepl("^msoa", names(out)))) {
+    hocl_tbl <- NULL
+    if (any(grepl("^msoa11", names(out)))) hocl_tbl <- hocl_msoa11_names
+    if (any(grepl("^msoa21", names(out)))) hocl_tbl <- hocl_msoa21_names
 
-    out <- join_msoa_table(out, within_name_field, hocl_tbl, type = "within")
+    msoacd_col <- grep("^msoa", names(out), value = TRUE)[[1]]
 
-    if (lookup != "lsoa" | return_width != "full") {
-      out <- out |>
-        dplyr::select(!starts_with("lsoa"))
-    }
+    out <- out |>
+      dplyr::left_join(hocl_tbl, any_of(c({{ msoacd_col }}, {{ msoanm_col }}))) |>
+      dplyr::relocate(starts_with("msoa"), .after = all_of({{ msoacd_col }}))
   }
+
+
+
 
   any_welsh <- out |>
-    dplyr::select(all_of(ends_with("cd"))) |>
+    dplyr::select(ends_with("cd")) |>
     dplyr::pull(1) |>
     purrr::some(\(x) grepl("^W", x))
 
@@ -182,24 +192,3 @@ process_aliases <- function(x) {
       "country" = "ctry"
     ))
 }
-
-
-join_msoa_table <- function(.data, lsoa_col, hocl_tbl, type = c("lookup", "within")) {
-  type <- match.arg(type)
-  msoa_col <- sub("^lsoa", "msoa", lsoa_col)
-
-  out <- .data |>
-    dplyr::mutate({{msoa_col}} := c_across(lsoa_col)) |>
-    dplyr::mutate(across({{msoa_col}}, \(x) sub("[A-Z]{1}$", "", x))) |>
-    dplyr::left_join(hocl_tbl, msoa_col)
-
-  if (type == "lookup") {
-    out |>
-      dplyr::select(all_of(c(names(hocl_tbl))), !starts_with("lsoa"))
-  } else if (type == "within") {
-    out |>
-      dplyr::select(all_of(c(names(.data), names(hocl_tbl)))) |>
-      dplyr::relocate(matches("^.*oa"))
-  } else invisible(TRUE)
-}
-
