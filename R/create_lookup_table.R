@@ -158,7 +158,7 @@ create_lookup_table <- function(
     msoacd_col <- grep("^msoa", names(out), value = TRUE)[[1]]
 
     out <- out |>
-      dplyr::left_join(hocl_tbl, any_of(c({{ msoacd_col }}, {{ msoanm_col }}))) |>
+      dplyr::left_join(hocl_tbl) |>
       dplyr::relocate(starts_with("msoa"), .after = all_of({{ msoacd_col }}))
   }
 
