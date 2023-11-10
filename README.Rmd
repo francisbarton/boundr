@@ -28,57 +28,12 @@ library(ggplot2)
 
 ### Retrieve area boundaries and data from the ONS Open Geography Portal
 
-`boundr` was previously
-[`jogger`](https://github.com/francisbarton/jogger).
-
 The main purpose of this package is to download area lookups and
 boundaries (in GeoJSON format) using the ONS Open Geography API, for all
 areas at a specified level within a specified area.
 
 The main script will return a data frame with the sub-area geometry
 column, as an `sf` object ready to be visualised as a map.
-
-### Package logic
-
-The structure of the project looks a bit like this:
-
-    bounds() / points() [main UI functions]
-       ^
-       |
-       |
-        <-------  create_lookup_table() [available to the user]
-       |                ^
-       |                |
-       |                 <--------- return_query_data()
-       |                |
-       |                 <--------- return_lookup_query_info() 
-       |                                       \
-       |                                        \
-        <-------  return_spatial_data()           <----- opengeo_schema [data]
-                        ^                       /              ^
-                        |                      /               |
-                         <--------  pull_geo_query_url()       |
-                                                               |
-                                                         build_schema()
-
-When you call `bounds()` you specify a lower level area (eg ward) and a higher
-level area (eg local authority), and you specify either the name of the higher
-level area (or areas) or its code.
-
-`return_lookup_query_info()` then finds the API query URL of a suitable lookup
-table - one that contains columns for both your lower and higher level areas.
-It does this by filtering `opengeo_schema`, which is a cached copy of the
-various datasets available from the Open Geography API Services list.
-This schema is available as internal data in the package - but may need
-updating.
-
-`create_lookup_table()` then builds a lookup table (a tibble) based on all the
-areas you have said you are interested in.
-At the same time, `return_spatial_data()` will - if you have specified you want
-spatial boundaries data for your areas - retrieve the boundary data at your
-chosen resolution for your lower level areas.
-These will then be joined onto the lookup table and provided to you as an
-`sfc` tibble.
 
 
 ## Installation
@@ -252,6 +207,50 @@ For certain geographic levels you can supply a more human-friendly alias, so you
 
 Ideas for other useful aliases happily received.
 
+
+## Package internal structure
+
+The structure of the project looks a bit like this:
+
+    bounds() / points() [main UI functions]
+       ^
+       |
+       |
+        <-------  create_lookup_table() [available to the user]
+       |                ^
+       |                |
+       |                 <--------- return_query_data()
+       |                |
+       |                 <--------- return_lookup_query_info() 
+       |                                       \
+       |                                        \
+        <-------  return_spatial_data()           <----- opengeo_schema [data]
+                        ^                       /              ^
+                        |                      /               |
+                         <--------  pull_geo_query_url()       |
+                                                               |
+                                                         build_schema()
+
+When you call `bounds()` you specify a lower level area (eg ward) and a higher
+level area (eg local authority), and you specify either the name of the higher
+level area (or areas) or its code.
+
+`return_lookup_query_info()` then finds the API query URL of a suitable lookup
+table - one that contains columns for both your lower and higher level areas.
+It does this by filtering `opengeo_schema`, which is a cached copy of the
+various datasets available from the Open Geography API Services list.
+This schema is available as internal data in the package - but may need
+updating.
+
+`create_lookup_table()` then builds a lookup table (a tibble) based on all the
+areas you have said you are interested in.
+At the same time, `return_spatial_data()` will - if you have specified you want
+spatial boundaries data for your areas - retrieve the boundary data at your
+chosen resolution for your lower level areas.
+These will then be joined onto the lookup table and provided to you as an
+`sfc` tibble.
+
+
 ## Contributing
 
 Suggestions for improvements are welcome, preferably posted as an issue
@@ -262,9 +261,15 @@ Please note that `boundr` is released with a [Contributor Code of
 Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html).
 By contributing to this project, you agree to abide by its terms.
 
+
+
 ## News
 
 See [NEWS.md](NEWS.md) for version notes.
+
+
+`boundr` was previously
+[`jogger`](https://github.com/francisbarton/jogger).
 
 ### Licences
 
