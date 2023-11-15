@@ -139,33 +139,33 @@ function is run in an interactive session, <code>FALSE</code> otherwise.</p></dd
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">create_lookup_table</span><span class="op">(</span><span class="st">"msoa"</span>, <span class="st">"lad"</span>, <span class="st">"Swindon"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(msoa21nm)`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 27 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    lad23cd   lad23nm msoa21nm    msoa21cd  msoa21hclnm                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> E06000030 Swindon Swindon 010 E02003221 Gorse Hill                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> E06000030 Swindon Swindon 007 E02003218 Pinehurst                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> E06000030 Swindon Swindon 018 E02003229 Freshbrook North &amp; Grange Park</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> E06000030 Swindon Swindon 022 E02003233 Freshbrook South &amp; Toothill   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> E06000030 Swindon Swindon 021 E02003232 Kingshill &amp; Okus              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> E06000030 Swindon Swindon 019 E02003230 Central South &amp; Eastcott      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> E06000030 Swindon Swindon 017 E02003228 Central East &amp; Walcot West    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> E06000030 Swindon Swindon 023 E02003234 Eldene &amp; Dorcan               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> E06000030 Swindon Swindon 024 E02003235 Lawn &amp; East Wichel            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> E06000030 Swindon Swindon 015 E02003226 Central North                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    lad23cd   lad23nm msoa21nm    msoa21cd  msoa21hclnm                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> E06000030 Swindon Swindon 020 E02003231 Park North &amp; Park South              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> E06000030 Swindon Swindon 016 E02003227 Walcot East                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> E06000030 Swindon Swindon 003 E02003214 Penhill                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> E06000030 Swindon Swindon 008 E02003219 Broad Blunsdon, South Marston &amp; Wanb…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> E06000030 Swindon Swindon 009 E02003220 Lower Stratton                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> E06000030 Swindon Swindon 005 E02003216 Upper Stratton                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> E06000030 Swindon Swindon 014 E02003225 Westlea &amp; Shaw                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> E06000030 Swindon Swindon 011 E02003222 Roughmoor                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> E06000030 Swindon Swindon 022 E02003233 Freshbrook South &amp; Toothill          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> E06000030 Swindon Swindon 017 E02003228 Central East &amp; Walcot West           </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 17 more rows</span></span>
 <span class="r-in"><span><span class="fu">create_lookup_table</span><span class="op">(</span><span class="st">"wd"</span>, <span class="st">"sener"</span>, lookup_year <span class="op">=</span> <span class="fl">2022</span>, return_width <span class="op">=</span> <span class="st">"full"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 764 × 7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    wd22cd    wd22nm                ua22cd    ua22nm  ua22nmw sener22cd sener22nm</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> W05001606 Mold West             W06000005 Flints… Sir y … W10000001 North Wa…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> W05001605 Mold South            W06000005 Flints… Sir y … W10000001 North Wa…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> W05001604 Mold East             W06000005 Flints… Sir y … W10000001 North Wa…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> W05001603 Mold: Broncoed        W06000005 Flints… Sir y … W10000001 North Wa…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> W05001602 Llanfynydd            W06000005 Flints… Sir y … W10000001 North Wa…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> W05001601 Llanasa and Trelawnyd W06000005 Flints… Sir y … W10000001 North Wa…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> W05001600 Leeswood              W06000005 Flints… Sir y … W10000001 North Wa…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> W05001599 Hope                  W06000005 Flints… Sir y … W10000001 North Wa…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> W05001598 Holywell West         W06000005 Flints… Sir y … W10000001 North Wa…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> W05001597 Holywell East         W06000005 Flints… Sir y … W10000001 North Wa…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    wd22cd    wd22nm          ua22cd    ua22nm        ua22nmw sener22cd sener22nm</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> W05001492 Aethwy          W06000001 Isle of Angl… Ynys M… W10000001 North Wa…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> W05001493 Bodowyr         W06000001 Isle of Angl… Ynys M… W10000001 North Wa…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> W05001494 Bro Aberffraw   W06000001 Isle of Angl… Ynys M… W10000001 North Wa…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> W05001495 Bro'r Llynnoedd W06000001 Isle of Angl… Ynys M… W10000001 North Wa…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> W05001496 Canolbarth Môn  W06000001 Isle of Angl… Ynys M… W10000001 North Wa…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> W05001497 Cefni           W06000001 Isle of Angl… Ynys M… W10000001 North Wa…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> W05001498 Crigyll         W06000001 Isle of Angl… Ynys M… W10000001 North Wa…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> W05001499 Lligwy          W06000001 Isle of Angl… Ynys M… W10000001 North Wa…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> W05001500 Parc a'r Mynydd W06000001 Isle of Angl… Ynys M… W10000001 North Wa…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> W05001501 Seiriol         W06000001 Isle of Angl… Ynys M… W10000001 North Wa…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 754 more rows</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
