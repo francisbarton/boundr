@@ -1,3 +1,19 @@
+# 0.3.6 (November 15, 2023)
+
+* Enables `bounds()` query to shortcut the lookup table step and just return all boundaries at that level (just call the function with a single `lookup` argument)
+* Improved README with examples
+* Added pkgdown site, thanks to Tom Smith (closes issue #2)
+* Improve some function param documentation
+* Update schema data (10 Nov 2023)
+
+
+# 0.3.5 (June 24, 2023)
+
+* Some work to improve the handling of MSOA queries
+* Create `points()` function to handle centroids queries more neatly
+* Update package internal data (mirror of ONS API schema)
+
+
 # 0.3.4 (as at May 3, 2023)
 
 * Deleted all tests as they were useless. Will start again from scratch.
