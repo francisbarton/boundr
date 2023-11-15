@@ -1,4 +1,4 @@
 url: https://francisbarton.github.io/boundr/
 template:
   bootstrap: 5
-
+  bootswatch: lux
