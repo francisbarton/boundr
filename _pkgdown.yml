@@ -1,1 +1,4 @@
-url: https://francisbarton.github.io/jogger/
+url: https://francisbarton.github.io/boundr/
+template:
+  bootstrap: 5
+
