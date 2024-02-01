@@ -6,7 +6,7 @@
 # See https://github.com/r-lib/actions/tree/master/examples#readme for
 # additional example workflows available for the R community.
 
-name: R
+name: R check
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        R: ['3.6.1', '4.2.1']
+        R: ['4.1.0', '4.2.1']
 
     steps:
       - uses: actions/checkout@v4
