@@ -29,11 +29,11 @@ library(ggplot2)
 ### Retrieve area boundaries and data from the ONS Open Geography Portal
 
 The main purpose of this package is to download area lookups and
-boundaries (in GeoJSON format) using the ONS Open Geography API, for all
+boundaries to R tables, using the ONS Open Geography API, for all
 areas at a specified level within a specified area.
 
-The main script will return a data frame with the sub-area geometry
-column, as an `sf` object ready to be visualised as a map.
+The main script `bounds()` will return a data frame with the sub-area
+geometry column, as an `sf` object ready to be visualised as a map.
 
 
 ## Installation
@@ -153,7 +153,8 @@ sb |>
 
 ### A ggplot2 example
 
-Here we specify a 'within_names' argument alongside the 'lookup' argument. There's no 'within' argument to be specified because there's nothing to lookup.
+Here we specify a 'within_names' argument alongside the 'lookup' argument.
+There's no 'within' argument to be specified because there's nothing to lookup.
 (There aren't any lookup tables for National Parks - just the boundaries).
 
 
@@ -174,7 +175,12 @@ library(mapirosa)
 # https://dieghernan.github.io/tidyterra/reference/geom_spatraster_rgb.html
 library(tidyterra)
 
-bb <- bounds("npark", within_names = "Bannau Brycheiniog", resolution = "BUC", crs = 27700)
+bb <- bounds(
+  "npark",
+  within_names = "Bannau Brycheiniog",
+  resolution = "BUC",
+  crs = 27700
+)
 
 bb_basemap <- mapirosa::build_basemap(
   bbox = sf::st_bbox(bb),
@@ -183,11 +189,12 @@ bb_basemap <- mapirosa::build_basemap(
   squarify = TRUE,
   crs = 27700)
 
- ggplot2::ggplot(bb) +
+ggplot2::ggplot(bb) +
   tidyterra::geom_spatraster_rgb(
     data = bb_basemap,
     maxcell = 1e7,
-    max_col_value = 1) +
+    max_col_value = 1
+  ) +
   ggplot2::theme_void() +
   ggplot2::geom_sf(colour = "coral", fill = "aquamarine", alpha = 0.3)
 ```
