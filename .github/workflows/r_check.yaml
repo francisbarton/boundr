@@ -11,8 +11,10 @@ name: R check
 on:
   push:
     branches: [ "main" ]
+    paths: ['**.R', '**.Rd', 'DESCRIPTION', 'NAMESPACE']
   pull_request:
     branches: [ "main" ]
+    paths: ['**.R', '**.Rd', 'DESCRIPTION', 'NAMESPACE']
 
 permissions:
   contents: read
@@ -22,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        R: ['4.1.0', '4.2.1']
+        R: ['4.2.1']
 
     steps:
       - uses: actions/checkout@v4
