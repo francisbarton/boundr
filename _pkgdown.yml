@@ -1,5 +1,5 @@
 url: https://francisbarton.github.io/boundr/
 template:
   bootstrap: 5
-  bootswatch: slate
-  theme: gruvbox-dark
+  bootswatch: simplex
+  theme: monokai
