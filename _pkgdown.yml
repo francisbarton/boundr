@@ -3,3 +3,14 @@ template:
   bootstrap: 5
   bootswatch: simplex
   theme: monokai
+reference:
+- title: Main functions
+  desc: >
+    Functions that users will mainly use to operate `boundr`
+  contents:
+  - bounds
+  - points
+  - create_lookup_table
+  - add_bounds_to_table
+
+- title: Other functions
