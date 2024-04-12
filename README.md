@@ -1,4 +1,3 @@
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # welcome to boundr
@@ -19,7 +18,7 @@ column, as an `sf` object ready to be visualised as a map.
 
 You can install this package from the `R` console by entering
 
-> `remotes::install_github("francisbarton/boundr")`
+> `remotes::install_git("https://codeberg.org/francisbarton/boundr")`
 
 if you have the `remotes` package installed.
 
