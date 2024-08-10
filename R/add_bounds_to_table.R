@@ -46,7 +46,7 @@ add_bounds_to_table <- function(
   area_codes <- tbl |>
     dplyr::pull({{ geo_code_field }}) |>
     batch_it(50) |> # turns out this limit is rather crucial!
-    purrr::map(\(x) paste_area_codes(var = geo_code_field, vec = x))
+    purrr::map(\(x) build_flat_query(var = geo_code_field, vec = x))
 
   ids <- area_codes |>
     purrr::map(\(x) return_result_ids(url = query_base_url, where = x)) |>
