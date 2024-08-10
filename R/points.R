@@ -60,7 +60,7 @@ points <- function(
   area_codes <- lookup_table |>
     dplyr::pull({{ geo_code_field }}) |>
     batch_it(50) |> # turns out this limit is rather crucial!
-    purrr::map(\(x) paste_area_codes(var = geo_code_field, vec = x))
+    purrr::map(\(x) build_flat_query(var = geo_code_field, vec = x))
 
   ids <- area_codes |>
     purrr::map(\(x) return_result_ids(url = query_base_url, where = x)) |>
@@ -82,27 +82,9 @@ points <- function(
     if (is.null(within_names) & is.null(within_codes)) {
       within_string <- "1=1"
     } else if (!is.null(within_names)) {
-      within_string <- lookup_name_field |>
-        paste0(
-          " IN (",
-          stringr::str_flatten(
-            paste0("'", within_names, "'"),
-            collapse = ","),
-          ")"
-        ) |>
-        head(length(within_names)) |>
-        stringr::str_flatten(collapse = " OR ")
+      within_string <- build_flat_query(lookup_name_field, within_names)
     } else if (!is.null(within_codes)) {
-      within_string <- lookup_code_field |>
-        paste0(
-          " IN (",
-          stringr::str_flatten(
-            paste0("'", within_codes, "'"),
-            collapse = ","),
-          ")"
-        ) |>
-        head(length(within_codes)) |>
-        stringr::str_flatten(collapse = " OR ")
+      within_string <- build_flat_query(lookup_code_field, within_codes)
     } else {
       within_string <- NULL
     }

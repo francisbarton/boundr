@@ -109,16 +109,7 @@ bounds <- function(
         head(length(within_names)) |>
         stringr::str_flatten(collapse = " OR ")
     } else if (!is.null(within_codes)) {
-      within_string <- lookup_code_field |>
-        paste0(
-          " IN (",
-          stringr::str_flatten(
-            paste0("'", within_codes, "'"),
-            collapse = ","),
-          ")"
-        ) |>
-        head(length(within_codes)) |>
-        stringr::str_flatten(collapse = " OR ")
+      within_string <- build_flat_query(lookup_code_field, within_codes)
     } else {
       within_string <- NULL
     }
@@ -204,15 +195,9 @@ pull_bounds_query_url <- function(field, lookup, resolution) {
 
 
 #' @noRd
-paste_area_codes <- function(var, vec) {
-  var |>
-    paste0(
-      " IN (",
-      stringr::str_flatten(
-        paste0("'", unique(vec), "'"),
-        collapse = ","),
-      ")"
-      )
+build_flat_query <- function(var, vec) {
+  y <- stringr::str_flatten(glue::glue("'{unique(vec)}'"), collapse = ",")
+  glue::glue("{var} IN ({y})")
 }
 
 
