@@ -139,8 +139,13 @@ return_field_code <- function(prefix, year, names_vec) {
 
   field_code <- paste0(prefix, year_out, "cd")
 
-  assert_that(field_code %in% names_vec,
-    msg = paste0("return_lookup_query_info: That combination of area levels and years has not returned a result. Perhaps try a different year?"))
+  assert_that(
+    field_code %in% names_vec,
+    msg = paste0(
+      "return_lookup_query_info: That combination of area levels ",
+      "and years has not returned a result. Perhaps try a different year?"
+    )
+  )
 
   field_code
 }

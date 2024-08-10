@@ -89,33 +89,46 @@ points <- function(
       within_string <- NULL
     }
 
-    assert_that(!is.null(within_string),
-                msg = "bounds: The within_names or within_codes arguments have not resulted in a valid query string.")
+    assert_that(
+      !is.null(within_string),
+      msg = paste0(
+        "bounds: The within_names or within_codes arguments have not ",
+        "resulted in a valid query string."
+      )
+    )
 
     ids <- query_base_url |>
       return_result_ids(where = within_string) |>
       unique()
   }
 
-  assert_that(is.vector(ids) & !is.list(ids) & length(ids),
-              msg = "points: return_result_ids() has not returned a vector of IDs.")
+  assert_that(
+    is.vector(ids) & !is.list(ids) & length(ids),
+    msg = "points: return_result_ids() has not returned a vector of IDs."
+  )
 
   points_data <- ids |>
     purrr::map(\(x) return_spatial_data(x, query_base_url, crs))
 
-  assert_that(is.list(points_data) & length(points_data),
-              msg = "points: return_bounds_data() has not returned a list of length > 0")
+  assert_that(
+    is.list(points_data) & length(points_data),
+    msg = "points: return_bounds_data() has not returned a list of length > 0"
+  )
 
   points_data_df <- points_data |>
     dplyr::bind_rows() |>
     dplyr::distinct() |>
     janitor::clean_names()
 
-  assert_that(inherits(points_data_df, "data.frame"),
-              msg = "points: bounds_data could not be row-bound into a data frame")
+  assert_that(
+    inherits(points_data_df, "data.frame"),
+    msg = "points: bounds_data could not be row-bound into a data frame"
+  )
 
-  assert_that(inherits(points_data_df, "sf"),
-              msg = "points: the data frame bounds_data_df does not have 'sf' class")
+  assert_that(
+    inherits(points_data_df, "sf"),
+    msg = "points: the data frame bounds_data_df does not have 'sf' class"
+  )
 
   if (!is.null(lookup_table)) {
     join_vars <- intersect(names(lookup_table), names(points_data_df))

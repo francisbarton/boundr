@@ -109,8 +109,13 @@ bounds <- function(
       within_string <- NULL
     }
 
-    assert_that(!is.null(within_string),
-                msg = "bounds: The within_names or within_codes arguments have not resulted in a valid query string.")
+    assert_that(
+      !is.null(within_string),
+      msg = paste0(
+        "bounds: The within_names or within_codes arguments have not ",
+        "resulted in a valid query string."
+      )
+    )
 
     ids <- query_base_url |>
       return_result_ids(where = within_string) |>
@@ -118,25 +123,33 @@ bounds <- function(
   }
 
 
-  assert_that(is.vector(ids) & !is.list(ids) & length(ids),
-      msg = "bounds: return_result_ids() has not returned a vector of IDs.")
+  assert_that(
+    is.vector(ids) & !is.list(ids) & length(ids),
+    msg = "bounds: return_result_ids() has not returned a vector of IDs."
+  )
 
   bounds_data <- ids |>
     purrr::map(\(x) return_spatial_data(x, query_base_url, crs))
 
-  assert_that(is.list(bounds_data) & length(bounds_data),
-    msg = "bounds: return_spatial_data() has not returned a list of length > 0")
+  assert_that(
+    is.list(bounds_data) & length(bounds_data),
+    msg = "bounds: return_spatial_data() has not returned a list of length > 0"
+  )
 
   bounds_data_df <- bounds_data |>
     dplyr::bind_rows() |>
     dplyr::distinct() |>
     janitor::clean_names()
 
-  assert_that(inherits(bounds_data_df, "data.frame"),
-    msg = "bounds: bounds_data could not be row-bound into a data frame")
+  assert_that(
+    inherits(bounds_data_df, "data.frame"),
+    msg = "bounds: bounds_data could not be row-bound into a data frame"
+  )
 
-  assert_that(inherits(bounds_data_df, "sf"),
-    msg = "bounds: the data frame bounds_data_df does not have 'sf' class")
+  assert_that(
+    inherits(bounds_data_df, "sf"),
+    msg = "bounds: the data frame bounds_data_df does not have 'sf' class"
+  )
 
 
   if (!is.null(lookup_table)) {
@@ -177,10 +190,13 @@ pull_bounds_query_url <- function(field, lookup, resolution) {
       "service_name", \(x) stringr::str_detect(x, toupper(resolution)))) |>
     janitor::remove_empty("cols")
 
-  assert_that(nrow(results) > 0,
-              msg = paste0(
-              "No boundary data was found for the parameters supplied. ",
-              "Try a different year or a different resolution?"))
+  assert_that(
+    nrow(results) > 0,
+    msg = paste0(
+      "No boundary data was found for the parameters supplied. ",
+      "Try a different year or a different resolution?"
+    )
+  )
 
   results |>
     # We assume any row of results will give the desired geo data. So take #1.
