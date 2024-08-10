@@ -53,8 +53,10 @@ bounds <- function(
       country_filter,
       option)
 
-    assert_that(nrow(lookup_table) > 0,
-      msg = "bounds: create_lookup_table() has returned a table with 0 rows")
+    assert_that(
+      nrow(lookup_table) > 0,
+      msg = "bounds: `create_lookup_table()` has returned a table with 0 rows"
+    )
 
     # This isn't watertight: if you have a table with eg "lad16cd" and "lad21cd"
     # columns, it will pull the leftmost column to use for the geometry query,
@@ -68,13 +70,15 @@ bounds <- function(
       dplyr::select(1) |> # select the leftmost matching column
       names()
 
-    assert_that(length(geo_code_field) == 1 & !is.na(geo_code_field),
-      msg = "bounds: suitable geo_code_field not found from lookup table")
+    assert_that(
+      length(geo_code_field) == 1 & !is.na(geo_code_field),
+      msg = "bounds: suitable geo_code_field not found from lookup table"
+    )
 
     area_codes <- lookup_table |>
       dplyr::pull({{ geo_code_field }}) |>
       batch_it(50) |> # turns out this limit is rather crucial!
-      purrr::map(\(x) paste_area_codes(var = geo_code_field, vec = x))
+      purrr::map(\(x) build_flat_query(var = geo_code_field, vec = x))
 
     query_base_url <- pull_bounds_query_url(geo_code_field, new_lookup, resolution)
 
@@ -98,16 +102,7 @@ bounds <- function(
     if (is.null(within_names) & is.null(within_codes)) {
       within_string <- "1=1"
     } else if (!is.null(within_names)) {
-      within_string <- lookup_name_field |>
-        paste0(
-          " IN (",
-          stringr::str_flatten(
-            paste0("'", within_names, "'"),
-            collapse = ","),
-          ")"
-        ) |>
-        head(length(within_names)) |>
-        stringr::str_flatten(collapse = " OR ")
+      within_string <- build_flat_query(lookup_name_field, within_names)
     } else if (!is.null(within_codes)) {
       within_string <- build_flat_query(lookup_code_field, within_codes)
     } else {
