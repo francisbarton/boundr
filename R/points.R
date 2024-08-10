@@ -78,7 +78,6 @@ points <- function(
     lookup_code_field <- points_query_info[["lookup_field"]]
     lookup_name_field <- sub("cd$", "nm", lookup_code_field)
 
-
     if (is.null(within_names) & is.null(within_codes)) {
       within_string <- "1=1"
     } else if (!is.null(within_names)) {
@@ -135,7 +134,7 @@ points <- function(
 
     if (return_width %in% c("tidy", "minimal")) {
       points_data_df <- points_data_df |>
-        dplyr::select(all_of(c(join_vars, "geometry")))
+        dplyr::select(all_of(join_vars), "geometry")
     }
 
     points_data_df <- points_data_df |>

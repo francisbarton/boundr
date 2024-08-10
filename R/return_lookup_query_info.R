@@ -37,11 +37,9 @@ return_lookup_query_info <- function(
   # and those with the right country filter
   schema_lookups <- opengeo_schema |>
     dplyr::filter(
-      !if_any("has_geometry")
-      ) |>
-    dplyr::filter(
+      !if_any("has_geometry") &
       if_any("service_name", \(x) stringr::str_detect(x, country_filter))
-      ) |>
+    ) |>
     janitor::remove_empty("cols")
 
   assert_that(nrow(schema_lookups) > 0,
@@ -56,7 +54,7 @@ return_lookup_query_info <- function(
 
   # reduce schema to only those matching lookup_field
   schema2 <- schema_lookups |>
-    dplyr::filter(if_any({{ lookup_field }}, \(x) !is.na(x))) |>
+    dplyr::filter(!if_any({{ lookup_field }}, is.na)) |>
     janitor::remove_empty("cols")
 
   schema2_names <- schema2 |>
@@ -71,7 +69,7 @@ return_lookup_query_info <- function(
 
 
   results_0 <- schema2 |>
-    dplyr::filter(if_any({{ within_field }}, \(x) !is.na(x))) |>
+    dplyr::filter(!if_any({{ within_field }}, is.na)) |>
     janitor::remove_empty("cols") |>
     dplyr::arrange(desc(across("data_edit_date")))
 
@@ -79,8 +77,9 @@ return_lookup_query_info <- function(
 
   # Prioritise results where lookup_field is at the left-hand end
   results <- results_0 |>
-    dplyr::filter(if_any(
-      "service_name", \(x) stringr::str_starts(x, lookup_stub))) |>
+    dplyr::filter(
+      if_any("service_name", \(x) stringr::str_starts(x, lookup_stub))
+    ) |>
     dplyr::bind_rows(results_0) |>
     dplyr::distinct()
 
@@ -106,7 +105,7 @@ return_lookup_query_info <- function(
 
   query_url <- results |>
     dplyr::slice(option) |>
-    dplyr::pull(all_of("service_url"))
+    dplyr::pull("service_url")
 
   # return query URL and lookup_field and within_field in a list,
   # to be passed on to create_lookup_table()
@@ -134,7 +133,7 @@ return_field_code <- function(prefix, year, names_vec) {
   } else {
     year_out <- year |>
       stringr::str_extract("\\d{1,2}$") |>
-      stringr::str_pad(width = 2, "left", pad = "0")
+      stringr::str_pad(width = 2, side = "left", pad = "0")
   }
 
   field_code <- paste0(prefix, year_out, "cd")

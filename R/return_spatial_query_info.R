@@ -45,7 +45,7 @@ return_spatial_query_info <- function(
   results <- schema_spatial |>
     dplyr::filter(if_any({{ lookup_field }}, \(x) !is.na(x))) |>
     janitor::remove_empty("cols") |>
-    dplyr::arrange(desc(across("data_edit_date"))) |>
+    dplyr::arrange(desc(pick("data_edit_date"))) |>
     dplyr::distinct()
 
   assert_that(nrow(results) > 0,
@@ -70,7 +70,7 @@ return_spatial_query_info <- function(
 
   query_url <- results |>
     dplyr::slice(option) |>
-    dplyr::pull(all_of("service_url"))
+    dplyr::pull("service_url")
 
   list(
     query_url = query_url,

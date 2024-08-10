@@ -51,7 +51,8 @@ bounds <- function(
       lookup_year,
       within_year,
       country_filter,
-      option)
+      option
+    )
 
     assert_that(
       nrow(lookup_table) > 0,
@@ -157,11 +158,11 @@ bounds <- function(
 
     if (return_width %in% c("tidy", "minimal")) {
       bounds_data_df <- bounds_data_df |>
-        dplyr::select(all_of(c(join_vars, "geometry")))
+        dplyr::select(all_of(join_vars), "geometry")
     }
 
     bounds_data_df <- bounds_data_df |>
-      dplyr::left_join(lookup_table, join_vars) |>
+      dplyr::left_join(lookup_table, by = {{ join_vars }}) |>
       dplyr::relocate(names(lookup_table))
   }
 
@@ -182,12 +183,12 @@ bounds <- function(
 #' @noRd
 pull_bounds_query_url <- function(field, lookup, resolution) {
   results <- opengeo_schema |>
-    dplyr::filter(if_any("has_geometry")) |>
-    dplyr::filter(if_any({{ field }}, \(x) !is.na(x))) |>
-    dplyr::filter(if_any(
-      "service_name", \(x) stringr::str_starts(x, toupper(lookup)))) |>
-    dplyr::filter(if_any(
-      "service_name", \(x) stringr::str_detect(x, toupper(resolution)))) |>
+    dplyr::filter(
+      if_any("has_geometry") &
+      if_any({{ field }}, \(x) !is.na(x)) &
+      if_any("service_name", \(x) stringr::str_starts(x, toupper(lookup))) &
+      if_any("service_name", \(x) stringr::str_detect(x, toupper(resolution)))
+    ) |>
     janitor::remove_empty("cols")
 
   assert_that(

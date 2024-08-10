@@ -66,7 +66,7 @@ add_bounds_to_table <- function(
     dplyr::bind_rows() |>
     dplyr::distinct() |>
     janitor::clean_names() |>
-    dplyr::select(all_of(c(geo_code_field, "geometry")))
+    dplyr::select(c({{ geo_code_field }}, "geometry"))
 
   assert_that(inherits(bounds_data_df, "data.frame"),
     msg = "bounds: bounds_data could not be row-bound into a data frame")
@@ -76,7 +76,7 @@ add_bounds_to_table <- function(
 
   bounds_data_df |>
     dplyr::left_join(tbl, {{ geo_code_field }}) |>
-    dplyr::relocate(names(tbl)) |>
+    dplyr::relocate(all_of(names(tbl))) |>
     dplyr::distinct()
   }
 
