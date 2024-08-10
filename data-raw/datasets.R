@@ -38,12 +38,13 @@ build_schema <- function() {
                                   .default = FALSE),
       field_names = purrr::pluck(dat, "fields", .default = NULL) |>
         purrr::map_chr("name")
-    ) |>
+      ) |>
       tidyr::pivot_wider(
         names_from = field_names,
-        values_from = field_names) |>
+        values_from = field_names
+      ) |>
       janitor::clean_names() |>
-      dplyr::select(service_name:has_geometry, ends_with("cd"))
+      dplyr::select("service_name":"has_geometry", ends_with("cd"))
   }
 
   # Data pipeline
@@ -57,11 +58,11 @@ build_schema <- function() {
     purrr::pluck("services") |>
     purrr::map_df(unlist) |>
     dplyr::rename(service_url = url) |>
-    dplyr::filter(type == "FeatureServer") |>
-    dplyr::select(!type)
+    dplyr::filter(if_any("type", \(x) x == "FeatureServer")) |>
+    dplyr::select(!"type")
 
   data_from_api <- api_services_data |>
-    dplyr::pull(all_of("service_url")) |>
+    dplyr::pull("service_url") |>
     purrr::map(api_data_return, .progress = "Retrieving services data")
 
   # Deal with any URLs that don't return data
@@ -79,13 +80,14 @@ build_schema <- function() {
   data_from_api |>
     purrr::compact() |>
     purrr::map(httr2::resp_body_json) |>
-    purrr::map2(service_urls, pluck_api_data,
-      .progress = "Retrieving schema data") |>
+    purrr::map2(
+      service_urls, pluck_api_data, .progress = "Retrieving schema data"
+    ) |>
     purrr::list_rbind() |>
     dplyr::filter(!if_all(ends_with("cd"), is.na)) |>
     janitor::remove_empty("cols") |>
     dplyr::select("service_name":"has_geometry", ends_with("cd")) |>
-    dplyr::arrange(desc(data_edit_date))
+    dplyr::arrange(desc(pick("data_edit_date")))
 }
 
 opengeo_schema <- build_schema()
