@@ -144,25 +144,28 @@ create_lookup_table <- function(
     msoacd_col <- sub("nm$", "cd", msoanm_col)
 
     out <- out |>
-      dplyr::mutate({{ msoanm_col }} := c_across(all_of(lookup_name_field))) |>
+      dplyr::rename({{ msoanm_col }} := {{ lookup_name_field }}) |>
       dplyr::mutate(across({{ msoanm_col }}, \(x) sub("[A-Z]{1}$", "", x))) |>
       dplyr::select(!starts_with("lsoa")) |>
       dplyr::distinct()
   }
 
   if (any(grepl("^msoa", names(out)))) {
-    hocl_tbl <- NULL
-    if (any(grepl("^msoa11", names(out)))) hocl_tbl <- hocl_msoa11_names
-    if (any(grepl("^msoa21", names(out)))) hocl_tbl <- hocl_msoa21_names
+    if (any(grepl("^msoa21", names(out)))) {
+      hocl_tbl <- hocl_msoa21_names
+    } else if (any(grepl("^msoa11", names(out)))) {
+      hocl_tbl <- hocl_msoa11_names
+    } else {
+      hocl_tbl <- NULL
+    }
 
-    msoacd_col <- grep("^msoa", names(out), value = TRUE)[[1]]
+    msoanm_col <- grep("^msoa.*nm$", names(out), value = TRUE)[[1]]
 
     out <- out |>
-      dplyr::left_join(hocl_tbl) |>
-      dplyr::relocate(starts_with("msoa"), .after = all_of({{ msoacd_col }}))
+      dplyr::left_join(hocl_tbl, by = {{ msoanm_col }}) |>
+      dplyr::relocate(matches("^msoa.*cd"), .before = {{ msoanm_col }}) |>
+      dplyr::relocate(matches("^msoa.*hclnm"), .after = {{ msoanm_col }})
   }
-
-
 
 
   any_welsh <- out |>
