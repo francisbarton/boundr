@@ -1,7 +1,7 @@
-url: https://francisbarton.github.io/boundr/
+url: https://francisbarton.codeberg.page/boundr/docs
 template:
   bootstrap: 5
-  bootswatch: simplex
+  bootswatch: darkly
   theme: monokai
 reference:
 - title: Main functions
