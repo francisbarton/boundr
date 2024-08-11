@@ -12,7 +12,7 @@ opengeo_api_req <- function(
   url,
   append = "0/query",
   format = "pjson",
-  user_agent = "boundr R package (github.com/francisbarton/boundr)") {
+  user_agent = "boundr R package (https://codeberg.org/francisbarton/boundr)") {
   url |>
     httr2::request() |>
     httr2::req_user_agent(user_agent) |>
