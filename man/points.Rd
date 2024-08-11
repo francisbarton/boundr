@@ -62,3 +62,6 @@ an \code{sfc} tibble (data frame with geometry)
 \description{
 Return centroid points at a specified level and area from the ONS OG API
 }
+\examples{
+points("msoa", "utla", "Swindon")
+}
