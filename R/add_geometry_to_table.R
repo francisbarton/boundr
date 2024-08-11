@@ -36,7 +36,7 @@ add_geometry_to_table <- function(
   lookup <- lookup %||% stringr::str_extract(geo_code_field, ".*(?=\\d{2}cd$)")
 
   assert_that(
-    length(geo_code_field) == 1 & !is.na(geo_code_field),
+    length(geo_code_field) == 1 && !is.na(geo_code_field),
     msg = glue("{fun}: suitable geo_code_field not found from lookup table")
   )
 
@@ -44,8 +44,8 @@ add_geometry_to_table <- function(
   query_base_url <- pull_query_url(geo_code_field, lookup, final_filter)
 
   if (is.null(query_base_url)) {
-    gtype <- ifelse(points, "centroid", "boundary")
-    gcf <- geo_code_field
+    gtype <- ifelse(points, "centroid", "boundary") # nolint
+    gcf <- geo_code_field # nolint
     cli::cli_abort(c(
       "Unfortunately no {gtype} data was found to match the code {.var {gcf}} ",
       "in the supplied table."
@@ -62,7 +62,7 @@ add_geometry_to_table <- function(
     purrr::list_c()
 
   assert_that(
-    is.vector(ids) & !is.list(ids) & length(ids),
+    is.vector(ids) && !is.list(ids) && length(ids),
     msg = glue("{fun}: return_result_ids() has not returned a vector of IDs.")
   )
 
@@ -74,7 +74,7 @@ add_geometry_to_table <- function(
     )
 
   assert_that(
-    is.list(spatial_data) & length(spatial_data) > 0,
+    is.list(spatial_data) && length(spatial_data) > 0,
     msg = glue("{fun}: return_spatial_data() hasn't returned a list of data")
   )
 

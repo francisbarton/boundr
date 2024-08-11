@@ -25,7 +25,6 @@
 #' @param chatty Boolean. Whether to print feedback on the 'decisions' the
 #'  function has taken about which table to query. Default `TRUE` when the
 #'  function is run in an interactive session, `FALSE` otherwise.
-#' 
 #' @keywords internal
 #'
 #' @returns A list of length 3: the query URL, the lower level (`lookup`) field

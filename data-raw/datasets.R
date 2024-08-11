@@ -69,11 +69,11 @@ build_schema <- function() {
   fails <- which(purrr::map_lgl(data_from_api, is.null))
 
   if (length(fails)) {
-    info <- stringr::str_c("* ", head(api_services_data$name[fails]),
-      collapse = "\n")
+    info <- api_services_data[["name"]][fails] |> # nolint
+      cli::cli_vec(c(`vec-trunc` = 3))
     cli_alert_info(
       "{length(fails)} services did not successfully return data this time. ",
-      "Examples:\n{info}"
+      "Examples: {info}"
     )
   }
 
