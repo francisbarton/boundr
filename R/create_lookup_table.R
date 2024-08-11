@@ -76,9 +76,7 @@ create_lookup_table <- function(
     )
   )
 
-  if (lookup == "oa") {
-    fields <- stringr::str_subset(fields, "^oa.+nm$", negate = TRUE)
-  }
+  if (lookup == "oa") fields <- purrr::keep(fields, \(x) !grepl("^oa.+nm$", x))
 
 
   if (is.null(within_names) && is.null(within_codes)) {
@@ -112,8 +110,10 @@ create_lookup_table <- function(
   # not to do with maxRecordCount but just query URL too long??)
   out <- ids |>
     batch_it(100) |>
-    purrr::map(\(x) return_table_data(x, query_base_url, fields),
-      .progress = {if (chatty) "Lookup table data"}) |>
+    purrr::map(
+      \(x) return_table_data(x, query_base_url, fields),
+      .progress = ifelse(chatty, "Looking up table data", FALSE)
+    ) |>
     dplyr::bind_rows() |>
     dplyr::select(!any_of(c("object_id", "global_id", "chgind"))) |>
     dplyr::distinct()
