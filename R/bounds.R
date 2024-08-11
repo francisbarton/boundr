@@ -86,32 +86,6 @@ points <- function(
 # Helper functions --------------------------------
 
 #' @noRd
-pull_bounds_query_url <- function(field, lookup, resolution) {
-  results <- opengeo_schema |>
-    dplyr::filter(
-      if_any("has_geometry") &
-      if_any({{ field }}, \(x) !is.na(x)) &
-      if_any("service_name", \(x) stringr::str_starts(x, toupper(lookup))) &
-      if_any("service_name", \(x) stringr::str_detect(x, toupper(resolution)))
-    ) |>
-    janitor::remove_empty("cols")
-
-  assert_that(
-    nrow(results) > 0,
-    msg = paste0(
-      "No boundary data was found for the parameters supplied. ",
-      "Try a different year or a different resolution?"
-    )
-  )
-
-  results |>
-    # We assume any row of results will give the desired geo data. So take #1.
-    dplyr::slice(1) |>
-    dplyr::pull("service_url")
-}
-
-
-#' @noRd
 build_flat_query <- function(var, vec) {
   y <- stringr::str_flatten(glue::glue("'{unique(vec)}'"), collapse = ",")
   glue::glue("{var} IN ({y})")
