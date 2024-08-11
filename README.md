@@ -1,4 +1,3 @@
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # welcome to boundr
@@ -11,7 +10,7 @@
 <img
     src="boundr_hex_logo.png"
     height="300px"
-    width="233px"
+    width="259px"
     alt="The boundr package hexagonal logo - the word boundr superimposed on a cropped map of the Isles of Scilly, with the island parishes differently coloured, on a sea blue background."
   />
 
