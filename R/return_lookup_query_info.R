@@ -57,8 +57,10 @@ return_lookup_query_info <- function(
     ) |>
     janitor::remove_empty("cols")
 
-  assert_that(nrow(schema_lookups) > 0,
-    msg = "return_lookup_query_info: no lookup tables found.")
+  assert_that(
+    nrow(schema_lookups) > 0,
+    msg = "return_lookup_query_info: no lookup tables found."
+  )
 
   # make list of codes used in lookups
   schema_names <- schema_lookups |>
@@ -129,12 +131,13 @@ return_lookup_query_info <- function(
     dplyr::slice(option) |>
     dplyr::pull("service_url")
 
-  # return query URL and lookup_field and within_field in a list,
-  # to be passed on to create_lookup_table()
+  # Return query URL and lookup_field and within_field in a list,
+  # to be passed on to `create_lookup_table()`.
   list(
     query_url = query_url,
     lookup_field = lookup_field,
-    within_field = within_field)
+    within_field = within_field
+  )
 }
 
 
@@ -170,6 +173,3 @@ return_field_code <- function(prefix, year, names_vec) {
 
   field_code
 }
-
-
-
