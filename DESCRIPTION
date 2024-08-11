@@ -37,6 +37,6 @@ Suggests:
     testthat (>= 3.0.0),
     tmap,
     usethis (>= 1.5.0)
-URL: https://codeberg.org/francisbarton/boundr, https://francisbarton.github.io/boundr/
+URL: https://codeberg.org/francisbarton/boundr, https://francisbarton.github.io/boundr/, https://francisbarton.codeberg.page/boundr/docs
 BugReports: https://codeberg.org/francisbarton/boundr/issues
 Config/testthat/edition: 3
