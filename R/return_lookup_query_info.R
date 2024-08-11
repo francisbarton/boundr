@@ -35,6 +35,7 @@ return_lookup_query_info <- function(
     within_year,
     country_filter,
     option,
+    standalone,
     chatty
   ) {
 

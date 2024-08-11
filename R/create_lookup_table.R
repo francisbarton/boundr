@@ -61,7 +61,9 @@ create_lookup_table <- function(
     within_year,
     country_filter,
     option,
-    chatty)
+    standalone,
+    chatty
+  )
 
   query_base_url <- lookup_query_info[["query_url"]]
 
