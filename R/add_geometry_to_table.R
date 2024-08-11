@@ -29,6 +29,8 @@ add_geometry_to_table <- function(
 ) {
 
   fun <- "add_geometry_to_table"
+  resolution <- match.arg(resolution)
+  return_width <- match.arg(return_width)
   l <- lookup %||% ".*"
   # select the leftmost matching column name
   fallback_field <- grep(glue("^{l}.*cd$"), names(tbl), value = TRUE)[[1]]

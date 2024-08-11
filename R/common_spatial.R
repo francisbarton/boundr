@@ -16,6 +16,7 @@ common_spatial <- function(
   new_lookup <- process_aliases(lookup)
   country_filter <- match.arg(country_filter)
   resolution <- match.arg(resolution)
+  return_width <- match.arg(return_width)
 
   lookup_table <- create_lookup_table(
     new_lookup,
