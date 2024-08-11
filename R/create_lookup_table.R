@@ -92,31 +92,12 @@ create_lookup_table <- function(
   }
 
 
-
-  if (is.null(within_names) & is.null(within_codes)) {
+  if (is.null(within_names) && is.null(within_codes)) {
     within_string <- "1=1"
   } else if (!is.null(within_names)) {
-    within_string <- within_name_field |>
-        paste0(
-          " IN (",
-          stringr::str_flatten(
-            paste0("'", within_names, "'"),
-          collapse = ","),
-          ")"
-        ) |>
-        head(length(within_names)) |>
-      stringr::str_flatten(collapse = " OR ")
+    within_string <- build_flat_query(within_name_field, within_names)
   } else if (!is.null(within_codes)) {
-    within_string <- within_code_field |>
-        paste0(
-          " IN (",
-          stringr::str_flatten(
-            paste0("'", within_codes, "'"),
-            collapse = ","),
-          ")"
-        ) |>
-        head(length(within_codes)) |>
-      stringr::str_flatten(collapse = " OR ")
+    within_string <- build_flat_query(within_code_field, within_codes)
   } else {
     within_string <- NULL
   }
