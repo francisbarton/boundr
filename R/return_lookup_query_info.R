@@ -64,7 +64,7 @@ return_lookup_query_info <- function(
   within_field <- return_field_code(within, within_year, schema2_names)
 
   if (chatty) {
-    ui_info("Using codes {lookup_field}, {within_field}")
+    cli_alert_info("Using codes {lookup_field}, {within_field}")
   }
 
 
@@ -91,14 +91,14 @@ return_lookup_query_info <- function(
     )
   )
 
-  if (nrow(results) > 1 & is.null(option) & chatty) {
-    ui_info(
+  if (nrow(results) > 1 && is.null(option) && chatty) {
+    cli_alert_info(
       stringr::str_c(
         "More than 1 result found:",
         stringr::str_flatten(
           paste0(
             "\t(",
-            seq(nrow(results)),
+            seq_len(nrow(results)),
             ") ",
             results[["service_name"]]),
           collapse = "\n"),
