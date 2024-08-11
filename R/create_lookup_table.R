@@ -36,12 +36,9 @@ create_lookup_table <- function(
 
   # https://developers.arcgis.com/rest/services-reference/
   # enterprise/query-feature-service-layer-.htm
-
   new_lookup <- process_aliases(lookup)
-  if (lookup == "msoa") new_lookup <- "lsoa"
-  if (is.null(within)) within <- lookup
-  new_within <- process_aliases(within)
-  # if (within == "msoa") new_within <- "lsoa"
+  # if (lookup == "msoa") new_lookup <- "lsoa"
+  new_within <- process_aliases(within, new_lookup)
   return_width <- match.arg(return_width)
   country_filter <- match.arg(country_filter)
   if (is.null(option)) option <- 1
