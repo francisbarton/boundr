@@ -30,7 +30,7 @@ Imports:
     tidyselect (>= 1.0.0),
     utils
 Depends: 
-    R (>= 4.1.0)
+    R (>= 4.4.0)
 Suggests:
     ggplot2,
     roxygen2,

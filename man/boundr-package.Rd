@@ -13,6 +13,7 @@ Useful links:
 \itemize{
   \item \url{https://codeberg.org/francisbarton/boundr}
   \item \url{https://francisbarton.github.io/boundr/}
+  \item \url{https://francisbarton.codeberg.page/boundr/docs}
   \item Report bugs at \url{https://codeberg.org/francisbarton/boundr/issues}
 }
 
