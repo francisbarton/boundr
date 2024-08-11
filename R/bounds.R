@@ -14,10 +14,9 @@
 #' bounds("msoa", "lad", "Swansea")
 #' bounds("msoa", "lad", "Shepway", lookup_year = 2011, within_year = 2015)
 #' bounds("rgn", country_filter = "EN", resolution = "BUC")
-#' bounds("parish", "utla", "Isles of Scilly")
+#' bounds("parish", "lad", "Isles of Scilly")
 #' bounds("spr")
 #' bounds("npark", within_names = "Bannau Brycheiniog")
-#'
 #'
 #' @returns an `sfc` tibble (data frame with geometry)
 #' @export
