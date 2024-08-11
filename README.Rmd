@@ -119,7 +119,7 @@ create_lookup_table("wd", "sener", country_filter = "WA", return_width = "full")
 ```{r example-6}
 #| message: false
 
-bounds("parish", "utla", "Isles of Scilly") |>
+bounds("parish", "lad", "Isles of Scilly") |>
   tmap::qtm(fill = "par22nm", palette = "Accent")
 ```
 

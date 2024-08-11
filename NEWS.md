@@ -1,3 +1,25 @@
+# 0.3.7 (August 11, 2024)
+
+* Improves the behaviour of `bounds()` and `points()` by making it less likely
+  that a lookup table will be created that does not match a geo data field
+* Internally, shared code within `bounds()` and `points()` has been refactored
+  out into a common function (not user-facing), making `bounds()` and `points()`
+  more like wrapper functions.
+* Several helper functions have been tidied up and some unnecessary duplication
+  of functionality across helpers for lookup table creation and spatial data
+  retrieval has been removed, making fewer and leaner helper functions and
+  removing a chunk of code from the package.
+* `{cli}` has been used to produce user-facing error messages, in place of
+  `{usethis}`.
+* The function that allows the user to supply their own lookup table and have
+  `{boundr}` automatically add geo data to it to create an `sfc` object has now
+  been improved and should be functional as intended.
+* Linting has been added to the development process through the adoption of
+  `{lintr}`.
+* The convoluted process for handling MSOA-based lookups has now been obviated
+  entirely - the ONS site now seems to support MSOA-based lookups much better.
+* Internal copy of the schema data updated.
+
 # 0.3.6 (November 15, 2023)
 
 * Enables `bounds()` query to shortcut the lookup table step and just return all boundaries at that level (just call the function with a single `lookup` argument)
