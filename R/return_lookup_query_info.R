@@ -83,8 +83,13 @@ return_lookup_query_info <- function(
     dplyr::bind_rows(results_0) |>
     dplyr::distinct()
 
-  assert_that(nrow(results) > 0,
-    msg = "return_lookup_query_info: No result was found for the parameters supplied. Try a different year or a different country filter?")
+  assert_that(
+    nrow(results) > 0,
+    msg = paste0(
+      "return_lookup_query_info: No result was found for the parameters ",
+      "supplied. Try a different year or a different country filter?"
+    )
+  )
 
   if (nrow(results) > 1 & is.null(option) & chatty) {
     ui_info(

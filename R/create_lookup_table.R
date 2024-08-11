@@ -70,16 +70,20 @@ create_lookup_table <- function(
   within_code_field <- lookup_query_info[["within_field"]]
   within_name_field <- sub("cd$", "nm", within_code_field)
 
-  fields <- switch(return_width,
-                   "tidy" = c(
-                     lookup_code_field,
-                     lookup_name_field,
-                     within_code_field,
-                     within_name_field),
-                   "full" = "*",
-                   "minimal" = c(
-                     lookup_code_field,
-                     lookup_name_field))
+  fields <- switch(
+    return_width,
+    "tidy" = c(
+      lookup_code_field,
+      lookup_name_field,
+      within_code_field,
+      within_name_field
+    ),
+    "full" = "*",
+    "minimal" = c(
+      lookup_code_field,
+      lookup_name_field
+    )
+  )
 
   if (lookup == "oa") {
     fields <- stringr::str_subset(fields, "^oa.+nm$", negate = TRUE)
@@ -115,15 +119,20 @@ create_lookup_table <- function(
     within_string <- NULL
   }
 
-  assert_that(!is.null(within_string),
-              msg = "create_lookup_table: The within_names or within_codes arguments have not resulted in a valid query string.")
+  assert_that(
+    !is.null(within_string),
+    msg = paste0(
+      "create_lookup_table: The within_names or within_codes arguments ",
+      "have not resulted in a valid query string."
+    )
+  )
 
-  ids <- query_base_url |>
-    return_result_ids(where = within_string) |>
-    unique()
+  ids <- unique(return_result_ids(query_base_url, where = within_string))
 
-  assert_that(length(ids) > 0, msg = "create_lookup_table: The initial query has not returned any results IDs.")
-
+  assert_that(
+    is.vector(ids) & !is.list(ids) & length(ids),
+    msg = "create_lookup_table: The query has not returned any result IDs."
+  )
 
 
   # Actually retrieve the data (in batches if necessary).
