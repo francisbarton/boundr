@@ -87,8 +87,8 @@ points <- function(
 
 #' @noRd
 build_flat_query <- function(var, vec) {
-  y <- stringr::str_flatten(glue::glue("'{unique(vec)}'"), collapse = ",")
-  glue::glue("{var} IN ({y})")
+  y <- stringr::str_flatten(glue("'{unique(vec)}'"), collapse = ",")
+  glue("{var} IN ({y})")
 }
 
 
