@@ -13,9 +13,9 @@ bounds(
   lookup_year = NULL,
   within_year = NULL,
   country_filter = c("UK|GB|EW|EN|SC|WA", "UK", "GB", "EW", "EN", "SC", "WA"),
-  resolution = c("BGC", "BSC", "BUC", "BFC", "BFE"),
   option = NULL,
-  crs = 4326
+  crs = 4326,
+  resolution = c("BGC", "BSC", "BUC", "BFC", "BFE")
 )
 }
 \arguments{
@@ -49,14 +49,6 @@ available just within certain countries. Specify a country code if you want
 your results restricted to a certain country only - eg "WA" for Wales, "EW"
 for England and Wales. By default returns all options.}
 
-\item{resolution}{character. See argument options for available options. How
-generalised should the boundary be, and whether coastal boundaries should
-adhere to the coastline or to the full territorial extent. BGC by default
-(G = Generalised (20m), C = limited to the coastline.) F indicates Full
-resolution; S indicates Super-generalised (200m); U indicates Ultra-
-generalised (500m) boundary resolution. Use E instead of C for full
-extent boundaries (e.g. BFE). Not all combinations are available.}
-
 \item{option}{numeric. Defaults to 1, which means that the URL will just be
 the first one from the list of possible services resulting from the level
 and year filters above. If this does not give you what you want, you can
@@ -64,6 +56,14 @@ run the script again with a different option from the list.}
 
 \item{crs}{the Coordinate Reference System (CRS) code to use. 4326 by
 default.}
+
+\item{resolution}{character. See argument options for available options. How
+generalised should the boundary be, and whether coastal boundaries should
+adhere to the coastline or to the full territorial extent. BGC by default
+(G = Generalised (20m), C = limited to the coastline.) F indicates Full
+resolution; S indicates Super-generalised (200m); U indicates Ultra-
+generalised (500m) boundary resolution. Use E instead of C for full
+extent boundaries (e.g. BFE). Not all combinations are available.}
 }
 \value{
 an \code{sfc} tibble (data frame with geometry)
@@ -75,9 +75,8 @@ Return boundary data at a specified level and area from the ONS OG API
 bounds("msoa", "lad", "Swansea")
 bounds("msoa", "lad", "Shepway", lookup_year = 2011, within_year = 2015)
 bounds("rgn", country_filter = "EN", resolution = "BUC")
-bounds("parish", "utla", "Isles of Scilly")
+bounds("parish", "lad", "Isles of Scilly")
 bounds("spr")
 bounds("npark", within_names = "Bannau Brycheiniog")
-
 
 }

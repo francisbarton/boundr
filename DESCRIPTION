@@ -1,16 +1,21 @@
 Package: boundr
-Version: 0.3.6
+Version: 0.3.7
 Title: Retrieve Area Boundaries and Data from the ONS Open Geography Portal
 Description: The main purpose of this package is to download area lookups and boundaries (in GeoJSON format) using the ONS Open Geography API, for all areas at a specified level within a specified area.
 Authors@R: 
-    utils::person("Francis", "Barton", NULL, "fbarton@alwaysdata.net",
-    role = c("aut", "cre"), comment = c(ORCID = "0000-0002-5650-1176"))
+    utils::person(
+        "Francis", "Barton",
+        email = "fbarton@alwaysdata.net",
+        role = c("aut", "cre"),
+        comment = c(ORCID = "0000-0002-5650-1176")
+    )
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports: 
     assertthat,
+    cli,
     dplyr (>= 1.1.0),
     glue,
     httr2,
@@ -23,7 +28,6 @@ Imports:
     tibble,
     tidyr (>= 1.0.0),
     tidyselect (>= 1.0.0),
-    usethis (>= 1.5.0),
     utils
 Depends: 
     R (>= 4.1.0)
@@ -31,7 +35,8 @@ Suggests:
     ggplot2,
     roxygen2,
     testthat (>= 3.0.0),
-    tmap
+    tmap,
+    usethis (>= 1.5.0)
 URL: https://github.com/francisbarton/boundr, https://francisbarton.github.io/boundr/
 BugReports: https://github.com/francisbarton/boundr/issues
 Config/testthat/edition: 3

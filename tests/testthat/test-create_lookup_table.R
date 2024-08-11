@@ -9,6 +9,7 @@
     within_year <- NULL
     country_filter <- "EW"
     option <- 1
+    standalone <- TRUE
     chatty <- FALSE
 
     new_lookup <- process_aliases(lookup)
@@ -23,11 +24,16 @@
       within_year,
       country_filter,
       option,
-      chatty)
+      standalone,
+      chatty
+    )
 
     expect_equal(
       lookup_query_info[["query_url"]],
-      "https://services1.arcgis.com/ESMARspQHYMw9BZ9/ArcGIS/rest/services/OA_LSOA_MSOA_EW_DEC_2021_LU_v3/FeatureServer"
+      paste0(
+        "https://services1.arcgis.com/ESMARspQHYMw9BZ9/ArcGIS/rest/services/",
+        "OA_LSOA_MSOA_EW_DEC_2021_LU_v3/FeatureServer"
+      )
     )
 
     expect_equal(
@@ -106,9 +112,16 @@
     expect_identical(hocl_tbl, hocl_msoa21_names)
 
     out <- table_data |>
-      dplyr::left_join(hocl_tbl, c(within_code_field, within_name_field))
+      dplyr::left_join(
+        hocl_tbl,
+        by = c({{ within_code_field }}, {{ within_name_field }})
+      )
 
-    expect_named(out, c("lsoa21cd", "lsoa21nm", "msoa21cd", "msoa21nm", "msoa21nmw", "msoa21hclnm", "msoa21hclnmw"))
+    out_nms <- c(
+      c("lsoa21cd", "lsoa21nm", "msoa21cd", "msoa21nm", "msoa21nmw"),
+      c("msoa21hclnm", "msoa21hclnmw")
+    )
+    expect_named(out, out_nms)
 
     any_welsh <- out |>
       dplyr::select(ends_with("cd")) |>
@@ -137,6 +150,7 @@
     within_year <- NULL
     country_filter <- "EW"
     option <- 1
+    standalone <- TRUE
     chatty <- FALSE
 
     new_lookup <- process_aliases(lookup)
@@ -151,11 +165,16 @@
       within_year,
       country_filter,
       option,
-      chatty)
+      standalone,
+      chatty
+    )
 
     expect_equal(
       lookup_query_info[["query_url"]],
-      "https://services1.arcgis.com/ESMARspQHYMw9BZ9/ArcGIS/rest/services/OA_LSOA_MSOA_EW_DEC_2021_LU_v3/FeatureServer"
+      paste0(
+        "https://services1.arcgis.com/ESMARspQHYMw9BZ9/ArcGIS/rest/",
+        "services/OA_LSOA_MSOA_EW_DEC_2021_LU_v3/FeatureServer"
+      )
     )
 
     expect_equal(
@@ -181,11 +200,13 @@
         lookup_code_field,
         lookup_name_field,
         within_code_field,
-        within_name_field),
+        within_name_field
+      ),
       "full" = "*",
       "minimal" = c(
         lookup_code_field,
-        lookup_name_field)
+        lookup_name_field
+      )
     )
 
     fields <- stringr::str_subset(fields, "^oa.+nm$", negate = TRUE)
@@ -238,7 +259,11 @@
     out <- table_data |>
       dplyr::left_join(hocl_tbl, c(within_code_field, within_name_field))
 
-    expect_named(out, c("oa21cd", "msoa21cd", "msoa21nm", "msoa21nmw", "msoa21hclnm", "msoa21hclnmw"))
+    out_nms <- c(
+      c("oa21cd", "msoa21cd", "msoa21nm", "msoa21nmw", "msoa21hclnm"),
+      "msoa21hclnmw"
+    )
+    expect_named(out, out_nms)
 
     any_welsh <- out |>
       dplyr::select(ends_with("cd")) |>
@@ -252,4 +277,53 @@
 
     expect_length(out, 4)
     expect_equal(nrow(out), 36)
+  })
+
+
+
+"just a basic run-through" |>
+  test_that({
+    lookup <- "msoa"
+    within <- "lad"
+    within_names <- "Swansea"
+    within_codes <- NULL
+    return_width <- "tidy"
+    lookup_year <- NULL
+    within_year <- 2021
+    country_filter <- "EW"
+    option <- 1
+    chatty <- FALSE
+
+    new_lookup <- process_aliases(lookup)
+    expect_equal(new_lookup, "msoa")
+    new_within <- process_aliases(within, new_lookup)
+    expect_equal(new_within, "lad")
+
+    schema_lookups <- opengeo_schema |>
+      dplyr::filter(
+        !if_any("has_geometry") &
+        if_any("service_name", \(x) stringr::str_detect(x, country_filter))
+      ) |>
+      janitor::remove_empty("cols")
+
+    schema_names <- schema_lookups |>
+      dplyr::select(ends_with("cd")) |>
+      names()
+
+    expect_equal(nrow(schema_lookups), 234)
+
+    schema_names <- schema_lookups |>
+      dplyr::select(ends_with("cd")) |>
+      names()
+
+    expect_length(schema_names, 162)
+
+    lookup_field <- return_field_code(new_lookup, lookup_year, schema_names)
+    expect_equal(lookup_field, "msoa21cd")
+
+    schema_names |>
+      stringr::str_subset(glue("(?<=^{new_lookup})\\d+")) |>
+      stringr::str_extract(glue("(?<=^{new_lookup})\\d+")) |>
+      as.numeric() |>
+      max(na.rm = TRUE)
   })

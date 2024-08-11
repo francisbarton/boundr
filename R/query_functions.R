@@ -12,7 +12,7 @@ opengeo_api_req <- function(
   url,
   append = "0/query",
   format = "pjson",
-  user_agent = "boundr R package (github.com/francisbarton/boundr)") {
+  user_agent = "boundr R package (https://codeberg.org/francisbarton/boundr)") {
   url |>
     httr2::request() |>
     httr2::req_user_agent(user_agent) |>
@@ -88,16 +88,22 @@ spatial_data_req <- function(ids, url, crs = 4326, ...) {
 #'  Can be any integer from 0 to 3, or `NULL`. See `?req_perform` for more
 #'  detail.
 query_opengeo_api <- function(req, max_tries = 3, verbosity = 0) {
-  assert_that(verbosity %in% 0:3 | is.null(verbosity),
-      msg = paste0(
-        "query_opengeo_api: ",
-        "invalid value for `verbosity` parameter. ",
-        "It must be an integer between 0 and 3, or NULL."))
+  assert_that(
+    verbosity %in% 0:3 | is.null(verbosity),
+    msg = paste0(
+      "query_opengeo_api: ",
+      "invalid value for `verbosity` parameter. ",
+      "It must be an integer between 0 and 3, or NULL."
+    )
+  )
 
-  assert_that(is.numeric(max_tries) | is.null(max_tries),
-      msg = paste0(
-        "query_opengeo_api: ",
-        "`max_tries` must be a numeric (integer) value, or NULL."))
+  assert_that(
+    is.numeric(max_tries) | is.null(max_tries),
+    msg = paste0(
+      "query_opengeo_api: ",
+      "`max_tries` must be a numeric (integer) value, or NULL."
+    )
+  )
 
   req |>
     httr2::req_retry(max_tries = max_tries) |>
@@ -127,18 +133,21 @@ return_result_ids <- function(url, where, max_tries = 3, verbosity = 0, ...) {
   ret <- build_id_req(url, where, ...) |>
     possibly_query_opengeo_api(max_tries = max_tries, verbosity = verbosity)
 
-  if (!is.null(ret)) {
+  if (is.null(ret)) {
+    cli::cli_alert_info("{.fn {return_result_ids}} reurned NULL data")
+    ret
+  } else {
     data <- possibly_parse_json(ret)
     # sometimes it gets returned with the wrong application type?
     # and it's JSON but not marked as such - needs to be parsed as plain text
     if (is.null(data)) {
       data <- httr2::resp_body_string(ret) |>
-        jsonlite::fromJSON(data)
+        jsonlite::fromJSON()
     }
     data |>
       purrr::pluck("objectIds") |>
       purrr::list_c()
-  } else NULL
+  }
 }
 
 #' Perform an API query and handle the returned table data
@@ -156,7 +165,10 @@ return_table_data <- function(
   ret <- table_data_req(ids, url, fields, ...) |>
     possibly_query_opengeo_api(max_tries = max_tries, verbosity = verbosity)
 
-  if (!is.null(ret)) {
+  if (is.null(ret)) {
+    cli::cli_alert_info("{.fn {return_table_data}} reurned NULL data")
+    ret
+  } else {
     # slightly more verbose than using purrr::map_df ... but safer?
     # https://github.com/tidyverse/purrr/issues/1007#issuecomment-1373624353
     tibble::tibble(
@@ -167,7 +179,7 @@ return_table_data <- function(
       ) |>
       tidyr::unnest_wider(list) |>
       janitor::clean_names()
-  } else NULL
+  }
 }
 
 #' Perform an API query and handle the returned spatial data
@@ -184,9 +196,12 @@ return_spatial_data <- function(
   ) {
   ret <- spatial_data_req(ids, url, crs, ...) |>
     possibly_query_opengeo_api(max_tries = max_tries, verbosity = verbosity)
-  if (!is.null(ret)) {
+  if (is.null(ret)) {
+    cli::cli_alert_info("{.fn return_spatial_data} returned NULL data")
+    ret
+  } else {
     ret |>
       httr2::resp_body_string() |>
       sf::st_read(quiet = TRUE)
-  } else NULL
+  }
 }

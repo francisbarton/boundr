@@ -40,8 +40,8 @@ build_schema <- function() {
         purrr::map_chr("name")
       ) |>
       tidyr::pivot_wider(
-        names_from = field_names,
-        values_from = field_names
+        names_from = "field_names",
+        values_from = "field_names"
       ) |>
       janitor::clean_names() |>
       dplyr::select("service_name":"has_geometry", ends_with("cd"))
@@ -71,10 +71,13 @@ build_schema <- function() {
   if (length(fails)) {
     info <- stringr::str_c("* ", head(api_services_data$name[fails]),
       collapse = "\n")
-    ui_info("{length(fails)} services did not successfully return data this time. Examples:\n{info}")
+    cli_alert_info(
+      "{length(fails)} services did not successfully return data this time. ",
+      "Examples:\n{info}"
+    )
   }
 
-  service_urls <- api_services_data$service_url[-fails]
+  service_urls <- api_services_data[["service_url"]][-fails]
 
   # Final data format process
   data_from_api |>
