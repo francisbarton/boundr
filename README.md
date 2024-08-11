@@ -247,7 +247,7 @@ bounds("parish", "lad", "Isles of Scilly") |>
   tmap::tm_style("natural", bg.color = "#7cb7bb")
 ```
 
-![](README.markdown_strict_files/figure-markdown_strict/example-6-1.png)
+![](man/figures/README-example-6-1.png)
 
 ### bounds now supports a shortcut which will return all bounds for a certain level, without having to specify a ‘within’ argument
 
@@ -287,7 +287,7 @@ sb |>
   ggplot2::theme_void()
 ```
 
-![](README.markdown_strict_files/figure-markdown_strict/example-8-1.png)
+![](man/figures/README-example-8-1.png)
 
 ### A ggplot2 example
 
@@ -302,7 +302,7 @@ bounds("npark", within_names = "Bannau Brycheiniog", resolution = "BUC") |>
   ggplot2::geom_sf()
 ```
 
-![](README.markdown_strict_files/figure-markdown_strict/example-9-1.png)
+![](man/figures/README-example-9-1.png)
 
 ``` r
 # https://github.com/francisbarton/mapirosa
@@ -336,7 +336,7 @@ ggplot2::ggplot(bb) +
   ggplot2::geom_sf(colour = "coral", fill = "aquamarine", alpha = 0.3)
 ```
 
-![](README.markdown_strict_files/figure-markdown_strict/example-10-1.png)
+![](man/figures/README-example-10-1.png)
 
 ### Aliases
 
