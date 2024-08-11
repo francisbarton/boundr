@@ -88,16 +88,22 @@ spatial_data_req <- function(ids, url, crs = 4326, ...) {
 #'  Can be any integer from 0 to 3, or `NULL`. See `?req_perform` for more
 #'  detail.
 query_opengeo_api <- function(req, max_tries = 3, verbosity = 0) {
-  assert_that(verbosity %in% 0:3 | is.null(verbosity),
-      msg = paste0(
-        "query_opengeo_api: ",
-        "invalid value for `verbosity` parameter. ",
-        "It must be an integer between 0 and 3, or NULL."))
+  assert_that(
+    verbosity %in% 0:3 | is.null(verbosity),
+    msg = paste0(
+      "query_opengeo_api: ",
+      "invalid value for `verbosity` parameter. ",
+      "It must be an integer between 0 and 3, or NULL."
+    )
+  )
 
-  assert_that(is.numeric(max_tries) | is.null(max_tries),
-      msg = paste0(
-        "query_opengeo_api: ",
-        "`max_tries` must be a numeric (integer) value, or NULL."))
+  assert_that(
+    is.numeric(max_tries) | is.null(max_tries),
+    msg = paste0(
+      "query_opengeo_api: ",
+      "`max_tries` must be a numeric (integer) value, or NULL."
+    )
+  )
 
   req |>
     httr2::req_retry(max_tries = max_tries) |>
