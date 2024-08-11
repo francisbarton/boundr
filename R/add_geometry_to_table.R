@@ -109,6 +109,7 @@ add_geometry_to_table <- function(
 # Helper functions --------------------------------
 
 #' @noRd
+#' @keywords internal
 pull_query_url <- function(field, lookup, final_filter) {
   results <- opengeo_schema |>
     dplyr::filter(

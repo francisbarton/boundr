@@ -8,6 +8,7 @@
 #' @param format data format to return from the API, `"pjson"` by default
 #' @param user_agent Allows user to specify a certain User Agent string in the
 #'  header of each query. Sends the string `"boundr R package"` by default
+#' @keywords internal
 opengeo_api_req <- function(
   url,
   append = "0/query",
@@ -27,6 +28,7 @@ opengeo_api_req <- function(
 #' @inheritParams opengeo_api_req
 #' @param where any geographical filters to be applied
 #' @param ... any arguments to be passed to `opengeo_api_req()`
+#' @keywords internal
 build_id_req <- function(url, where, ...) {
   url |>
     opengeo_api_req(...) |>
@@ -42,6 +44,7 @@ build_id_req <- function(url, where, ...) {
 #' @param ids the IDs of the data to be requested
 #' @param fields which fields to include in the table returned
 #' @param ... any arguments to be passed to `opengeo_api_req()`
+#' @keywords internal
 table_data_req <- function(ids, url, fields, ...) {
   ids <- stringr::str_flatten(ids, collapse = ",")
   fields <- stringr::str_flatten(fields, collapse = ",")
@@ -60,6 +63,7 @@ table_data_req <- function(ids, url, fields, ...) {
 #' @inheritParams table_data_req
 #' @param crs the Coordinate Reference System (CRS) code to use. 4326 by
 #'  default.
+#' @keywords internal
 spatial_data_req <- function(ids, url, crs = 4326, ...) {
   ids <- stringr::str_flatten(ids, collapse = ",")
   url |>
@@ -87,6 +91,7 @@ spatial_data_req <- function(ids, url, crs = 4326, ...) {
 #'  controls the verbosity of the printed output from performing the request.
 #'  Can be any integer from 0 to 3, or `NULL`. See `?req_perform` for more
 #'  detail.
+#' @keywords internal
 query_opengeo_api <- function(req, max_tries = 3, verbosity = 0) {
   assert_that(
     verbosity %in% 0:3 | is.null(verbosity),
@@ -129,6 +134,7 @@ possibly_parse_json <- function(...) {
 #' For large queries, just return IDs that can then be batched for full queries.
 #' @inheritParams build_id_req
 #' @inheritParams query_opengeo_api
+#' @keywords internal
 return_result_ids <- function(url, where, max_tries = 3, verbosity = 0, ...) {
   ret <- build_id_req(url, where, ...) |>
     possibly_query_opengeo_api(max_tries = max_tries, verbosity = verbosity)
@@ -154,6 +160,7 @@ return_result_ids <- function(url, where, max_tries = 3, verbosity = 0, ...) {
 #'
 #' @inheritParams table_data_req
 #' @inheritParams query_opengeo_api
+#' @keywords internal
 return_table_data <- function(
     ids,
     url,
@@ -186,6 +193,7 @@ return_table_data <- function(
 #'
 #' @inheritParams spatial_data_req
 #' @inheritParams query_opengeo_api
+#' @keywords internal
 return_spatial_data <- function(
     ids,
     url,
