@@ -23,6 +23,7 @@ add_geometry_to_table <- function(
     points = FALSE,
     lookup = NULL,
     geo_code_field = NULL,
+    return_width = c("tidy", "full", "minimal"),
     crs = 4326,
     resolution = c("BGC", "BSC", "BUC", "BFC", "BFE")
 ) {
@@ -80,8 +81,12 @@ add_geometry_to_table <- function(
   spatial_data_df <- spatial_data |>
     dplyr::bind_rows() |>
     dplyr::distinct() |>
-    janitor::clean_names() |>
-    dplyr::select(c({{ geo_code_field }}, "geometry"))
+    janitor::clean_names()
+
+  if (return_width != "full") {
+    spatial_data_df <- spatial_data_df |>
+      dplyr::select(c({{ geo_code_field }}, "geometry"))
+  }
 
   assert_that(
     inherits(spatial_data_df, "data.frame"),

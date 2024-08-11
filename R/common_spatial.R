@@ -44,6 +44,7 @@ common_spatial <- function(
     centroids,
     new_lookup,
     geo_code_field,
+    return_width,
     crs,
     resolution
   )
