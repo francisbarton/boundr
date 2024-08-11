@@ -18,3 +18,4 @@ table_data_req(ids, url, fields, ...)
 \description{
 Build an API request for table data
 }
+\keyword{internal}

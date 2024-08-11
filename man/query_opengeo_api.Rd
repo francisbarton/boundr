@@ -20,3 +20,4 @@ detail.}
 \description{
 Perform an API query using a request object
 }
+\keyword{internal}

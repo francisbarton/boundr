@@ -26,3 +26,4 @@ detail.}
 \description{
 Perform an API query and handle the returned table data
 }
+\keyword{internal}

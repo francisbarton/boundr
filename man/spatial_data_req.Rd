@@ -19,3 +19,4 @@ default.}
 \description{
 Build an API request for spatial (geojson) data
 }
+\keyword{internal}
