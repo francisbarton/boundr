@@ -18,6 +18,10 @@
 #'  the first one from the list of possible services resulting from the level
 #'  and year filters above. If this does not give you what you want, you can
 #'  run the script again with a different option from the list.
+#' @param standalone logical. Whether this query is standalone (`TRUE`) or
+#'  forms part of a geospatial query (`FALSE`). In the latter case, this
+#'  function will try to return a lookup table that contains the appropriate
+#'  columns for spatial data (boundaries or centroids) to be joined onto.
 #' @param chatty Boolean. Whether to print feedback on the 'decisions' the
 #'  function has taken about which table to query. Default `TRUE` when the
 #'  function is run in an interactive session, `FALSE` otherwise.
@@ -33,6 +37,17 @@ return_lookup_query_info <- function(
     option,
     chatty
   ) {
+
+  # find spatial tables from the schema
+  schema_spatial_names <- opengeo_schema |>
+    dplyr::filter(
+      if_any("has_geometry") &
+      if_any("service_name", \(x) stringr::str_detect(x, country_filter))
+    ) |>
+    janitor::remove_empty("cols") |>
+    dplyr::select(ends_with("cd")) |>
+    names()
+
   # filter only lookup tables from the schema
   # and those with the right country filter
   schema_lookups <- opengeo_schema |>
@@ -49,6 +64,8 @@ return_lookup_query_info <- function(
   schema_names <- schema_lookups |>
     dplyr::select(ends_with("cd")) |>
     names()
+
+  if (!standalone) schema_names <- intersect(schema_names, schema_spatial_names)
 
   lookup_field <- return_field_code(lookup, lookup_year, schema_names)
 

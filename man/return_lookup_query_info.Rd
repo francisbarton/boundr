@@ -11,6 +11,7 @@ return_lookup_query_info(
   within_year,
   country_filter,
   option,
+  standalone,
   chatty
 )
 }
@@ -38,6 +39,11 @@ for England and Wales. By default returns all options.}
 the first one from the list of possible services resulting from the level
 and year filters above. If this does not give you what you want, you can
 run the script again with a different option from the list.}
+
+\item{standalone}{logical. Whether this query is standalone (\code{TRUE}) or
+forms part of a geospatial query (\code{FALSE}). In the latter case, this
+function will try to return a lookup table that contains the appropriate
+columns for spatial data (boundaries or centroids) to be joined onto.}
 
 \item{chatty}{Boolean. Whether to print feedback on the 'decisions' the
 function has taken about which table to query. Default \code{TRUE} when the
