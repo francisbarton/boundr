@@ -1,5 +1,5 @@
 ---
-output: github_document
+format: gfm
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -18,6 +18,8 @@ knitr::opts_chunk$set(
 library(boundr)
 library(tmap)
 library(ggplot2)
+conflicted::conflicts_prefer(boundr::points)
+
 ```
 
 # welcome to boundr
@@ -28,13 +30,26 @@ library(ggplot2)
 
 ### Retrieve area boundaries and data from the ONS Open Geography Portal
 
+<div style="display: flex; align-items: center;">
+
+<div>
+  <img
+    src="boundr_hex_logo.png"
+    style="height: 300px; width: 233px;"
+    alt="The boundr package hexagonal logo - the word boundr superimposed on a cropped map of the Isles of Scilly, with the island parishes differently coloured, on a sea blue background."
+  />
+</div>
+
+<div>
 The main purpose of this package is to download area lookups and
 boundaries to R tables, using the ONS Open Geography API, for all
 areas at a specified level within a specified area.
 
 The main script `bounds()` will return a data frame with the sub-area
 geometry column, as an `sf` object ready to be visualised as a map.
+</div>
 
+</div>
 
 ## Installation
 
@@ -64,6 +79,7 @@ Trial and error may be required - or start by looking up what is available on th
 ```{r example-2}
 
 bounds("msoa", "lad", "Shepway", lookup_year = 2011, within_year = 2015)
+
 ```
 
 
@@ -80,6 +96,7 @@ Different columns are returned by each command.
 
 bounds("rgn", country_filter = "EN", resolution = "BUC")
 bounds("region", "country", "England", lookup_year = 2022, resolution = "BUC")
+
 ```
 
 
@@ -105,37 +122,46 @@ Using `return_with = "full"` includes all available columns, not just those refe
 # create_lookup_table("wd", "sener")
 
 # supplying a year helps:
-create_lookup_table("wd", "sener", lookup_year = 2022, return_width = "full")
+create_lookup_table("wd", "sener", lookup_year = 2023, return_width = "full")
 
 # or a country filter:
 create_lookup_table("wd", "sener", country_filter = "WA", return_width = "full") |>
-  dplyr::filter(sener22nm == "South Wales West")
+  dplyr::filter(sener23nm == "South Wales West")
 
 ```
 
 
-### The sfc tibble is ready to be passed to a mapping function:
+### The sfc tibble is ready to be passed to a mapping tool like `tmap::qtm()`:
 
 ```{r example-6}
 #| message: false
 
 bounds("parish", "lad", "Isles of Scilly") |>
-  tmap::qtm(fill = "par22nm", palette = "Accent")
+  tmap::tm_shape() +
+  tmap::tm_polygons(
+    col = "par23nm",
+    palette = "-Accent",
+    legend.show = FALSE,
+    border.col = "grey40"
+  ) +
+  tmap::tm_style("natural", bg.color = "#7cb7bb")
+
 ```
 
 
 ### bounds now supports a shortcut which will return all bounds for a certain level, without having to specify a 'within' argument
 
-Take care - you might download a lot of data!
+Take care - you might download a lot of data doing this!
 
 ```{r example-7}
 
 bounds("spr")
+
 ```
 
 ### The points() function returns area (population-weighted) centroids where available
 
-(Check the OG website).
+(Check the OpenGeography website).
 
 ```{r example-8}
 #| message: false
@@ -187,7 +213,8 @@ bb_basemap <- mapirosa::build_basemap(
   zoom = 3,
   style = "outdoor",
   squarify = TRUE,
-  crs = 27700)
+  crs = 27700
+)
 
 ggplot2::ggplot(bb) +
   tidyterra::geom_spatraster_rgb(
