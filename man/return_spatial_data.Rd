@@ -27,3 +27,4 @@ detail.}
 \description{
 Perform an API query and handle the returned spatial data
 }
+\keyword{internal}

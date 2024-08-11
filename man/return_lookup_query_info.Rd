@@ -56,3 +56,4 @@ code (eg \code{lsoa11cd}), and the higher level (\code{within}) field code.
 \description{
 Return lookup query URL and lower and higher field codes
 }
+\keyword{internal}

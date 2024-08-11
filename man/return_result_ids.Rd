@@ -24,3 +24,4 @@ detail.}
 \description{
 For large queries, just return IDs that can then be batched for full queries.
 }
+\keyword{internal}

@@ -24,3 +24,4 @@ header of each query. Sends the string \code{"boundr R package"} by default}
 \description{
 Basic OpenGeography API request
 }
+\keyword{internal}
