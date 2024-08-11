@@ -168,6 +168,7 @@ create_lookup_table <- function(
 
 #' Process geo level aliases
 #' @noRd
+#' @keywords internal
 process_aliases <- function(x, y = NULL) {
   tolower(x %||% y) |>
     stringr::str_replace_all(

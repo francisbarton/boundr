@@ -25,6 +25,8 @@
 #' @param chatty Boolean. Whether to print feedback on the 'decisions' the
 #'  function has taken about which table to query. Default `TRUE` when the
 #'  function is run in an interactive session, `FALSE` otherwise.
+#' 
+#' @keywords internal
 #'
 #' @returns A list of length 3: the query URL, the lower level (`lookup`) field
 #'  code (eg `lsoa11cd`), and the higher level (`within`) field code.
@@ -145,6 +147,7 @@ return_lookup_query_info <- function(
 
 
 #' @noRd
+#' @keywords internal
 return_field_code <- function(lookup, year, names_vec) {
   if (is.null(year)) {
     y2 <- names_vec |>

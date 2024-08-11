@@ -86,6 +86,7 @@ points <- function(
 # Helper functions --------------------------------
 
 #' @noRd
+#' @keywords internal
 build_flat_query <- function(var, vec) {
   y <- stringr::str_flatten(glue("'{unique(vec)}'"), collapse = ",")
   glue("{var} IN ({y})")
@@ -93,6 +94,7 @@ build_flat_query <- function(var, vec) {
 
 
 #' @noRd
+#' @keywords internal
 batch_it <- function(x, batch_size) {
   f <- rep(1:ceiling(length(x) / batch_size), each = batch_size) |>
     head(length(x))
