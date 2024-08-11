@@ -11,6 +11,6 @@ reference:
   - bounds
   - points
   - create_lookup_table
-  - add_bounds_to_table
+  - add_geometry_to_table
 
 - title: Other functions
