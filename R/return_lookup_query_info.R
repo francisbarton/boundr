@@ -144,30 +144,25 @@ return_lookup_query_info <- function(
 
 
 #' @noRd
-return_field_code <- function(prefix, year, names_vec) {
+return_field_code <- function(lookup, year, names_vec) {
   if (is.null(year)) {
-    years <- names_vec |>
-      stringr::str_extract(glue("(?<=^{prefix})\\d+"))  |>
-      as.numeric()
-
-    # will need updating in 2030 ;-)
-    year_out <- dplyr::if_else(years > 30, years + 1900, years + 2000) |>
-      # choose most recent year available
-      max(na.rm = TRUE) |>
-      stringr::str_extract("\\d{2}$")
-  } else {
-    year_out <- year |>
-      stringr::str_extract("\\d{1,2}$") |>
+    y2 <- names_vec |>
+      stringr::str_subset(glue("(?<=^{lookup})\\d+")) |>
+      stringr::str_extract("\\d{2}(?=cd$)") |>
+      as.numeric() |>
+      max() |> # should return most recent year by default
       stringr::str_pad(width = 2, side = "left", pad = "0")
+  } else {
+    y2 <- stringr::str_extract(year, "\\d{2}$")
   }
 
-  field_code <- paste0(prefix, year_out, "cd")
+  field_code <- stringr::str_subset(names_vec, glue("^{lookup}{y2}cd$"))[[1]]
 
   assert_that(
-    field_code %in% names_vec,
+    length(field_code) == 1,
     msg = paste0(
-      "return_lookup_query_info: That combination of area levels ",
-      "and years has not returned a result. Perhaps try a different year?"
+      "return_lookup_query_info: That combination of area levels and year ",
+      "has not returned a result. Perhaps try a different year?"
     )
   )
 
