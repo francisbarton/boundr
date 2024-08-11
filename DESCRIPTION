@@ -3,7 +3,7 @@ Version: 0.3.7
 Title: Retrieve Area Boundaries and Data from the ONS Open Geography Portal
 Description: The main purpose of this package is to download area lookups and boundaries (in GeoJSON format) using the ONS Open Geography API, for all areas at a specified level within a specified area.
 Authors@R: 
-    utils::person(
+    person(
         "Francis", "Barton",
         email = "fbarton@alwaysdata.net",
         role = c("aut", "cre"),
@@ -37,6 +37,6 @@ Suggests:
     testthat (>= 3.0.0),
     tmap,
     usethis (>= 1.5.0)
-URL: https://github.com/francisbarton/boundr, https://francisbarton.github.io/boundr/
-BugReports: https://github.com/francisbarton/boundr/issues
+URL: https://codeberg.org/francisbarton/boundr, https://francisbarton.github.io/boundr/
+BugReports: https://codeberg.org/francisbarton/boundr/issues
 Config/testthat/edition: 3

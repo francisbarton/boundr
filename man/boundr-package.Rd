@@ -11,9 +11,9 @@ The main purpose of this package is to download area lookups and boundaries (in 
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/francisbarton/boundr}
+  \item \url{https://codeberg.org/francisbarton/boundr}
   \item \url{https://francisbarton.github.io/boundr/}
-  \item Report bugs at \url{https://github.com/francisbarton/boundr/issues}
+  \item Report bugs at \url{https://codeberg.org/francisbarton/boundr/issues}
 }
 
 }
