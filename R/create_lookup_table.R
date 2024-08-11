@@ -195,14 +195,15 @@ create_lookup_table <- function(
 
 #' Process geo level aliases
 #' @noRd
-process_aliases <- function(x) {
-  x |>
-    tolower() |>
-    stringr::str_replace_all(c(
-      "parish" = "par",
-      "ward" = "wd",
-      "county" = "cty",
-      "region" = "rgn",
-      "country" = "ctry"
-    ))
+process_aliases <- function(x, y = NULL) {
+  tolower(x %||% y) |>
+    stringr::str_replace_all(
+      c(
+        "parish" = "par",
+        "ward" = "wd",
+        "county" = "cty",
+        "region" = "rgn",
+        "country" = "ctry"
+      )
+    )
 }
