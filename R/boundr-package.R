@@ -4,11 +4,9 @@
 ## usethis namespace: start
 #' @importFrom assertthat assert_that
 #' @importFrom cli cli_alert_info
-#' @importFrom dplyr desc across if_all if_any pick
+#' @importFrom dplyr across desc first if_all if_any if_else pick
 #' @importFrom glue glue
-#' @importFrom rlang :=
-#' @importFrom tidyselect all_of any_of ends_with matches starts_with
-#' @importFrom utils head tail
+#' @importFrom tidyselect any_of ends_with matches
 
 ## usethis namespace: end
 NULL

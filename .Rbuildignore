@@ -11,3 +11,4 @@
 ^R/hocl_msoa_names\.R$
 ^R/extract_lookup\.R$
 ^boundr\.code-workspace$
+^.lintr$
