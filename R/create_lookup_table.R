@@ -34,18 +34,13 @@ create_lookup_table <- function(
     chatty = rlang::is_interactive()
   ) {
 
-  # https://developers.arcgis.com/rest/services-reference/
-  # enterprise/query-feature-service-layer-.htm
-  new_lookup <- process_aliases(lookup)
-  # if (lookup == "msoa") new_lookup <- "lsoa"
-  new_within <- process_aliases(within, new_lookup)
   return_width <- match.arg(return_width)
   country_filter <- match.arg(country_filter)
   if (is.null(option)) option <- 1
 
   lookup_query_info <- return_lookup_query_info(
-    new_lookup,
-    new_within,
+    lookup,
+    within,
     lookup_year,
     within_year,
     country_filter,

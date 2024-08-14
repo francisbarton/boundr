@@ -19,7 +19,7 @@ common_spatial <- function(
   return_width <- match.arg(return_width)
 
   lookup_table <- create_lookup_table(
-    new_lookup,
+    lookup,
     within,
     within_names,
     within_codes,
@@ -37,7 +37,7 @@ common_spatial <- function(
   )
 
   geo_code_field <- names(lookup_table) |>
-    stringr::str_subset(glue("^{new_lookup}.*cd$")) |>
+    stringr::str_subset(glue("^{lookup}.*cd$")) |>
     dplyr::first()
 
   add_geometry_to_table(
