@@ -133,3 +133,13 @@ pull_query_url <- function(field, lookup, final_filter) {
       dplyr::pull("service_url")
   }
 }
+
+batch_it <- function(x, batch_size) {
+  f <- rep(1:ceiling(length(x) / batch_size), each = batch_size)[seq(length(x))]
+  split(x, f)
+}
+
+
+ifnull <- \(x, y) if (is.null(x)) y else x
+
+cd_colnames <- \(x) colnames(dplyr::select(x, ends_with("cd")))
