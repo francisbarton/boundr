@@ -251,3 +251,110 @@ no_table_msg <- \(fn) {
   )
 }
 no_lu_field_msg <- \(fn) glue("{.fn {fn}}: No suitable lookup field found.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+build_results_df <- function(schema, lookup, lookup_field, within_field) {
+  s2 <- schema |>
+    dplyr::filter(!if_any(any_of(within_field), is.na)) |>
+    janitor::remove_empty("cols") # not really needed here but just to be neat
+
+  lookup_stub <- toupper(sub("cd$", "", lookup_field))
+
+  # Prioritise results where lookup_stub (e.g. MSOA21) is at the left-hand end
+  r1 <- s2 |>
+    dplyr::filter(
+      if_any("service_name", \(x) stringr::str_starts(x, lookup_stub))
+    )
+  # As a backup, include names where lookup_stub is found anywhere
+  r2 <- s2 |>
+    dplyr::filter(
+      if_any("service_name", \(x) stringr::str_detect(x, lookup_stub))
+    )
+  # Might seem risky to pull a table with the lookup but not the attached year -
+  # but we have already filtered to tables where the correct lookup_field is
+  # present so there is a v good chance the table will have the data we need,
+  # even if it is not precisely labelled as such.
+  r3 <- s2 |>
+    dplyr::filter(
+      if_any("service_name", \(x) stringr::str_starts(x, toupper(lookup)))
+    )
+  r4 <- s2 |>
+    dplyr::filter(
+      if_any("service_name", \(x) stringr::str_detect(x, toupper(lookup)))
+    )
+
+  # results should be made available in priority order:
+  dplyr::bind_rows(r1, r2, r3, r4)
+}
+
+# An alternative way to get the query URL from the final filtered schema
+alt_results <- function(schema, lookup, lookup_field, within_field, option) {
+  fn <- "return_lookup_query_info"
+  within_field <- ifnull(within_field, lookup_field)
+  fields <- unique(c(lookup_field, within_field))
+  schema2 <- schema |>
+    dplyr::filter(!if_any(all_of(fields), is.na)) |>
+    janitor::remove_empty("cols") # not really needed here but just to be neat
+
+  lookup_stub <- toupper(sub("cd$", "", lookup_field))
+  index <- unique(c(
+    # Prioritise results where lookup_stub (e.g. MSOA21) is at the left-hand end
+    stringr::str_which(schema2[["service_name"]], glue("^{lookup_stub}")),
+    # As a backup, include names where lookup_stub is found anywhere
+    stringr::str_which(schema2[["service_name"]], lookup_stub),
+    # Might seem risky to pull a table with the lookup but not the year
+    # attached - but we have already filtered to tables where the correct
+    # lookup_field is present so there is a v good chance the table will have
+    # the data we need, even if it is not precisely labelled as such.
+    stringr::str_which(schema2[["service_name"]], glue("^{toupper(lookup)}")),
+    stringr::str_which(schema2[["service_name"]], toupper(lookup))
+  ))
+
+  assert_that(
+    is.numeric(index) && length(index) > 0,
+    msg = glue("{fn}: No schema data tables matching those parameters, sorry.")
+  )
+
+  res <- schema2[["service_name"]][index]
+  if (is.null(option) && length(res) > 1 && is_interactive()) {
+    cli_alert_info("More than 1 result found:")
+    cli::cli_ol(res)
+    cli_alert_info(c(
+      "Using option 1 by default. ",
+      "(Change the {.var {option}} parameter to try another data source.)"
+    ))
+  }
+
+  option <- ifnull(option, 1)
+
+  if (option > length(res)) {
+    lr <- length(res)
+    cli_alert_info(c(
+      "There is no option {.var {option}}! There are only {.val {lr}} ",
+      "options available. Option {.val {lr}} will be selected instead."
+    ))
+    option <- lr
+  }
+
+  schema2[["service_url"]][index][[option]]
+}
