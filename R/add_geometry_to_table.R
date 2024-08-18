@@ -1,22 +1,21 @@
 #' Use an existing tibble as the basis for a spatial query
 #'
-#' If you have a tibble such as those produced by `create_lookup_table()` -
-#' that is, there is a column of geographical ONS codes ending in 'cd' -
-#' simply use this table as the basis for retrieving the relevant boundaries.
+#' If you have a tibble such as those produced by `lookup()` - that is, there is
+#'  a column of geographical ONS codes ending in 'cd' - simply use this table as
+#'  the basis for retrieving the relevant boundaries or centroids.
 #'
-#' @param tbl A tibble with a column for geographical codes. This function will
-#'  use the lefthand-most column ending in 'cd' by default as the basis for
-#'  retrieving boundary or point data
-#' @param points Whether to retrieve area centroids (TRUE) or area boundaries
-#'  (FALSE, the default)
+#' @param tbl A tibble with a column for geographical codes. Table names ought
+#'  to be in lower case. This function will use the lefthand-most column ending
+#'  in 'cd' by default as the basis for retrieving boundary or point data.
 #' @param geo_code_field character The column name from `tbl` for which you
-#'  wish to retrieve spatial data. By default, `add_bounds_to_table()` will use
-#'  the lefthand-most column that ends in "cd"
+#'  wish to retrieve spatial data. By default, `add_geometry_to_table()` will
+#'  use the lefthand-most column that ends in "cd".
 #' @inheritParams bounds
+#' @inheritParams common_spatial
 #'
 #' @returns If successful, will return the initial table with an additional
 #'  geometry column added. Duplicate rows will be removed.
-#'
+#' @aliases add_geometry
 #' @export
 add_geometry_to_table <- function(
     tbl,
