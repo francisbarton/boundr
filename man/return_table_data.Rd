@@ -7,11 +7,11 @@
 return_table_data(ids, url, fields, max_tries = 3, verbosity = 0, ...)
 }
 \arguments{
-\item{ids}{the IDs of the data to be requested}
+\item{ids}{The IDs of the data to be requested}
 
 \item{url}{The API URL to query}
 
-\item{fields}{which fields to include in the table returned}
+\item{fields}{Which fields to include in the table returned}
 
 \item{max_tries}{integer. 3 by default (for now). Passed to \code{httr2::req_retry ()} and controls how many times to try to perform the request, should
 initial attempt(s) fail.}
@@ -21,7 +21,7 @@ controls the verbosity of the printed output from performing the request.
 Can be any integer from 0 to 3, or \code{NULL}. See \code{?req_perform} for more
 detail.}
 
-\item{...}{any arguments to be passed to \code{opengeo_api_req()}}
+\item{...}{Any arguments to be passed to \code{opengeo_api_req()}}
 }
 \description{
 Perform an API query and handle the returned table data
