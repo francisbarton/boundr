@@ -16,7 +16,6 @@ common_lookup <- function(
     opts = boundr_options(),
     joinable = FALSE) {
   lookup <- tolower(lookup)
-  resolution <- opts[["rs"]]
   return_width <- opts[["rw"]]
   query_option <- opts[["opt"]]
 
