@@ -17,9 +17,9 @@
 #'  geometry column added. Duplicate rows will be removed.
 #' @aliases add_geometry
 #' @export
-add_geometry_to_table <- function(
+add_geometry_to_table <- add_geometry <- function(
     tbl,
-    points = FALSE,
+    geometry = c("boundaries", "centroids"),
     lookup = NULL,
     geo_code_field = NULL,
     opts = boundr_options()) {
@@ -112,9 +112,9 @@ add_geometry_to_table <- function(
 
 # Helper functions --------------------------------
 
-pull_query_url <- function(field, lookup, final_filter) {
-  geo_regex <- glue("^{toupper(lookup)}.*{final_filter}")
-  results <- opengeo_schema |>
+pull_query_url <- function(geo_code_field, lookup, rs) {
+  fn <- "pull_query_url"
+  s1 <- opengeo_schema |>
     dplyr::filter(
       if_any(any_of(field), \(x) !is.na(x)) &
       if_any("service_name", \(x) grepl(geo_regex, x))
