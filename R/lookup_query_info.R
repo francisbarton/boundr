@@ -1,3 +1,36 @@
+#' Get initial data about query for "narrow" tables (with no lookup table)
+#' @keywords internal
+return_narrow_table_info <- function(lookup, lookup_year, rs = NULL) {
+  fn <- "return_narrow_table_info"
+  ul <- toupper(lookup)
+  rs <- ifnull(rs, "NC")
+  
+  assert_that(
+    lookup != "oa",
+    msg = paste0(
+      "You can't download an OA lookup table without supplying `within_level`.",
+      "\nExample: `lookup('oa', within_level = 'msoa', 'Tendring 001')`"
+    )
+  )
+  s1 <- opengeo_schema |>
+    dplyr::filter(if_any("service_name", \(x) gregg(x, "^{ul}.*_{rs}"))) |>
+    janitor::remove_empty("cols")
+  assert_that(nrow(s1) > 0, msg = no_table_msg(fn))
+  s1_years <- as.numeric(stringr::str_extract(s1[["service_name"]], "\\d{4}"))
+  lookup_year <- ifnull(lookup_year, max(s1_years))
+  lu_code_field <- return_field_code(lookup, cd_colnames(s1), lookup_year, fn)
+  assert_that(!is.null(lu_code_field), msg = no_lu_field_msg(fn))
+  
+  s2 <- dplyr::filter(s1, !if_any(any_of(lu_code_field), is.na)) |>
+    janitor::remove_empty("cols")
+  
+  if (is_interactive()) cli_alert_info("Using {.val {lu_code_field}}")
+  list(
+    schema = s2,
+    lookup_code = lu_code_field,
+    within_code = NULL
+  )
+}
 # Helper functions --------------------------------
 
 #' This is such a crucial function to the whole package! But so simple.
