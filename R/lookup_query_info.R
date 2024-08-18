@@ -144,6 +144,62 @@ process_query_info <- function(
     where_list = where_list
   )
 }
+
+#' This function is the one that handles all actual querying of the API for
+#'  `lookup()`. Previous queries in the pipeline have been working "offline"
+#'  with just the schema data provided within the package.
+#' @keywords internal
+process_lookup_query_data <- function(query_data) {
+  query_url <- query_data[["query_url"]]
+  fields <- query_data[["fields"]]
+  where_list <- query_data[["where_list"]]
+  ids <- where_list |>
+    purrr::map(\(x) return_query_ids(query_url, where_string = x)) |>
+    purrr::list_c()
+  ids |>
+    batch_it(100) |> # Could this go to more than 100? 500?
+    purrr::map(
+      \(x) return_table_data(x, query_url, fields),
+      .progress = if (is_interactive()) "Retrieving table data" else FALSE
+    )
+}
+
+#' This function is the one that handles all actual querying of the API for
+#'  `bounds()`/`points()`. Previous queries in the pipeline have been working
+#'  "offline" with just the schema data provided within the package.
+#' @keywords internal
+process_spatial_query_data <- function(query_data, crs) {
+  query_url  <- query_data[["query_url"]]
+  fields  <- query_data[["fields"]]
+  where_list <- query_data[["where_list"]]
+  ids <- where_list |>
+    purrr::map(\(x) return_query_ids(query_url, where_string = x)) |>
+    purrr::list_c()
+  ids |>
+    batch_it(100) |>
+    purrr::map(
+      \(x) return_spatial_data(x, query_url, fields, crs),
+      .progress = if (is_interactive()) "Retrieving spatial data" else FALSE
+    )
+}
+
+#' This function also actually queries the API
+#' @keywords internal
+return_query_ids <- function(query_url, where_string) {
+  fn <- "return_query_ids"
+  ids <- unique(return_result_ids(query_url, where = where_string))
+  assert_that(
+    is.vector(ids),
+    !is.list(ids),
+    length(ids),
+    is.numeric(ids),
+    msg = glue("{.fn {fn}}: The query has not returned any valid result IDs.")
+  )
+  ids
+}
+
+
+
 # Helper functions --------------------------------
 
 #' This is such a crucial function to the whole package! But so simple.
