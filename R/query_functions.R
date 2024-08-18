@@ -95,7 +95,8 @@ query_opengeo_api <- function(req, max_tries = 3, verbosity = 0) {
 
   req |>
     httr2::req_retry(max_tries = max_tries) |>
-    httr2::req_perform(verbosity = verbosity)
+    httr2::req_perform(verbosity = verbosity) |>
+    httr2::resp_check_status()
 }
 
 #' @noRd
