@@ -73,11 +73,9 @@ add_geometry_to_table <- add_geometry <- function(
 
   join_vars <- intersect(names(tbl), names(spatial_data_df))
 
-  spatial_data_df <- spatial_data_df |>
-    dplyr::left_join(tbl, by = {{ join_vars }}) |>
-    dplyr::relocate(names(tbl))
-
   spatial_data_df |>
+    dplyr::left_join(tbl, by = {{ join_vars }}) |>
+    dplyr::relocate(names(tbl)) |>
     dplyr::select(!any_of(c("fid", "objectid", "global_id"))) |>
     janitor::remove_empty("cols") |>
     dplyr::distinct()
