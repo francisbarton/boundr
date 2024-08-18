@@ -210,7 +210,8 @@ bb_basemap <- mapirosa::build_basemap(
   style = "outdoor",
   squarify = TRUE,
   crs = 27700
-)
+) |>
+  rlang::with_interactive(FALSE)
 
 ggplot2::ggplot(bb) +
   tidyterra::geom_spatraster_rgb(
