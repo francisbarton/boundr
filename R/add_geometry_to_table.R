@@ -90,8 +90,8 @@ pull_query_url <- function(geo_code_field, lookup, rs) {
   fn <- "pull_query_url"
   s1 <- opengeo_schema |>
     dplyr::filter(
-      if_any(any_of(field), \(x) !is.na(x)) &
-      if_any("service_name", \(x) grepl(geo_regex, x))
+      if_any(any_of(geo_code_field), \(x) !is.na(x)) &
+      if_any("service_name", \(x) gregg(x, "^{toupper(lookup)}.*{rs}"))
     ) |>
     janitor::remove_empty("cols")
 
