@@ -73,6 +73,77 @@ return_lookup_table_info <- function(
     within_code = wn_code_field
   )
 }
+
+
+
+#' Just another piece of the pipeline
+#' @keywords internal
+process_query_info <- function(
+    query_info,
+    within_names,
+    within_codes,
+    return_width,
+    query_opt) {
+  schema <- query_info[["schema"]]
+  lookup_code_field <- query_info[["lookup_code"]]
+  within_code_field <- query_info[["within_code"]]
+  opt <- query_opt
+  fn <- "process_query_info"
+  
+  res <- schema[["service_name"]]
+  if (is.null(opt) && length(res) > 1 && is_interactive()) {
+    cli_alert_info("More than 1 result found:")
+    cli::cli_ol(res)
+    cli_alert_info(c(
+      "Using option {.val 1} by default. ",
+      "(Change the {.var query_option} parameter to try another data source.)"
+    ))
+  }
+    
+  opt <- ifnull(opt, 1)
+  if (opt > length(res)) {
+    lr <- length(res)
+    cli_alert_info(c(
+      "There is no option {.var {opt}}! There are only {.val {lr}} ",
+      "options available. Option {.val {lr}} will be selected instead."
+    ))
+    opt <- lr
+  }
+  query_url <- schema[["service_url"]][[opt]]
+
+  if (is.null(within_code_field)) { # from return_narrow_table_info()
+    fields <- "*" # no 'within_level' so we just get all fields
+  } else { # else we do a lookup table first
+    lookup_name_field <- sub("cd$", "nm", lookup_code_field)
+    within_name_field <- sub("cd$", "nm", within_code_field)
+    fields <- switch(return_width,
+      "tidy" = unique(c(
+        lookup_code_field,
+        lookup_name_field,
+        within_code_field,
+        within_name_field
+      )),
+      "full" = "*",
+      "minimal" = c(lookup_code_field, lookup_name_field)
+    )
+    # oa21nm etc don't exist
+    fields <- purrr::discard(fields, \(x) grepl("^oa.+nm$", x))
+  }
+  
+  if (is.null(within_names) && is.null(within_codes)) {
+    where_list <- "1=1"
+  } else if (!is.null(within_names)) {
+    where_list <- build_where_list(within_name_field, within_names)
+  } else { # (!is.null(within_codes))
+    where_list <- build_where_list(within_code_field, within_codes)
+  }
+
+  list(
+    query_url = query_url,
+    fields = fields,
+    where_list = where_list
+  )
+}
 # Helper functions --------------------------------
 
 #' This is such a crucial function to the whole package! But so simple.
