@@ -2,81 +2,79 @@
 % Please edit documentation in R/bounds.R
 \name{bounds}
 \alias{bounds}
+\alias{points}
 \title{Return boundary data at a specified level and area from the ONS OG API}
 \usage{
 bounds(
   lookup,
-  within = NULL,
+  within_level = NULL,
   within_names = NULL,
   within_codes = NULL,
-  return_width = c("tidy", "full", "minimal"),
   lookup_year = NULL,
   within_year = NULL,
-  country_filter = c("UK|GB|EW|EN|SC|WA", "UK", "GB", "EW", "EN", "SC", "WA"),
-  option = NULL,
-  crs = 4326,
-  resolution = c("BGC", "BSC", "BUC", "BFC", "BFE")
+  opts = boundr_options()
+)
+
+points(
+  lookup,
+  within_level = NULL,
+  within_names = NULL,
+  within_codes = NULL,
+  lookup_year = NULL,
+  within_year = NULL,
+  opts = boundr_options()
 )
 }
 \arguments{
-\item{lookup}{character. Lower level area code eg "lsoa", "wd", "lad".
-Equivalent to the \code{lookup} parameter in \code{bounds()}.}
+\item{lookup}{character. Lower level area code eg "lsoa", "wd", "lad".}
 
-\item{within}{character. Higher level area code eg "lad", "cty". Equivalent
-to the \code{within} parameter in \code{bounds()}.}
+\item{within_level}{character. Higher level area code eg "lad", "cty", "icb".
+(That is, higher (conceptually) than \code{lookup}; aka larger than \code{lookup}!).
+If not supplied, this uses the default \code{NULL}, and just data for \code{lookup}
+will be returned. In this case, \code{within_names} and \code{within_codes} (if
+supplied) will instead be taken to refer to, and used to filter at, the
+\code{lookup} level.}
 
 \item{within_names, within_codes}{character. In order to restrict data
 returned to a specific area, either \code{within_names} or \code{within_codes} must
-be provided. Otherwise all boundaries within the country at that level will
-be retrieved. Use place names eg "Essex" to restrict to a certain
-geographical area. Use ONS area codes eg "W02000103" likewise (this is
-useful with wards, where there are many that share identical names). A
-vector of multiple names or codes can be supplied.}
-
-\item{return_width}{character. How many of the possible columns in the
-returned table to keep. Options are "tidy", "full" or "minimal".}
+be provided. Otherwise all available boundaries at that level will be
+retrieved. Use place names eg "Essex" to restrict to a certain
+geographical area. Or use ONS area codes eg "W02000103" likewise (this is
+useful with wards, where there are many that share identical names).
+To use this argument to filter \code{within_level}, \code{the }within_level\verb{must be specified! Otherwise}{boundr}\verb{will apply them to}lookup\verb{instead. See examples. Vectors of multiple names or multiple codes can be supplied. If you supply both}within_names\code{and}within_codes\verb{, only }within_names\verb{will be used;}within_codes` will be ignored.}
 
 \item{lookup_year}{numeric or character. A specific year for data relating
-to parameter \code{x}, if needed. Defaults to \code{NULL}, which will return the most
-recent data.}
+to \code{lookup}, if you need it. Defaults to \code{NULL}, which then aims to return
+data for the most recent year available. Provide a full 4 digit number.}
 
 \item{within_year}{numeric or character. A specific year for data relating
-to parameter \code{y}, if needed. Defaults to \code{NULL}, which will return the most
-recent data.}
+to \code{within_level}, if you need it. Defaults to \code{NULL}, which then aims to
+return data for the most recent year available.  Provide as YYYY.}
 
-\item{country_filter}{character. Open Geography datasets are sometimes
-available just within certain countries. Specify a country code if you want
-your results restricted to a certain country only - eg "WA" for Wales, "EW"
-for England and Wales. By default returns all options.}
-
-\item{option}{numeric. Defaults to 1, which means that the URL will just be
-the first one from the list of possible services resulting from the level
-and year filters above. If this does not give you what you want, you can
-run the script again with a different option from the list.}
-
-\item{crs}{the Coordinate Reference System (CRS) code to use. 4326 by
-default.}
-
-\item{resolution}{character. See argument options for available options. How
-generalised should the boundary be, and whether coastal boundaries should
-adhere to the coastline or to the full territorial extent. BGC by default
-(G = Generalised (20m), C = limited to the coastline.) F indicates Full
-resolution; S indicates Super-generalised (200m); U indicates Ultra-
-generalised (500m) boundary resolution. Use E instead of C for full
-extent boundaries (e.g. BFE). Not all combinations are available.}
+\item{opts}{Should be set with the \code{boundr_options()} function. See
+\code{?boundr_options} for detail on what can be set by the user, and on the
+default values.}
 }
 \value{
+an \code{sfc} tibble (data frame with geometry)
+
 an \code{sfc} tibble (data frame with geometry)
 }
 \description{
 Return boundary data at a specified level and area from the ONS OG API
+
+Return centroid points at a specified level and area from the ONS OG API
 }
 \examples{
 bounds("msoa", "lad", "Swansea")
 bounds("msoa", "lad", "Shepway", lookup_year = 2011, within_year = 2015)
-bounds("rgn", country_filter = "EN", resolution = "BUC")
-bounds("parish", "lad", "Isles of Scilly")
+bounds("rgn", options = opts(resolution = "BUC"))
+bounds("par", "lad", "Isles of Scilly") # par = "parish"
 bounds("spr")
 bounds("npark", within_names = "Bannau Brycheiniog")
 
+points("msoa", "utla", "Swindon")
+}
+\seealso{
+boundr_options
 }
