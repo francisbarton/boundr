@@ -39,7 +39,7 @@ bounds <- function(
 #' @export
 points <- function(
     lookup,
-    within = NULL,
+    within_level = NULL,
     within_names = NULL,
     within_codes = NULL,
     lookup_year = NULL,
