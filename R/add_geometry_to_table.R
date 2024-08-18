@@ -94,23 +94,9 @@ pull_query_url <- function(geo_code_field, lookup, rs) {
       if_any("service_name", \(x) gregg(x, "^{toupper(lookup)}.*{rs}"))
     ) |>
     janitor::remove_empty("cols")
+  assert_that(nrow(s1) > 0, msg = no_table_msg(fn))
 
-  if (nrow(results) == 0) {
-    NULL
-  } else {
-    results |>
-      # any row of results should give the desired geo data. So take #1.
-      dplyr::slice(1) |>
-      dplyr::pull("service_url")
-  }
+  # Any row of results should give the desired geo data. (No need to do the
+  # option handling we do in other functions.) Just take #1.
+  s1[["service_url"]][[1]]
 }
-
-batch_it <- function(x, batch_size) {
-  f <- rep(1:ceiling(length(x) / batch_size), each = batch_size)[seq(length(x))]
-  split(x, f)
-}
-
-
-ifnull <- \(x, y) if (is.null(x)) y else x
-
-cd_colnames <- \(x) colnames(dplyr::select(x, ends_with("cd")))
