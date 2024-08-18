@@ -31,6 +31,48 @@ return_narrow_table_info <- function(lookup, lookup_year, rs = NULL) {
     within_code = NULL
   )
 }
+
+#' Get initial data about query
+#' @keywords internal
+return_lookup_table_info <- function(
+    lookup,
+    within_level,
+    lookup_year,
+    within_year,
+    joinable) {
+  fn <- "return_lookup_table_info"
+  ul <- toupper(lookup)
+  
+  s1 <- opengeo_schema |>
+    dplyr::filter(if_any("service_name", \(x) gregg(x, "{ul}.*_LU"))) |>
+    janitor::remove_empty("cols")
+  s1_names <- cd_colnames(s1)
+    
+  if (joinable) {
+    rx <- res_codes_regex()
+    sp <- opengeo_schema |>
+      dplyr::filter(if_any("service_name", \(x) gregg(x, "^{ul}.*_{rx}"))) |>
+      janitor::remove_empty("cols")
+    assert_that(nrow(sp) > 0, msg = no_table_msg(fn))
+    s1_names <- intersect(s1_names, cd_colnames(sp))
+  }
+    
+  lu_code_field <- return_field_code(lookup, s1_names, lookup_year)
+  assert_that(!is.null(lu_code_field), msg = no_lu_field_msg(fn))
+  s2 <- dplyr::filter(s1, !if_any(any_of(lu_code_field), is.na)) |>
+    janitor::remove_empty("cols")
+  assert_that(nrow(s2) > 0, msg = no_table_msg(fn))
+  
+  wn_code_field <- return_field_code(within_level, cd_colnames(s2), within_year)
+  if (is_interactive()) {
+    cli_alert_info("Using {.val {lu_code_field}}, {.val {wn_code_field}}")
+  }
+  list(
+    schema = s2,
+    lookup_code = lu_code_field,
+    within_code = wn_code_field
+  )
+}
 # Helper functions --------------------------------
 
 #' This is such a crucial function to the whole package! But so simple.
