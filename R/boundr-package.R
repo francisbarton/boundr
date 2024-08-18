@@ -9,11 +9,15 @@
 #' @importFrom tidyselect all_of any_of ends_with
 NULL
 
+#' The base part of the OpenGeography API standard URLs, for convenience
 #' @keywords internal
 base_url <- function() {
   "https://services1.arcgis.com/ESMARspQHYMw9BZ9/ArcGIS/rest/services"
 }
 
+#' Batch a vector into a list
+#' @param x a vector
+#' @param batch_size the number of items in each batch of the returned list
 #' @keywords internal
 batch_it <- function(x, batch_size) {
   f <- rep(1:ceiling(length(x) / batch_size), each = batch_size)[seq_along(x)]
@@ -21,8 +25,13 @@ batch_it <- function(x, batch_size) {
 }
 
 #' This is the same as `%||%` but I prefer to use bracketed fns than infixes
+#' @param x,y R objects
 #' @keywords internal
 ifnull <- \(x, y) if (is.null(x)) y else x
 
+#' Conveniently wrap a regex in glue::glue and pass it to grepl
+#' @param x A character vector that you want to check
+#' @param rx A string that when processed by glue() will be used as a regex
+#' @param ... arguments passed onto grepl()
 #' @keywords internal
 gregg <- \(x, rx, ...) grepl(glue(rx)[[1]], x, ...)

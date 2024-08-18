@@ -4,7 +4,7 @@ return_narrow_table_info <- function(lookup, lookup_year, rs = NULL) {
   fn <- "return_narrow_table_info"
   ul <- toupper(lookup)
   rs <- ifnull(rs, "NC")
-  
+
   assert_that(
     lookup != "oa",
     msg = paste0(
@@ -20,10 +20,10 @@ return_narrow_table_info <- function(lookup, lookup_year, rs = NULL) {
   lookup_year <- ifnull(lookup_year, max(s1_years))
   lu_code_field <- return_field_code(lookup, cd_colnames(s1), lookup_year, fn)
   assert_that(!is.null(lu_code_field), msg = no_lu_field_msg(fn))
-  
+
   s2 <- dplyr::filter(s1, !if_any(any_of(lu_code_field), is.na)) |>
     janitor::remove_empty("cols")
-  
+
   if (is_interactive()) cli_alert_info("Using {.val {lu_code_field}}")
   list(
     schema = s2,
@@ -42,12 +42,12 @@ return_lookup_table_info <- function(
     joinable) {
   fn <- "return_lookup_table_info"
   ul <- toupper(lookup)
-  
+
   s1 <- opengeo_schema |>
     dplyr::filter(if_any("service_name", \(x) gregg(x, "{ul}.*_LU"))) |>
     janitor::remove_empty("cols")
   s1_names <- cd_colnames(s1)
-    
+
   if (joinable) {
     rx <- res_codes_regex()
     sp <- opengeo_schema |>
@@ -56,13 +56,13 @@ return_lookup_table_info <- function(
     assert_that(nrow(sp) > 0, msg = no_table_msg(fn))
     s1_names <- intersect(s1_names, cd_colnames(sp))
   }
-    
+
   lu_code_field <- return_field_code(lookup, s1_names, lookup_year)
   assert_that(!is.null(lu_code_field), msg = no_lu_field_msg(fn))
   s2 <- dplyr::filter(s1, !if_any(any_of(lu_code_field), is.na)) |>
     janitor::remove_empty("cols")
   assert_that(nrow(s2) > 0, msg = no_table_msg(fn))
-  
+
   wn_code_field <- return_field_code(within_level, cd_colnames(s2), within_year)
   if (is_interactive()) {
     cli_alert_info("Using {.val {lu_code_field}}, {.val {wn_code_field}}")
@@ -89,7 +89,7 @@ process_query_info <- function(
   within_code_field <- query_info[["within_code"]]
   opt <- query_opt
   fn <- "process_query_info"
-  
+
   res <- schema[["service_name"]]
   if (is.null(opt) && length(res) > 1 && is_interactive()) {
     cli_alert_info("More than 1 result found:")
@@ -99,7 +99,7 @@ process_query_info <- function(
       "(Change the {.var query_option} parameter to try another data source.)"
     ))
   }
-    
+
   opt <- ifnull(opt, 1)
   if (opt > length(res)) {
     lr <- length(res)
@@ -129,7 +129,7 @@ process_query_info <- function(
     # oa21nm etc don't exist
     fields <- purrr::discard(fields, \(x) grepl("^oa.+nm$", x))
   }
-  
+
   if (is.null(within_names) && is.null(within_codes)) {
     where_list <- "1=1"
   } else if (!is.null(within_names)) {

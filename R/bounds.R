@@ -12,7 +12,7 @@
 #' bounds("par", "lad", "Isles of Scilly") # par = "parish"
 #' bounds("spr")
 #' bounds("npark", within_names = "Bannau Brycheiniog")
-#' 
+#'
 #' @seealso boundr_options
 #' @returns an `sfc` tibble (data frame with geometry)
 #' @export
@@ -50,9 +50,9 @@ points <- function(
 }
 
 #' Use this to set custom options for `bounds()` and `points()`
-#' 
+#'
 #' `opts()` is an alias for this function.
-#' 
+#'
 #' @param resolution character. See `res_codes()` for the potential options. How
 #'  generalised should the boundary be, and whether coastal boundaries should
 #'  adhere to the coastline or to the full territorial extent. BGC by default
@@ -73,12 +73,12 @@ points <- function(
 #'  level and year filters above. If this does not give you what you want, you
 #'  can run the script again with a different option from the list.
 #' @inheritParams api_data_req
-#' 
+#'
 #' @examples
 #' boundr_options(geometry = "centroids") # Return centroids! Instead of bounds
 #' boundr_options(crs = 27700) # Set the CRS to British National Grid
 #' boundr_options(return_width = "full") # Ask boundr to return all data columns
-#' 
+#'
 #' @export
 boundr_options <- opts <- function(
     resolution = res_codes(),

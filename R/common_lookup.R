@@ -1,5 +1,5 @@
 #' Common procedure for joinable and not-necessarily-joinable lookup()s
-#' 
+#'
 #' @param joinable logical. Whether this query is joinable (`TRUE`) or
 #'  forms part of a geospatial query (`FALSE`). In the latter case, this
 #'  function will try to return a lookup table that contains the appropriate

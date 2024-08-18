@@ -28,7 +28,7 @@ add_geometry_to_table <- add_geometry <- function(
   return_width <- opts[["rw"]]
   crs <- opts[["crs"]]
   query_option <- opts[["opt"]]
-  
+
   # select the leftmost matching column name
   l <- ifnull(lookup, "[a-z]")
   fallback_field <- first(grep(glue("^{l}.*cd$"), names(tbl), value = TRUE))
