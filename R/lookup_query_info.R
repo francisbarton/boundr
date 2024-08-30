@@ -91,7 +91,7 @@ return_lookup_table_info <- function(
     cli_alert_info("Using {.val {lu_code_field}}, {.val {wn_code_field}}")
   }
   list(
-    schema = s2,
+    schema = s3,
     lookup_code = lu_code_field,
     within_code = wn_code_field
   )
@@ -111,12 +111,10 @@ process_query_info <- function(
     query_opt) {
   schema <- query_info[["schema"]]
   lookup_code_field <- query_info[["lookup_code"]]
-  within_code_field <- query_info[["within_code"]]
-  opt <- query_opt
-  fn <- "process_query_info"
+  within_code_field <- ifnull(query_info[["within_code"]], lookup_code_field)
 
-  res <- schema[["service_name"]]
-  if (is.null(opt) && length(res) > 1 && is_interactive()) {
+  table_options <- schema[["service_name"]]
+  if (is.null(query_opt) && length(table_options) > 1 && is_interactive()) {
     cli_alert_info("More than 1 result found:")
     cli::cli_ol(table_options)
     cli_alert_info(c(
@@ -124,15 +122,15 @@ process_query_info <- function(
       "(Change the {.var query_option} parameter to try another data source.)"
     ))
   }
+  query_opt <- ifnull(query_opt, 1)
 
-  opt <- ifnull(opt, 1)
-  if (opt > length(res)) {
-    lr <- length(res)
+  if (query_opt > length(table_options)) {
+    lr <- length(table_options)
     cli_alert_info(c(
       "There is no option {.var {query_opt}}! There are only {.emph {lr}} ",
       "options available. Option {.strong {lr}} will be selected instead."
     ))
-    opt <- lr
+    query_opt <- lr
   }
   query_url <- schema[["service_url"]][[opt]]
 
