@@ -2,18 +2,18 @@
 % Please edit documentation in R/boundr-package.R
 \name{gregg}
 \alias{gregg}
-\title{Conveniently wrap a regex in glue::glue and pass it to grepl}
+\title{Conveniently wrap a regular expr in glue::glue_data() and pass to \code{grepl()}}
 \usage{
 gregg(x, rx, ...)
 }
 \arguments{
-\item{x}{A character vector that you want to check}
+\item{x}{A character vector to check}
 
-\item{rx}{A string that when processed by glue() will be used as a regex}
+\item{rx}{A string that after processing by glue_data() will be used as a regex pattern in \code{grepl()}}
 
-\item{...}{arguments passed onto grepl()}
+\item{...}{Arguments passed onto \code{grepl()}}
 }
 \description{
-Conveniently wrap a regex in glue::glue and pass it to grepl
+Conveniently wrap a regular expr in glue::glue_data() and pass to \code{grepl()}
 }
 \keyword{internal}
