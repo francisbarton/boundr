@@ -1,12 +1,13 @@
 #' Get initial data about query for "narrow" tables (with no lookup table)
+#' 
 #' @keywords internal
-return_narrow_table_info <- function(lookup, lookup_year, rs = NULL) {
+return_narrow_table_info <- function(lookup_level, lookup_year, rs = NULL) {
   fn <- "return_narrow_table_info"
-  ul <- toupper(lookup)
+  ul <- toupper(lookup_level)
   rs <- ifnull(rs, "NC")
 
   assert_that(
-    lookup != "oa",
+    lookup_level != "oa",
     msg = paste0(
       "You can't download an OA lookup table without supplying `within_level`.",
       "\nExample: `lookup('oa', within_level = 'msoa', 'Tendring 001')`"
@@ -18,8 +19,9 @@ return_narrow_table_info <- function(lookup, lookup_year, rs = NULL) {
   assert_that(nrow(s1) > 0, msg = no_table_msg(fn))
   s1_years <- as.numeric(stringr::str_extract(s1[["service_name"]], "\\d{4}"))
   lookup_year <- ifnull(lookup_year, max(s1_years))
-  lu_code_field <- return_field_code(lookup, cd_colnames(s1), lookup_year, fn)
-  assert_that(!is.null(lu_code_field), msg = no_lu_field_msg(fn))
+  lu_code_field <- lookup_level |>
+    return_field_code(cd_colnames(s1), lookup_year, fn)
+  assert_that(!is.null(lu_code_field), msg = no_lu_msg(fn))
 
   s2 <- dplyr::filter(s1, !if_any(any_of(lu_code_field), is.na)) |>
     janitor::remove_empty("cols")
@@ -33,18 +35,27 @@ return_narrow_table_info <- function(lookup, lookup_year, rs = NULL) {
 }
 
 #' Get initial data about query
+#' 
 #' @keywords internal
 return_lookup_table_info <- function(
-    lookup,
+    lookup_level,
     within_level,
     lookup_year,
     within_year,
     joinable) {
   fn <- "return_lookup_table_info"
-  ul <- toupper(lookup)
+  ul <- toupper(lookup_level)
+  wl <- toupper(within_level)
+  repl_empty <- \(x) if (rlang::is_empty(x)) "" else x
+  uy <- repl_empty(as.numeric(lookup_year) %% 100)
+  wy <- repl_empty(as.numeric(within_year) %% 100)
 
   s1 <- opengeo_schema |>
-    dplyr::filter(if_any("service_name", \(x) gregg(x, "{ul}.*_LU"))) |>
+    # prioritise tables with "lookup_level" at the start, or nearer to it
+    dplyr::filter(
+      if_any("service_name", \(x) gregg(x, "{ul}{uy}.*{wl}{wy}.*_LU"))
+    ) |>
+    dplyr::arrange(nchar(sub(glue("{ul}.*$"), "", .data[["service_name"]]))) |>
     janitor::remove_empty("cols")
   s1_names <- cd_colnames(s1)
 
