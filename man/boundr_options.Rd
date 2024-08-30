@@ -2,9 +2,17 @@
 % Please edit documentation in R/bounds.R
 \name{boundr_options}
 \alias{boundr_options}
+\alias{opts}
 \title{Use this to set custom options for \code{bounds()} and \code{points()}}
 \usage{
 boundr_options(
+  resolution = res_codes(),
+  return_width = c("tidy", "full", "minimal"),
+  crs = 4326,
+  query_option = NULL
+)
+
+opts(
   resolution = res_codes(),
   return_width = c("tidy", "full", "minimal"),
   crs = 4326,
@@ -41,8 +49,6 @@ can run the script again with a different option from the list.}
 \code{opts()} is an alias for this function.
 }
 \examples{
-boundr_options(geometry = "centroids") # Return centroids! Instead of bounds
 boundr_options(crs = 27700) # Set the CRS to British National Grid
 boundr_options(return_width = "full") # Ask boundr to return all data columns
-
 }
