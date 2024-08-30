@@ -4,6 +4,7 @@
 ^\.github$
 ^data-raw$
 ^README\.Rmd$
+^README\.qmd$
 ^codecov\.yml$
 ^_pkgdown\.yml$
 ^docs$
@@ -12,3 +13,4 @@
 ^R/extract_lookup\.R$
 ^boundr\.code-workspace$
 ^.lintr$
+^README_cache/.*$
