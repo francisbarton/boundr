@@ -34,7 +34,8 @@ common_lookup <- function(
     process_query_info(within_names, within_codes, return_width, query_option)
   tbl <- process_lookup_query_data(query_data) |>
     dplyr::bind_rows() |>
-    dplyr::select(!any_of(c("object_id", "global_id", "chgind"))) |>
+    janitor::clean_names() |>
+    dplyr::select(!any_of(drop_cols())) |>
     dplyr::distinct()
 
   if (lookup == "msoa") tbl <- add_msoa_names(tbl)
