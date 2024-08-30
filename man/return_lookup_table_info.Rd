@@ -5,7 +5,7 @@
 \title{Get initial data about query}
 \usage{
 return_lookup_table_info(
-  lookup,
+  lookup_level,
   within_level,
   lookup_year,
   within_year,

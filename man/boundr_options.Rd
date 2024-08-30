@@ -26,7 +26,8 @@ returned table to keep. Options are "tidy", "full" or "minimal". "Tidy" aims
 to return four data columns (usually) - two columns for the lookup level
 codes and names, and two for the within level codes and names. Plus a
 geometry column. "Full" aims to return all data columns from the lookup.
-"Minimal" aims to return just the two data columns relating to \code{lookup}.
+"Minimal" aims to return just the two data columns relating to
+\code{lookup_level}.
 If \code{within} is not supplied then "tidy" will be equivalent to "minimal".}
 
 \item{crs}{The Coordinate Reference System (CRS) code to use}
