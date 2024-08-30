@@ -83,7 +83,7 @@ return_narrow_bounds_info <- function(lookup, lookup_year, rs) {
   sp_years <- as.numeric(stringr::str_extract(sp[["service_name"]], "\\d{4}"))
   lookup_year <- ifnull(lookup_year, max(sp_years))
   lu_code_field <- return_field_code(lookup, cd_colnames(sp), lookup_year, fn)
-  assert_that(!is.null(lu_code_field), msg = no_lu_field_msg(fn))
+  assert_that(!is.null(lu_code_field), msg = no_lu_msg(fn))
 
   s2 <- dplyr::filter(sp, !if_any(.data[[lu_code_field]], is.na)) |>
     arrange_service_names_by_res_codes() |>
