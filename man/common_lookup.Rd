@@ -19,8 +19,7 @@ common_lookup(
 \item{joinable}{logical. Whether this query is joinable (\code{TRUE}) or
 forms part of a geospatial query (\code{FALSE}). In the latter case, this
 function will try to return a lookup table that contains the appropriate
-field for spatial data (that is, boundaries or centroids) to be joined onto.
-For \code{{boundr}}'s internal use only, users should ignore this.}
+field for spatial data (that is, boundaries or centroids) to be joined onto.}
 }
 \description{
 Common procedure for joinable and not-necessarily-joinable lookup()s
