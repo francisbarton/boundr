@@ -5,7 +5,7 @@
 \title{A list of all available resolutions for boundary geometries in the current
 OpenGeography schema. Not all resolutions are available for all area types!
 The most common ones are listed first, with the "generalised" (20m
-resolution) BGC being the default option if you don't specify one.}
+resolution) BGC being the preferred option if you don't specify one.}
 \usage{
 res_codes()
 }
@@ -13,5 +13,5 @@ res_codes()
 A list of all available resolutions for boundary geometries in the current
 OpenGeography schema. Not all resolutions are available for all area types!
 The most common ones are listed first, with the "generalised" (20m
-resolution) BGC being the default option if you don't specify one.
+resolution) BGC being the preferred option if you don't specify one.
 }
