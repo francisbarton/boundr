@@ -132,32 +132,24 @@ process_query_info <- function(
     ))
     query_opt <- lr
   }
-  query_url <- schema[["service_url"]][[opt]]
-
-  if (is.null(within_code_field)) { # from return_narrow_table_info()
-    fields <- "*" # no 'within_level' so we just get all fields
-  } else { # else we do a lookup table first
-    lookup_name_field <- sub("cd$", "nm", lookup_code_field)
-    within_name_field <- sub("cd$", "nm", within_code_field)
-    fields <- switch(return_width,
-      "tidy" = unique(c(
-        lookup_code_field,
-        lookup_name_field,
-        within_code_field,
-        within_name_field
-      )),
-      "full" = "*",
-      "minimal" = c(lookup_code_field, lookup_name_field)
-    )
-    # oa21nm etc don't exist
-    fields <- purrr::discard(fields, \(x) grepl("^oa.+nm$", x))
-  }
+  query_url <- schema[["service_url"]][[query_opt]]
+  
+  lookup_name_field <- sub("cd$", "nm", lookup_code_field)
+  within_name_field <- sub("cd$", "nm", within_code_field)
+  fields <- switch(return_width,
+    "tidy" = unique(c(
+      lookup_code_field, lookup_name_field, within_code_field, within_name_field
+    )),
+    "full" = "*",
+    "minimal" = c(lookup_code_field, lookup_name_field)
+  ) |>
+    purrr::discard(\(x) grepl("^oa.+nm$", x)) # OAs don't have names
 
   if (is.null(within_names) && is.null(within_codes)) {
-    where_list <- "1=1"
+    where_list <- "1=1" # this means "return all rows"
   } else if (!is.null(within_names)) {
     where_list <- build_where_list(within_name_field, within_names)
-  } else { # (!is.null(within_codes))
+  } else { # implied: !is.null(within_codes))
     where_list <- build_where_list(within_code_field, within_codes)
   }
 
