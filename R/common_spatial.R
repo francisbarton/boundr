@@ -104,12 +104,12 @@ cd_colnames <- \(x) colnames(dplyr::select(x, ends_with("cd")))
 #' A list of all available resolutions for boundary geometries in the current
 #' OpenGeography schema. Not all resolutions are available for all area types!
 #' The most common ones are listed first, with the "generalised" (20m
-#' resolution) BGC being the default option if you don't specify one.
+#' resolution) BGC being the preferred option if you don't specify one.
 #' @export
 res_codes <- function() {
   c(
-    "BGC", "BSC", "BUC", "BFC", "BGE", "BUE", "BFE",
-    "BGG", "FEB", "FCB", "GCB", "SGCB", "UGCB", "UGB"
+    "BGC", "BSC", "BUC", "BFC", "BGE", "BFE", "BUE",
+    "GCB", "SGCB", "UGB", "UGCB", "FCB", "FEB", "BGG"
   )
 }
 
