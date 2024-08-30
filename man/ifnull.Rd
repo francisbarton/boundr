@@ -2,7 +2,7 @@
 % Please edit documentation in R/boundr-package.R
 \name{ifnull}
 \alias{ifnull}
-\title{This is the same as \verb{\%||\%} but I prefer to use bracketed fns than infixes}
+\title{This is the same as \verb{\%||\%} but I prefer bracketed functions to infixes}
 \usage{
 ifnull(x, y)
 }
@@ -10,6 +10,6 @@ ifnull(x, y)
 \item{x, y}{R objects}
 }
 \description{
-This is the same as \verb{\%||\%} but I prefer to use bracketed fns than infixes
+This is the same as \verb{\%||\%} but I prefer bracketed functions to infixes
 }
 \keyword{internal}

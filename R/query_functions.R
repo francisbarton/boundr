@@ -99,12 +99,12 @@ query_opengeo_api <- function(req, max_tries = 3, verbosity = 0) {
     httr2::resp_check_status()
 }
 
-#' @noRd
+#' @keywords internal
 possibly_query_opengeo_api <- function(...) {
   purrr::possibly(query_opengeo_api)(...)
 }
 
-#' @noRd
+#' @keywords internal
 possibly_parse_json <- function(...) {
   purrr::possibly(httr2::resp_body_json)(...)
 }

@@ -176,7 +176,7 @@ process_spatial_query_data <- function(query_data, crs) {
     purrr::map(\(x) return_query_ids(query_url, where_string = x)) |>
     purrr::list_c()
   ids |>
-    batch_it(100) |>
+    batch_it(100L) |>
     purrr::map(
       \(x) return_spatial_data(x, query_url, fields, crs),
       .progress = if (is_interactive()) "Retrieving spatial data" else FALSE
@@ -191,7 +191,7 @@ return_query_ids <- function(query_url, where_string) {
   assert_that(
     is.vector(ids),
     !is.list(ids),
-    length(ids),
+    length(ids) > 0,
     is.numeric(ids),
     msg = glue("{.fn {fn}}: The query has not returned any valid result IDs.")
   )
@@ -205,15 +205,15 @@ return_query_ids <- function(query_url, where_string) {
 #' This is such a crucial function to the whole package! But so simple.
 #' @keywords internal
 build_flat_query <- function(var, vec) {
-  y <- stringr::str_flatten(glue("'{unique(vec)}'"), collapse = ",")
-  glue("{var} IN ({y})")
+  fvec <- stringr::str_flatten(glue("'{unique(vec)}'"), collapse = ",")
+  glue("{var} IN ({fvec})")
 }
 
 #' @keywords internal
 build_where_list <- function(var, vec) {
   unique(vec) |>
     batch_it(50L) |> # turns out this limit is rather crucial!
-    purrr::map(\(x) build_flat_query(var, x))
+    purrr::map_chr(\(x) build_flat_query(var, x))
 }
 
 #' @keywords internal
@@ -229,7 +229,7 @@ return_field_code <- function(x, names_vec, year = NULL, fn = NULL) {
       stringr::str_extract("\\d{2}(?=cd$)") |>
       as.numeric()
     year <- if_else(y2 > 30, y2 + 1900, y2 + 2000) # Will need updating in 2031!
-    year <- max(year, na.rm = TRUE) # should return most recent year by default
+    year <- max(year) # should return most recent year by default
   }
   y2 <- stringr::str_extract(year, "\\d{2}$") # or `as.numeric(year) %% 100`
   field_code <- first(stringr::str_subset(names_vec, glue("^{x}{y2}cd$")))
