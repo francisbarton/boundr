@@ -7,7 +7,7 @@
 #'  For `{boundr}`'s internal use only, users should ignore this.
 #' @keywords internal
 common_lookup <- function(
-    lookup,
+    lookup_level,
     within_level = NULL,
     within_names = NULL,
     within_codes = NULL,
@@ -15,15 +15,15 @@ common_lookup <- function(
     within_year = NULL,
     opts = boundr_options(),
     joinable = FALSE) {
-  lookup <- tolower(lookup)
+  lookup_level <- tolower(lookup_level)
   return_width <- opts[["rw"]]
   query_option <- opts[["opt"]]
 
   if (is.null(within_level)) {
-    query_info <- return_narrow_table_info(lookup, lookup_year)
+    query_info <- return_narrow_table_info(lookup_level, lookup_year)
   } else {
     query_info <- return_lookup_table_info(
-      lookup,
+      lookup_level,
       within_level,
       lookup_year,
       within_year,

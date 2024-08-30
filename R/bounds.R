@@ -17,7 +17,7 @@
 #' @returns an `sfc` tibble (data frame with geometry)
 #' @export
 bounds <- function(
-    lookup,
+    lookup_level,
     within_level = NULL,
     within_names = NULL,
     within_codes = NULL,
@@ -38,7 +38,7 @@ bounds <- function(
 #' @rdname bounds
 #' @export
 points <- function(
-    lookup,
+    lookup_level,
     within_level = NULL,
     within_names = NULL,
     within_codes = NULL,
@@ -66,7 +66,8 @@ points <- function(
 #'  to return four data columns (usually) - two columns for the lookup level
 #'  codes and names, and two for the within level codes and names. Plus a
 #'  geometry column. "Full" aims to return all data columns from the lookup.
-#'  "Minimal" aims to return just the two data columns relating to `lookup`.
+#'  "Minimal" aims to return just the two data columns relating to
+#'  `lookup_level`.
 #'  If `within` is not supplied then "tidy" will be equivalent to "minimal".
 #' @param query_option numeric. Defaults to 1, which means that the URL will
 #'  just be the first one from the list of possible services resulting from the
