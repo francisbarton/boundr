@@ -86,11 +86,7 @@ boundr_options <- opts <- function(
     return_width = c("tidy", "full", "minimal"),
     crs = 4326,
     query_option = NULL) {
-# rs <- if (is_missing(resolution)) res_codes_regex() else arg_match(resolution)
-  list(
-    rs = arg_match(resolution),
-    rw = arg_match(return_width),
-    crs = crs,
-    opt = query_option
-  )
+  rw = arg_match(return_width)
+  list(rs = condense(resolution), rw = rw, crs = crs, opt = query_option)
 }
+condense <- \(vec) glue("({paste0(vec, collapse = '|')})")
