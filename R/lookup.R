@@ -42,5 +42,5 @@ lookup <- function(
     within_year = NULL,
     opts = boundr_options()) {
   curr_args <- rlang::call_args(rlang::current_call())
-  common_lookup(!!!curr_args)
+  rlang::inject(common_lookup(!!!curr_args))
 }
