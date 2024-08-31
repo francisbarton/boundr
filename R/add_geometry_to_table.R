@@ -109,6 +109,7 @@ pull_query_url <- function(geo_code_field, lookup_level, rs) {
 #'
 #' @param x schema tibble
 #' @param r vector of resolution codes e.g. "BGC" "BFE"
+#' @keywords internal
 arrange_service_nms_by_res <- function(x, r = res_codes()) {
   safe_min <- \(x) suppressWarnings(min(x)) # It's OK if we get an Inf!
   score <- \(nm) safe_min(which(purrr::map_lgl(r, \(x) grepl(x, nm))))

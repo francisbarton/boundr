@@ -14,3 +14,4 @@ arrange_service_nms_by_res(x, r = res_codes())
 \description{
 Arrange geo schema by preferred resolutions (only applies when no user pref)
 }
+\keyword{internal}

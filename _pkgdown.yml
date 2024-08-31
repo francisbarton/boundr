@@ -12,5 +12,8 @@ reference:
   - centroids
   - lookup
   - add_geometry_to_table
+  - boundr_options
 
 - title: Other functions
+  contents:
+  - res_codes
