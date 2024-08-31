@@ -188,6 +188,6 @@ return_spatial_data <- function(
   } else {
     ret |>
       httr2::resp_body_string() |>
-      sf::st_read(quiet = TRUE, as_tibble = TRUE)
+      sf::read_sf()
   }
 }
