@@ -43,6 +43,8 @@ default values.}
 \value{
 If successful, will return the initial table with an additional
 geometry column added. Duplicate rows will be removed.
+tibble::tibble(wd23cd = c("S13003001", "N08000520", "W05001522")) |>
+add_geometry_to_table(geo_code_field = "wd23cd")
 }
 \description{
 If you have a tibble such as those produced by \code{lookup()} - that is, there is
