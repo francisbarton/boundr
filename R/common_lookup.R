@@ -58,7 +58,10 @@ add_msoa_names <- function(x) {
     mcol <- first(stringr::str_subset(names(x), "^msoa[12]1cd$"))
     hocl_tbl <- if (mcol == "msoa21cd") hocl_msoa21_names else hocl_msoa11_names
     join_vars <- intersect(names(x), names(hocl_tbl))
-    dplyr::inner_join(hocl_tbl, x, by = join_vars)
+    x |>
+      dplyr::left_join(hocl_tbl, by = join_vars) |>
+      dplyr::relocate(contains("hclnm"), .after = all_of(join_vars)) |>
+      dplyr::relocate(any_of("geometry"), .after = tidyselect::last_col())
   }
 }
 
