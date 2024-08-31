@@ -100,7 +100,7 @@ create_lookup_table <- function(
   ids <- unique(return_result_ids(query_base_url, where = within_string))
 
   assert_that(
-    is.vector(ids) & !is.list(ids) & length(ids),
+    is.vector(ids) && !is.list(ids) && length(ids),
     msg = "create_lookup_table: The query has not returned any result IDs."
   )
 
