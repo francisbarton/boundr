@@ -124,7 +124,7 @@ return_result_ids <- function(url, where, max_tries = 3, verbosity = 0, ...) {
     possibly_query_opengeo_api(max_tries = max_tries, verbosity = verbosity)
 
   if (is.null(ret)) {
-    cli::cli_alert_info("{.fn {return_result_ids}} reurned NULL data")
+    cli_abort("{.fn {return_result_ids}} returned NULL data")
     ret
   } else {
     data <- possibly_parse_json(ret)
@@ -156,7 +156,7 @@ return_table_data <- function(
     possibly_query_opengeo_api(max_tries = max_tries, verbosity = verbosity)
 
   if (is.null(ret)) {
-    cli::cli_alert_info("{.fn {return_table_data}} reurned NULL data")
+    cli_abort("{.fn {return_table_data}} returned NULL data")
     ret
   } else {
     # slightly more verbose than using purrr::map_df ... but safer?
@@ -188,7 +188,7 @@ return_spatial_data <- function(
   ret <- api_data_req(ids, url, fields, geo = TRUE, crs, ...) |>
     possibly_query_opengeo_api(max_tries = max_tries, verbosity = verbosity)
   if (is.null(ret)) {
-    cli::cli_alert_info("{.fn return_spatial_data} returned NULL data")
+    cli_abort("{.fn return_spatial_data} returned NULL data")
     ret
   } else {
     ret |>
