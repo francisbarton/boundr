@@ -88,13 +88,25 @@ pull_query_url <- function(geo_code_field, lookup, rs) {
   fn <- "pull_query_url"
   s1 <- opengeo_schema |>
     dplyr::filter(
-      if_any(any_of(geo_code_field), \(x) !is.na(x)) &
-      if_any("service_name", \(x) gregg(x, "^{toupper(lookup)}.*{rs}"))
+      if_any(.data[[geo_code_field]], \(x) !is.na(x)) &
+      if_any("service_name", \(x) gregg(x, "^{ul}.*{rs}"))
     ) |>
-    janitor::remove_empty("cols")
-  assert_that(nrow(s1) > 0, msg = no_table_msg(fn))
+    arrange_service_names_by_res_codes() |>
+    janitor::remove_empty("cols") |>
+    rlang::with_options(lifecycle_verbosity = "quiet")
+  assert_that(nrow(s1) > 0, msg = no_table_msg("pull_query_url"))
 
   # Any row of results should give the desired geo data. (No need to do the
   # option handling we do in other functions.) Just take #1.
   s1[["service_url"]][[1]]
+}
+
+#' Arrange geo schema by preferred resolutions (only applies when no user pref)
+#' 
+#' @param x schema tibble
+#' @param r vector of resolution codes e.g. "BGC" "BFE"
+arrange_service_names_by_res_codes <- function(x, r = res_codes()) {
+  safe_min <- \(x) suppressWarnings(min(x)) # It's OK if we get an Inf!
+  score <- \(nm) safe_min(which(purrr::map_lgl(r, \(x) grepl(x, nm))))
+  dplyr::arrange(x, purrr::map_dbl(.data[["service_name"]], score))
 }

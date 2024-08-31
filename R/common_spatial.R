@@ -84,8 +84,10 @@ return_narrow_bounds <- function(lookup, lookup_year, rs) {
   lu_code_field <- return_field_code(lookup, cd_colnames(sp), lookup_year, fn)
   assert_that(!is.null(lu_code_field), msg = no_lu_field_msg(fn))
 
-  s2 <- dplyr::filter(sp, !if_any(any_of(lu_code_field), is.na)) |>
-    janitor::remove_empty("cols")
+  s2 <- dplyr::filter(sp, !if_any(.data[[lu_code_field]], is.na)) |>
+    arrange_service_names_by_res_codes() |>
+    janitor::remove_empty("cols") |>
+    rlang::with_options(lifecycle_verbosity = "quiet")
 
   if (is_interactive()) cli_alert_info("Using {.val {lu_code_field}}")
   list(
