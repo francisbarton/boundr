@@ -6,7 +6,7 @@
 \title{Return boundary data at a specified level and area from the ONS OG API}
 \usage{
 bounds(
-  lookup,
+  lookup_level,
   within_level = NULL,
   within_names = NULL,
   within_codes = NULL,
@@ -16,7 +16,7 @@ bounds(
 )
 
 points(
-  lookup,
+  lookup_level,
   within_level = NULL,
   within_names = NULL,
   within_codes = NULL,
@@ -26,14 +26,14 @@ points(
 )
 }
 \arguments{
-\item{lookup}{character. Lower level area code eg "lsoa", "wd", "lad".}
+\item{lookup_level}{character. Lower level area code eg "lsoa", "wd", "lad".}
 
 \item{within_level}{character. Higher level area code eg "lad", "cty", "icb".
-(That is, higher (conceptually) than \code{lookup}; aka larger than \code{lookup}!).
-If not supplied, this uses the default \code{NULL}, and just data for \code{lookup}
-will be returned. In this case, \code{within_names} and \code{within_codes} (if
-supplied) will instead be taken to refer to, and used to filter at, the
-\code{lookup} level.}
+(That is, higher (conceptually) than \code{lookup_level}; aka larger than
+\code{lookup}!). If not supplied, this uses the default \code{NULL}, and just data
+for \code{lookup_level} will be returned. In this case, \code{within_names} and
+\code{within_codes} (if supplied) will instead be taken to refer to, and used to
+filter at, the \code{lookup_level} level.}
 
 \item{within_names, within_codes}{character. In order to restrict data
 returned to a specific area, either \code{within_names} or \code{within_codes} must
@@ -41,15 +41,20 @@ be provided. Otherwise all available boundaries at that level will be
 retrieved. Use place names eg "Essex" to restrict to a certain
 geographical area. Or use ONS area codes eg "W02000103" likewise (this is
 useful with wards, where there are many that share identical names).
-To use this argument to filter \code{within_level}, \code{the }within_level\verb{must be specified! Otherwise}{boundr}\verb{will apply them to}lookup\verb{instead. See examples. Vectors of multiple names or multiple codes can be supplied. If you supply both}within_names\code{and}within_codes\verb{, only }within_names\verb{will be used;}within_codes` will be ignored.}
+To use this argument to filter \code{within_level}, the \code{within_level} must be
+specified! Otherwise \code{{boundr}} will apply them to \code{lookup_level} instead.
+See examples.
+Vectors of multiple names or multiple codes can be supplied.
+If you supply both \code{within_names} and \code{within_codes}, only \code{within_names}
+will be used; (\code{within_codes} will be ignored).}
 
 \item{lookup_year}{numeric or character. A specific year for data relating
-to \code{lookup}, if you need it. Defaults to \code{NULL}, which then aims to return
-data for the most recent year available. Provide a full 4 digit number.}
+to \code{lookup_level}, if you need it. Defaults to \code{NULL}, which then aims to
+return data for the most recent year available. Provide as YYYY.}
 
 \item{within_year}{numeric or character. A specific year for data relating
 to \code{within_level}, if you need it. Defaults to \code{NULL}, which then aims to
-return data for the most recent year available.  Provide as YYYY.}
+return data for the most recent year available. Provide as YYYY.}
 
 \item{opts}{Should be set with the \code{boundr_options()} function. See
 \code{?boundr_options} for detail on what can be set by the user, and on the

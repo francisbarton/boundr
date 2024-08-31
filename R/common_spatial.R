@@ -1,12 +1,12 @@
 #' Common spatial query build procedure used for both `bounds()` and `points()`
 #'
-#' @keywords internal
 #' @param geometry character. Two options: "boundaries" (the default) and
 #'  "centroids". By default, `bounds()` will return boundaries and `points()`
 #'  will return centroids.
 #' @inheritParams bounds
+#' @keywords internal
 common_spatial <- function(
-    lookup,
+    lookup_level,
     within_level = NULL,
     within_names = NULL,
     within_codes = NULL,
@@ -16,10 +16,8 @@ common_spatial <- function(
     opts = boundr_options(),
     # "Prefer an enum"! https://design.tidyverse.org/boolean-strategies.html
     geometry = c("boundaries", "centroids")) {
-  gm_type <- geometry
-  fn <- if (gm_type == "centroids") "points()" else "bounds()"
-
-  lookup <- tolower(lookup)
+  gm_type <- arg_match(geometry)
+  lookup_level <- tolower(lookup_level)
   rs <- if (gm_type == "centroids") "(PopCentroids|PWC|AWC)" else opts[["rs"]]
   return_width <- opts[["rw"]]
   crs <- opts[["crs"]]
@@ -28,7 +26,7 @@ common_spatial <- function(
   if (is.null(within_level)) {
     if (is.null(within_codes) && is.null(within_names)) {
       assert_that(
-        !lookup %in% c("oa", "lsoa"),
+        !lookup_level %in% c("oa", "lsoa"),
         msg = paste0(
           "{boundr} won't let you download OA or LSOA geometry data without a ",
           "`within*` argument in place to filter the results a bit!\n",
@@ -39,13 +37,14 @@ common_spatial <- function(
     query_info <- return_narrow_table_info(lookup, lookup_year, rs)
     query_data <- query_info |>
       process_query_info(within_names, within_codes, return_width, query_option)
+    
     tbl <- process_spatial_query_data(query_data, crs) |>
       dplyr::bind_rows() |>
       dplyr::select(!any_of(c("object_id", "global_id", "chgind"))) |>
       dplyr::distinct()
   } else {
     lookup_tbl <- common_lookup(
-      lookup,
+      lookup_level,
       within_level,
       within_names,
       within_codes,
@@ -54,10 +53,10 @@ common_spatial <- function(
       opts,
       joinable = TRUE
     )
-    tbl <- add_geometry(lookup_tbl, gm_type, lookup, NULL, opts)
+    tbl <- add_geometry_to_table(lookup_tbl, gm_type, lookup_level, NULL, opts)
   }
 
-  if (lookup == "msoa") tbl <- add_msoa_names(tbl)
+  if (lookup_level == "msoa") tbl <- add_msoa_names(tbl)
   if (return_width != "full") tbl <- remove_nmw(tbl)
 
   tbl |>

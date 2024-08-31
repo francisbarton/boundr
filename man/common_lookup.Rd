@@ -5,7 +5,7 @@
 \title{Common procedure for joinable and not-necessarily-joinable lookup()s}
 \usage{
 common_lookup(
-  lookup,
+  lookup_level,
   within_level = NULL,
   within_names = NULL,
   within_codes = NULL,

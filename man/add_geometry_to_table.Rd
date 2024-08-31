@@ -8,7 +8,15 @@
 add_geometry_to_table(
   tbl,
   geometry = c("boundaries", "centroids"),
-  lookup = NULL,
+  lookup_level = NULL,
+  geo_code_field = NULL,
+  opts = boundr_options()
+)
+
+add_geometry(
+  tbl,
+  geometry = c("boundaries", "centroids"),
+  lookup_level = NULL,
   geo_code_field = NULL,
   opts = boundr_options()
 )
@@ -22,7 +30,7 @@ in 'cd' by default as the basis for retrieving boundary or point data.}
 "centroids". By default, \code{bounds()} will return boundaries and \code{points()}
 will return centroids.}
 
-\item{lookup}{character. Lower level area code eg "lsoa", "wd", "lad".}
+\item{lookup_level}{character. Lower level area code eg "lsoa", "wd", "lad".}
 
 \item{geo_code_field}{character The column name from \code{tbl} for which you
 wish to retrieve spatial data. By default, \code{add_geometry_to_table()} will
