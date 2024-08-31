@@ -9,6 +9,7 @@ add_geometry_to_table(
   points = FALSE,
   lookup = NULL,
   geo_code_field = NULL,
+  return_width = c("tidy", "full", "minimal"),
   crs = 4326,
   resolution = c("BGC", "BSC", "BUC", "BFC", "BFE")
 )
@@ -27,6 +28,9 @@ Equivalent to the \code{lookup} parameter in \code{bounds()}.}
 \item{geo_code_field}{character The column name from \code{tbl} for which you
 wish to retrieve spatial data. By default, \code{add_bounds_to_table()} will use
 the lefthand-most column that ends in "cd"}
+
+\item{return_width}{character. How many of the possible columns in the
+returned table to keep. Options are "tidy", "full" or "minimal".}
 
 \item{crs}{the Coordinate Reference System (CRS) code to use. 4326 by
 default.}
