@@ -36,6 +36,7 @@ library(tmap)
 />
 <br clear="all" />
 </div>
+
 <div>
 The main purpose of this package is to download area lookups and boundaries to
   R tables, using the ONS Open Geography API, for all areas at a specified
@@ -44,7 +45,6 @@ The main purpose of this package is to download area lookups and boundaries to
 The main script `bounds()` will return a data frame with the sub-area geometry
   column, as an `sf` object ready to be visualised as a map.
 </div>
-
 </div>
 
 ## Installation
