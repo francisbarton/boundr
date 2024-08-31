@@ -12,8 +12,8 @@ knitr:
 #| include: false
 
 library(boundr)
-library(tmap)
 library(ggplot2)
+library(tmap)
 
 ```
 
@@ -26,15 +26,16 @@ library(ggplot2)
 ### Retrieve area boundaries and data from the ONS Open Geography Portal
 
 <div style="display: flex; align-items: center;">
-
 <div style="flex: 0 0 auto; margin-right: 20px;">
-  <img
+<img
     src="inst/boundr_hex_logo.png"
-    style="height: 300px; width: 259px;"
-    alt="The boundr package hexagonal logo - the word boundr superimposed on a cropped map of the Isles of Scilly, with the island parishes differently coloured, on a sea blue background."
-  />
+    height="300px" width="259px" hspace=20 vspace=20
+    alt="The boundr package hexagonal logo - the word boundr superimposed on a
+      cropped map of the Isles of Scilly, with the island parishes differently
+      coloured, on a sea blue background."
+/>
+<br clear="all" />
 </div>
-
 <div>
 The main purpose of this package is to download area lookups and boundaries to
   R tables, using the ONS Open Geography API, for all areas at a specified
@@ -88,20 +89,17 @@ lookup("spc", "spr")
 ```
 
 
-### A lookup table for wards to Senedd electoral regions
-
 Sometimes boundr needs a little help finding what you are looking for.
 Supplying a year or country filter can help get the right table.
 
-Using `return_with = "full"` includes all available columns, not just those referred to by the `lookup` and `within` arguments.
+### A lookup table for wards to Senedd electoral regions
+
+Using `return_with = "full"` includes all available columns, not just those
+  referred to by the `lookup_level` and `within_level` arguments.
 
 ```{r example-4}
 
-# This doesn't succeed:
-lookup("wd", "sener")
-
-# supplying a year helps:
-lookup("wd", "sener", lookup_year = 2023, opts = opts(return_width = "full"))
+lookup("wd", "sener", opts = opts(return_width = "full"))
 
 ```
 

@@ -12,14 +12,12 @@
 <div style="flex: 0 0 auto; margin-right: 20px;">
 <img
     src="inst/boundr_hex_logo.png"
-    height="300px"
-    width="259px"
-    hspace=20
-    vspace=20
-    alt="The boundr package hexagonal logo - the word boundr superimposed on a cropped map of the Isles of Scilly, with the island parishes differently
-    coloured, on a sea blue background."
-/>
-<br clear="all" />
+    height="300px" width="259px" hspace=20 vspace=20
+    alt="The boundr package hexagonal logo - the word boundr superimposed on a
+      cropped map of the Isles of Scilly, with the island parishes differently
+      coloured, on a sea blue background."
+/> <br clear="all" />
+
 </div>
 <div>
 
@@ -133,37 +131,16 @@ lookup("spc", "spr")
     10 S16000104 Edinburgh Central              S17000012 Lothian              
     # ℹ 63 more rows
 
-### A lookup table for wards to Senedd electoral regions
-
 Sometimes boundr needs a little help finding what you are looking for.
 Supplying a year or country filter can help get the right table.
 
+### A lookup table for wards to Senedd electoral regions
+
 Using `return_with = "full"` includes all available columns, not just
-those referred to by the `lookup` and `within` arguments.
+those referred to by the `lookup_level` and `within_level` arguments.
 
 ``` r
-# This doesn't succeed:
-lookup("wd", "sener")
-```
-
-    # A tibble: 764 × 4
-       wd23cd    wd23nm                          sener23cd sener23nm  
-       <chr>     <chr>                           <chr>     <chr>      
-     1 W05001715 Bangor Is-y-Coed                W10000001 North Wales
-     2 W05001714 Acton and Maesydre              W10000001 North Wales
-     3 W05001713 Acrefair North                  W10000001 North Wales
-     4 W05001615 Whitford                        W10000001 North Wales
-     5 W05001614 Treuddyn                        W10000001 North Wales
-     6 W05001613 Shotton West                    W10000001 North Wales
-     7 W05001612 Shotton East and Shotton Higher W10000001 North Wales
-     8 W05001611 Saltney Ferry                   W10000001 North Wales
-     9 W05001610 Queensferry and Sealand         W10000001 North Wales
-    10 W05001609 Pen-y-ffordd                    W10000001 North Wales
-    # ℹ 754 more rows
-
-``` r
-# supplying a year helps:
-lookup("wd", "sener", lookup_year = 2023, opts = opts(return_width = "full"))
+lookup("wd", "sener", opts = opts(return_width = "full"))
 ```
 
     # A tibble: 764 × 9
