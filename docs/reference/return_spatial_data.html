@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">boundr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.99</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,15 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">return_spatial_data</span><span class="op">(</span><span class="va">ids</span>, <span class="va">url</span>, crs <span class="op">=</span> <span class="fl">4326</span>, max_tries <span class="op">=</span> <span class="fl">3</span>, verbosity <span class="op">=</span> <span class="fl">0</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">return_spatial_data</span><span class="op">(</span></span>
+<span>  <span class="va">ids</span>,</span>
+<span>  <span class="va">url</span>,</span>
+<span>  <span class="va">fields</span>,</span>
+<span>  crs <span class="op">=</span> <span class="fl">4326</span>,</span>
+<span>  max_tries <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  verbosity <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -46,16 +54,19 @@
 
 
 <dl><dt id="arg-ids">ids<a class="anchor" aria-label="anchor" href="#arg-ids"></a></dt>
-<dd><p>the IDs of the data to be requested</p></dd>
+<dd><p>The IDs of the data to be requested</p></dd>
 
 
 <dt id="arg-url">url<a class="anchor" aria-label="anchor" href="#arg-url"></a></dt>
 <dd><p>The API URL to query</p></dd>
 
 
+<dt id="arg-fields">fields<a class="anchor" aria-label="anchor" href="#arg-fields"></a></dt>
+<dd><p>Which fields to include in the table returned</p></dd>
+
+
 <dt id="arg-crs">crs<a class="anchor" aria-label="anchor" href="#arg-crs"></a></dt>
-<dd><p>the Coordinate Reference System (CRS) code to use. 4326 by
-default.</p></dd>
+<dd><p>The Coordinate Reference System (CRS) code to use</p></dd>
 
 
 <dt id="arg-max-tries">max_tries<a class="anchor" aria-label="anchor" href="#arg-max-tries"></a></dt>
@@ -71,7 +82,7 @@ detail.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>any arguments to be passed to <code><a href="opengeo_api_req.html">opengeo_api_req()</a></code></p></dd>
+<dd><p>Any arguments to be passed to <code><a href="opengeo_api_req.html">opengeo_api_req()</a></code></p></dd>
 
 </dl></div>
 
@@ -84,7 +95,7 @@ detail.</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.9000.</p>
 </div>
 
     </footer></div>
