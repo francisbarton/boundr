@@ -9,8 +9,8 @@ reference:
     Functions that users will mainly use to operate `boundr`
   contents:
   - bounds
-  - points
-  - create_lookup_table
+  - centroids
+  - lookup
   - add_geometry_to_table
 
 - title: Other functions
