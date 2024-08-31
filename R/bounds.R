@@ -76,12 +76,10 @@ points <- function(
 #' @inheritParams api_data_req
 #'
 #' @examples
-#' boundr_options(geometry = "centroids") # Return centroids! Instead of bounds
 #' boundr_options(crs = 27700) # Set the CRS to British National Grid
 #' boundr_options(return_width = "full") # Ask boundr to return all data columns
-#'
 #' @export
-boundr_options <- opts <- function(
+boundr_options <- function(
     resolution = res_codes(),
     return_width = c("tidy", "full", "minimal"),
     crs = 4326,
@@ -89,4 +87,9 @@ boundr_options <- opts <- function(
   rw = arg_match(return_width)
   list(rs = condense(resolution), rw = rw, crs = crs, opt = query_option)
 }
+
+#' @rdname boundr_options
+#' @export
+opts <- boundr_options
+
 condense <- \(vec) glue("({paste0(vec, collapse = '|')})")
