@@ -1,4 +1,10 @@
-#' @noRd
+#' Common spatial query build procedure used for both `bounds()` and `points()`
+#' 
+#' @keywords internal
+#' @param geometry character. Two options: "boundaries" (the default) and
+#'  "centroids". By default, `bounds()` will return boundaries and `points()`
+#'  will return centroids.
+#' @inheritParams bounds
 common_spatial <- function(
     lookup,
     within = NULL,
