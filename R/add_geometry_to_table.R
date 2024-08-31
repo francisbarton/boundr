@@ -90,8 +90,8 @@ add_geometry <- add_geometry_to_table
 
 # Helper functions --------------------------------
 
-pull_query_url <- function(geo_code_field, lookup, rs) {
-  fn <- "pull_query_url"
+pull_query_url <- function(geo_code_field, lookup_level, rs) {
+  ul <- toupper(lookup_level)
   s1 <- opengeo_schema |>
     dplyr::filter(
       if_any(.data[[geo_code_field]], \(x) !is.na(x)) &
