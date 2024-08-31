@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">boundr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.99</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,12 +33,12 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.7" id="boundr-v037-august-11-2024">boundr v0.3.7 (August 11, 2024)<a class="anchor" aria-label="anchor" href="#boundr-v037-august-11-2024"></a></h2>
-<ul><li>Improves the behaviour of <code><a href="../reference/bounds.html">bounds()</a></code> and <code><a href="../reference/points.html">points()</a></code> by making it less likely that a lookup table will be created that does not match a geo data field</li>
-<li>Internally, shared code within <code><a href="../reference/bounds.html">bounds()</a></code> and <code><a href="../reference/points.html">points()</a></code> has been refactored out into a common function (not user-facing), making <code><a href="../reference/bounds.html">bounds()</a></code> and <code><a href="../reference/points.html">points()</a></code> more like wrapper functions.</li>
+<ul><li>Improves the behaviour of <code><a href="../reference/bounds.html">bounds()</a></code> and <code><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points()</a></code> by making it less likely that a lookup table will be created that does not match a geo data field</li>
+<li>Internally, shared code within <code><a href="../reference/bounds.html">bounds()</a></code> and <code><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points()</a></code> has been refactored out into a common function (not user-facing), making <code><a href="../reference/bounds.html">bounds()</a></code> and <code><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points()</a></code> more like wrapper functions.</li>
 <li>Several helper functions have been tidied up and some unnecessary duplication of functionality across helpers for lookup table creation and spatial data retrieval has been removed, making fewer and leaner helper functions and removing a chunk of code from the package.</li>
 <li>
 <a href="https://cli.r-lib.org" class="external-link">cli</a> has been used to produce user-facing error messages, in place of <a href="https://usethis.r-lib.org" class="external-link">usethis</a>.</li>
-<li>The function that allows the user to supply their own lookup table and have <a href="https://github.com/francisbarton/boundr" class="external-link">boundr</a> automatically add geo data to it to create an <code>sfc</code> object has now been improved and should be functional as intended.</li>
+<li>The function that allows the user to supply their own lookup table and have <a href="https://codeberg.org/francisbarton/boundr" class="external-link">boundr</a> automatically add geo data to it to create an <code>sfc</code> object has now been improved and should be functional as intended.</li>
 <li>Linting has been added to the development process through the adoption of <a href="https://github.com/r-lib/lintr" class="external-link">lintr</a>.</li>
 <li>The convoluted process for handling MSOA-based lookups has now been obviated entirely - the ONS site now seems to support MSOA-based lookups much better.</li>
 <li>Internal copy of the schema data updated.</li>
@@ -54,7 +54,7 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.5" id="boundr-v035-june-24-2023">boundr v0.3.5 (June 24, 2023)<a class="anchor" aria-label="anchor" href="#boundr-v035-june-24-2023"></a></h2>
 <ul><li>Some work to improve the handling of MSOA queries</li>
-<li>Create <code><a href="../reference/points.html">points()</a></code> function to handle centroids queries more neatly</li>
+<li>Create <code><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points()</a></code> function to handle centroids queries more neatly</li>
 <li>Update package internal data (mirror of ONS API schema)</li>
 </ul></div>
     <div class="section level2">
@@ -146,7 +146,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.9000.</p>
 </div>
 
     </footer></div>

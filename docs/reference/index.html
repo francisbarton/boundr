@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">boundr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.99</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,35 +43,46 @@
 
       <dl><dt>
 
-          <code><a href="bounds.html">bounds()</a></code>
+          <code><a href="bounds.html">bounds()</a></code> <code><a href="bounds.html">centroids()</a></code>
 
         </dt>
         <dd>Return boundary data at a specified level and area from the ONS OG API</dd>
       </dl><dl><dt>
 
-          <code><a href="points.html">points()</a></code>
-
-        </dt>
-        <dd>Return centroid points at a specified level and area from the ONS OG API</dd>
-      </dl><dl><dt>
-
-          <code><a href="create_lookup_table.html">create_lookup_table()</a></code>
+          <code><a href="lookup.html">lookup()</a></code>
 
         </dt>
         <dd>Create a lookup table by querying the ONS OpenGeography API</dd>
       </dl><dl><dt>
 
-          <code><a href="add_geometry_to_table.html">add_geometry_to_table()</a></code>
+          <code><a href="add_geometry_to_table.html">add_geometry_to_table()</a></code> <code><a href="add_geometry_to_table.html">add_geometry()</a></code>
 
         </dt>
         <dd>Use an existing tibble as the basis for a spatial query</dd>
+      </dl><dl><dt>
+
+          <code><a href="boundr_options.html">boundr_options()</a></code> <code><a href="boundr_options.html">opts()</a></code>
+
+        </dt>
+        <dd>Use this to set custom options for <code><a href="../reference/bounds.html">bounds()</a></code> and <code><a href="../reference/bounds.html">centroids()</a></code></dd>
       </dl></div><div class="section level2">
       <h2 id="other-functions">Other functions<a class="anchor" aria-label="anchor" href="#other-functions"></a></h2>
 
 
 
 
-    </div>
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="res_codes.html">res_codes()</a></code>
+
+        </dt>
+        <dd>A list of all available resolutions for boundary geometries in the current OpenGeography schema. Not all resolutions are available for all area types! The most common ones are listed first, with the "generalised" (20m resolution) BGC being the preferred option if you don't specify one.</dd>
+      </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
@@ -81,7 +92,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.9000.</p>
 </div>
 
     </footer></div>
