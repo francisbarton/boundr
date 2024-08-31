@@ -1,5 +1,5 @@
 #' Common spatial query build procedure used for both `bounds()` and `points()`
-#' 
+#'
 #' @keywords internal
 #' @param geometry character. Two options: "boundaries" (the default) and
 #'  "centroids". By default, `bounds()` will return boundaries and `points()`
@@ -66,17 +66,15 @@ common_spatial <- function(
 }
 
 
-    
 
-    
-    
+
 # Helper functions -----------------------
 
 #' @keywords internal
 return_narrow_bounds <- function(lookup, lookup_year, rs) {
   fn <- "return_narrow_bounds"
   ul <- toupper(lookup)
-  
+
   # create initial filtered schema
   sp <- opengeo_schema |>
     dplyr::filter(if_any("service_name", \(x) gregg(x, "^{ul}.*_{rs}"))) |>
@@ -86,10 +84,10 @@ return_narrow_bounds <- function(lookup, lookup_year, rs) {
   lookup_year <- ifnull(lookup_year, max(sp_years))
   lu_code_field <- return_field_code(lookup, cd_colnames(sp), lookup_year, fn)
   assert_that(!is.null(lu_code_field), msg = no_lu_field_msg(fn))
-  
+
   s2 <- dplyr::filter(sp, !if_any(any_of(lu_code_field), is.na)) |>
     janitor::remove_empty("cols")
-  
+
   if (is_interactive()) cli_alert_info("Using {.val {lu_code_field}}")
   list(
     schema = s2,
@@ -116,6 +114,7 @@ res_codes <- function() {
   )
 }
 
+#' Convert all res_codes() into a single bracketed regex separated by `|`
 #' @keywords internal
 res_codes_regex <- \() glue("({paste0(res_codes(), collapse = '|')})")
 

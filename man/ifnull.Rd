@@ -6,6 +6,9 @@
 \usage{
 ifnull(x, y)
 }
+\arguments{
+\item{x, y}{R objects}
+}
 \description{
 This is the same as \verb{\%||\%} but I prefer to use bracketed fns than infixes
 }
