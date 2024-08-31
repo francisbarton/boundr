@@ -165,19 +165,9 @@ create_lookup_table <- function(
     janitor::remove_empty("cols")
 }
 
+# Helper functions --------------------------------
 
-#' Process geo level aliases
-#' @noRd
-#' @keywords internal
-process_aliases <- function(x, y = NULL) {
-  tolower(x %||% y) |>
-    stringr::str_replace_all(
-      c(
-        "parish" = "par",
-        "ward" = "wd",
-        "county" = "cty",
-        "region" = "rgn",
-        "country" = "ctry"
-      )
-    )
+build_flat_query <- function(var, vec) {
+  y <- stringr::str_flatten(glue("'{unique(vec)}'"), collapse = ",")
+  glue("{var} IN ({y})")
 }
