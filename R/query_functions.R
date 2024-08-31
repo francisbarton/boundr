@@ -78,19 +78,18 @@ api_data_req <- function(ids, url, fields, geo = TRUE, crs = NULL, ...) {
 query_opengeo_api <- function(req, max_tries = 3, verbosity = 0) {
   assert_that(
     verbosity %in% 0:3 | is.null(verbosity),
-    msg = paste0(
-      "query_opengeo_api: ",
-      "invalid value for `verbosity` parameter. ",
+    msg = cli::format_error(c(
+      "{.fn query_opengeo_api}: invalid value for `verbosity` parameter. ",
       "It must be an integer between 0 and 3, or NULL."
-    )
+    ))
   )
 
   assert_that(
-    is.numeric(max_tries) | is.null(max_tries),
-    msg = paste0(
-      "query_opengeo_api: ",
-      "`max_tries` must be a numeric (integer) value, or NULL."
-    )
+    is.numeric(max_tries) || is.null(max_tries),
+    msg = cli::format_error(c(
+      "{.fn query_opengeo_api}: {.var max_tries} must be a numeric (integer) ",
+      "value, or {.var NULL}."
+    ))
   )
 
   req |>
@@ -124,7 +123,7 @@ return_result_ids <- function(url, where, max_tries = 3, verbosity = 0, ...) {
     possibly_query_opengeo_api(max_tries = max_tries, verbosity = verbosity)
 
   if (is.null(ret)) {
-    cli_abort("{.fn {return_result_ids}} returned NULL data")
+    cli::cli_abort("{.fn return_result_ids} returned NULL data")
     ret
   } else {
     data <- possibly_parse_json(ret)
@@ -152,7 +151,7 @@ return_table_data <- function(
     possibly_query_opengeo_api(max_tries = max_tries, verbosity = verbosity)
 
   if (is.null(ret)) {
-    cli_abort("{.fn {return_table_data}} returned NULL data")
+    cli::cli_abort("{.fn return_table_data} returned NULL data")
     ret
   } else {
     # slightly more verbose than using purrr::map_df ... but safer?
@@ -184,7 +183,7 @@ return_spatial_data <- function(
   ret <- api_data_req(ids, url, fields, geo = TRUE, crs, ...) |>
     possibly_query_opengeo_api(max_tries = max_tries, verbosity = verbosity)
   if (is.null(ret)) {
-    cli_abort("{.fn return_spatial_data} returned NULL data")
+    cli::cli_abort("{.fn return_spatial_data} returned NULL data")
     ret
   } else {
     ret |>
