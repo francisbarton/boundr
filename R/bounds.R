@@ -25,7 +25,7 @@ bounds <- function(
     within_year = NULL,
     opts = boundr_options()) {
   curr_args <- rlang::call_args(rlang::current_call())
-  common_spatial(!!!curr_args)
+  rlang::inject(common_spatial(!!!curr_args))
 }
 
 #' Return centroid points at a specified level and area from the ONS OG API
@@ -46,7 +46,7 @@ points <- function(
     within_year = NULL,
     opts = boundr_options()) {
   curr_args <- rlang::call_args(rlang::current_call())
-  common_spatial(!!!curr_args, geometry = "centroids")
+  rlang::inject(common_spatial(!!!curr_args, geometry = "centroids"))
 }
 
 #' Use this to set custom options for `bounds()` and `points()`
