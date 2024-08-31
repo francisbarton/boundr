@@ -29,7 +29,7 @@ Imports:
     tidyr (>= 1.0.0),
     tidyselect (>= 1.0.0)
 Depends: 
-    R (>= 4.4.0)
+    R (>= 4.1.0)
 Suggests:
     ggplot2,
     roxygen2,
