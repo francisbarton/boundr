@@ -1,5 +1,4 @@
 
-
 <!-- README.md is generated from README.qmd. Please edit that file -->
 
 # welcome to boundr
@@ -10,15 +9,17 @@
 ### Retrieve area boundaries and data from the ONS Open Geography Portal
 
 <div style="display: flex; align-items: center;">
-
 <div style="flex: 0 0 auto; margin-right: 20px;">
-
 <img
     src="inst/boundr_hex_logo.png"
-    style="height: 300px; width: 259px;"
-    alt="The boundr package hexagonal logo - the word boundr superimposed on a cropped map of the Isles of Scilly, with the island parishes differently coloured, on a sea blue background."
-  />
-
+    height="300px"
+    width="259px"
+    hspace=20
+    vspace=20
+    alt="The boundr package hexagonal logo - the word boundr superimposed on a cropped map of the Isles of Scilly, with the island parishes differently
+    coloured, on a sea blue background."
+/>
+<br clear="all" />
 </div>
 <div>
 
