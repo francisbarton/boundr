@@ -67,8 +67,8 @@ Return centroid points at a specified level and area from the ONS OG API
 }
 \examples{
 bounds("msoa", "lad", "Swansea")
-bounds("msoa", "lad", "Shepway", lookup_year = 2011, within_year = 2015)
-bounds("rgn", options = opts(resolution = "BUC"))
+bounds("wd", "lad", "Shepway", within_year = 2016) # Shepway no longer exists
+bounds("rgn", opts = boundr_options(resolution = "BUC"))
 bounds("par", "lad", "Isles of Scilly") # par = "parish"
 bounds("spr")
 bounds("npark", within_names = "Bannau Brycheiniog")
