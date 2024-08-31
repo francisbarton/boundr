@@ -115,14 +115,12 @@ add_geometry_to_table <- function(
 
 # Helper functions --------------------------------
 
-#' @noRd
-#' @keywords internal
 pull_query_url <- function(field, lookup, final_filter) {
+  geo_regex <- glue("^{toupper(lookup)}.*{final_filter}")
   results <- opengeo_schema |>
     dplyr::filter(
-      if_any(all_of({{ field }}), \(x) !is.na(x)) &
-      if_any("service_name", \(x) stringr::str_starts(x, toupper(lookup))) &
-      if_any("service_name", \(x) stringr::str_detect(x, {{ final_filter }}))
+      if_any(any_of(field), \(x) !is.na(x)) &
+      if_any("service_name", \(x) grepl(geo_regex, x))
     ) |>
     janitor::remove_empty("cols")
 
@@ -130,7 +128,7 @@ pull_query_url <- function(field, lookup, final_filter) {
     NULL
   } else {
     results |>
-      # We assume any row of results will give the desired geo data. So take #1.
+      # any row of results should give the desired geo data. So take #1.
       dplyr::slice(1) |>
       dplyr::pull("service_url")
   }
