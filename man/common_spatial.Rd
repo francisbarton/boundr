@@ -2,7 +2,7 @@
 % Please edit documentation in R/common_spatial.R
 \name{common_spatial}
 \alias{common_spatial}
-\title{Common spatial query build procedure used for both \code{bounds()} and \code{points()}}
+\title{Spatial query build procedure used for both \code{bounds()} and \code{centroids()}}
 \usage{
 common_spatial(
   lookup_level,
@@ -51,10 +51,10 @@ return data for the most recent year available. Provide as YYYY.}
 default values.}
 
 \item{geometry}{character. Two options: "boundaries" (the default) and
-"centroids". By default, \code{bounds()} will return boundaries and \code{points()}
+"centroids". By default, \code{bounds()} will return boundaries and \code{centroids()}
 will return centroids.}
 }
 \description{
-Common spatial query build procedure used for both \code{bounds()} and \code{points()}
+Spatial query build procedure used for both \code{bounds()} and \code{centroids()}
 }
 \keyword{internal}
