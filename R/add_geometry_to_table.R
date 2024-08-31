@@ -59,9 +59,7 @@ add_geometry_to_table <- function(
 
   spatial_data_df <- process_spatial_query_data(query_data, crs) |>
     dplyr::bind_rows() |>
-    janitor::clean_names() |>
-    dplyr::select(!any_of(c("object_id", "global_id", "chgind"))) |>
-    dplyr::distinct()
+    janitor::clean_names()
 
   assert_that(
     inherits(spatial_data_df, "tbl_df"),
@@ -78,7 +76,7 @@ add_geometry_to_table <- function(
   spatial_data_df |>
     dplyr::left_join(tbl, by = {{ join_vars }}) |>
     dplyr::relocate(names(tbl)) |>
-    dplyr::select(!any_of(c("fid", "objectid", "global_id"))) |>
+    dplyr::select(!any_of(drop_cols(crs))) |>
     janitor::remove_empty("cols") |>
     dplyr::distinct()
 }

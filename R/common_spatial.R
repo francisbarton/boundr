@@ -40,7 +40,8 @@ common_spatial <- function(
     
     tbl <- process_spatial_query_data(query_data, crs) |>
       dplyr::bind_rows() |>
-      dplyr::select(!any_of(c("object_id", "global_id", "chgind"))) |>
+      janitor::clean_names() |>
+      dplyr::select(!any_of(drop_cols(crs))) |>
       dplyr::distinct()
   } else {
     lookup_tbl <- common_lookup(
@@ -115,9 +116,8 @@ res_codes <- function() {
   )
 }
 
-#' Convert all res_codes() into a single bracketed regex separated by `|`
-#' @keywords internal
-res_codes_regex <- \() glue("({paste0(res_codes(), collapse = '|')})")
-
-#' @keywords internal
-# cf_values <- \() c("UK", "GB", "EW", "EN", "SC", "WA")
+drop_cols <- function(crs = NULL) {
+  to_drop <- as.character(ifnull(crs, 0)) |>
+    switch("4326" = c("bng_e", "bng_n"), "27700" = c("long", "lat"), NULL)
+  c("fid", "object_id", "global_id", "chngind", to_drop)
+}
