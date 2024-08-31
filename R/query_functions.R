@@ -128,15 +128,11 @@ return_result_ids <- function(url, where, max_tries = 3, verbosity = 0, ...) {
     ret
   } else {
     data <- possibly_parse_json(ret)
-    # sometimes it gets returned with the wrong application type?
-    # and it's JSON but not marked as such - needs to be parsed as plain text
-    if (is.null(data)) {
-      data <- httr2::resp_body_string(ret) |>
-        jsonlite::fromJSON()
-    }
-    data |>
-      purrr::pluck("objectIds") |>
-      purrr::list_c()
+    # Sometimes it gets returned with the wrong application type?
+    # And it's JSON but not marked as such... needs to be parsed as plain text.
+    if (is.null(data)) data <- jsonlite::fromJSON(httr2::resp_body_string(ret))
+
+    purrr::list_c(purrr::pluck(data, "objectIds"))
   }
 }
 
