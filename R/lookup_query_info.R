@@ -104,9 +104,9 @@ process_query_info <- function(
   res <- schema[["service_name"]]
   if (is.null(opt) && length(res) > 1 && is_interactive()) {
     cli_alert_info("More than 1 result found:")
-    cli::cli_ol(res)
+    cli::cli_ol(table_options)
     cli_alert_info(c(
-      "Using option {.val 1} by default. ",
+      "Using option {.field 1} by default. ",
       "(Change the {.var query_option} parameter to try another data source.)"
     ))
   }
@@ -115,8 +115,8 @@ process_query_info <- function(
   if (opt > length(res)) {
     lr <- length(res)
     cli_alert_info(c(
-      "There is no option {.var {opt}}! There are only {.val {lr}} ",
-      "options available. Option {.val {lr}} will be selected instead."
+      "There is no option {.var {query_opt}}! There are only {.emph {lr}} ",
+      "options available. Option {.strong {lr}} will be selected instead."
     ))
     opt <- lr
   }
@@ -204,7 +204,9 @@ return_query_ids <- function(query_url, where_string) {
     !is.list(ids),
     length(ids) > 0,
     is.numeric(ids),
-    msg = glue("{.fn {fn}}: The query has not returned any valid result IDs.")
+    msg = cli::format_error(
+      "{.fn {fn}}: The query has not returned any valid result IDs."
+    )
   )
   ids
 }
@@ -233,12 +235,20 @@ cd_colnames <- \(x) colnames(dplyr::select(x, ends_with("cd")))
 #' @keywords internal
 return_field_code <- function(x, names_vec, year = NULL, fn = NULL) {
   fn <- ifnull(fn, "return_lookup_table_info")
+  assert_that(
+    length(names_vec) > 0,
+    msg = cli::format_error("{.fn {fn}}: No names vector supplied.")
+  )
   if (is.null(x) || is.na(x)) return(NULL)
   if (is.null(year)) {
     y2 <- names_vec |>
       stringr::str_subset(glue("(?<=^{x})\\d+")) |>
       stringr::str_extract("\\d{2}(?=cd$)") |>
       as.numeric()
+    assert_that(
+      length(y2) > 0,
+      msg = cli::format_error("{.fn {fn}}: No suitable year could be found.")
+    )
     year <- if_else(y2 > 30, y2 + 1900, y2 + 2000) # Will need updating in 2031!
     year <- max(year) # should return most recent year by default
   }
@@ -247,18 +257,19 @@ return_field_code <- function(x, names_vec, year = NULL, fn = NULL) {
 
   assert_that(
     length(field_code) == 1 && !is.na(field_code),
-    msg = glue(
+    msg = cli::format_error(c(
       "{.fn {fn}}: That combination of levels and year has not returned a ",
       "result.\nPerhaps try a different year?"
-    )
+    ))
   )
   field_code
 }
 
 no_table_msg <- \(fn) {
-  glue(
-    "{.fn {fn}}: no relevant lookup tables for `lookup` found in schema.\n",
+  cli::format_error(c(
+    "{.fn {fn}}: No relevant lookup tables for `lookup` found in schema.\n",
     "Try a different lookup year?"
-  )
+  ))
 }
-no_lu_field_msg <- \(fn) glue("{.fn {fn}}: No suitable lookup field found.")
+
+no_lu_msg <- \(fn) cli_alert_info("{.fn {fn}}: No suitable lookup field found.")
