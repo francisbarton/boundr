@@ -5,6 +5,7 @@ return_narrow_table_info <- function(lookup_level, lookup_year, rs = NULL) {
   fn <- "return_narrow_table_info"
   ul <- toupper(lookup_level)
   rs <- ifnull(rs, "NC")
+  # g1 <- rlang::expr("^{ul}.*_{rs}")
 
   assert_that(
     lookup_level != "oa",
@@ -13,18 +14,21 @@ return_narrow_table_info <- function(lookup_level, lookup_year, rs = NULL) {
       "\nExample: `lookup('oa', within_level = 'msoa', 'Tendring 001')`"
     )
   )
+
   s1 <- opengeo_schema |>
     dplyr::filter(if_any("service_name", \(x) gregg(x, "^{ul}.*_{rs}"))) |>
     janitor::remove_empty("cols")
   assert_that(nrow(s1) > 0, msg = no_table_msg(fn))
+
   s1_years <- as.numeric(stringr::str_extract(s1[["service_name"]], "\\d{4}"))
   lookup_year <- ifnull(lookup_year, max(s1_years))
   lu_code_field <- lookup_level |>
     return_field_code(cd_colnames(s1), lookup_year, fn)
   assert_that(!is.null(lu_code_field), msg = no_lu_msg(fn))
 
-  s2 <- dplyr::filter(s1, !if_any(any_of(lu_code_field), is.na)) |>
-    janitor::remove_empty("cols")
+  s2 <- dplyr::filter(s1, !if_any(.data[[lu_code_field]], is.na)) |>
+    janitor::remove_empty("cols") |>
+    rlang::with_options(lifecycle_verbosity = "quiet")
 
   if (is_interactive()) cli_alert_info("Using {.val {lu_code_field}}")
   list(
@@ -68,13 +72,21 @@ return_lookup_table_info <- function(
     s1_names <- intersect(s1_names, cd_colnames(sp))
   }
 
-  lu_code_field <- return_field_code(lookup, s1_names, lookup_year)
-  assert_that(!is.null(lu_code_field), msg = no_lu_field_msg(fn))
-  s2 <- dplyr::filter(s1, !if_any(any_of(lu_code_field), is.na)) |>
-    janitor::remove_empty("cols")
+  lu_code_field <- return_field_code(lookup_level, s1_names, lookup_year)
+  assert_that(!is.null(lu_code_field), msg = no_lu_msg(fn))
+  s2 <- s1 |>
+    dplyr::filter(!if_any(.data[[lu_code_field]], is.na)) |>
+    janitor::remove_empty("cols") |>
+    rlang::with_options(lifecycle_verbosity = "quiet")
   assert_that(nrow(s2) > 0, msg = no_table_msg(fn))
 
   wn_code_field <- return_field_code(within_level, cd_colnames(s2), within_year)
+  s3 <- s2 |>
+    dplyr::filter(!if_any(.data[[wn_code_field]], is.na)) |>
+    janitor::remove_empty("cols") |>
+    rlang::with_options(lifecycle_verbosity = "quiet")
+  assert_that(nrow(s3) > 0, msg = no_table_msg(fn))
+  
   if (is_interactive()) {
     cli_alert_info("Using {.val {lu_code_field}}, {.val {wn_code_field}}")
   }
@@ -88,6 +100,8 @@ return_lookup_table_info <- function(
 
 
 #' Just another piece of the pipeline
+#' 
+#' @inheritParams common_spatial
 #' @keywords internal
 process_query_info <- function(
     query_info,
