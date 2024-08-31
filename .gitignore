@@ -4,3 +4,4 @@
 .Ruserdata
 inst/
 README_cache
+*.R.old
