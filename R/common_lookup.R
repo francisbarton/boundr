@@ -4,7 +4,6 @@
 #'  forms part of a geospatial query (`FALSE`). In the latter case, this
 #'  function will try to return a lookup table that contains the appropriate
 #'  field for spatial data (that is, boundaries or centroids) to be joined onto.
-#'  For `{boundr}`'s internal use only, users should ignore this.
 #' @keywords internal
 common_lookup <- function(
     lookup_level,

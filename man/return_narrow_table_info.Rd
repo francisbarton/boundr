@@ -4,7 +4,7 @@
 \alias{return_narrow_table_info}
 \title{Get initial data about query for "narrow" tables (with no lookup table)}
 \usage{
-return_narrow_table_info(lookup, lookup_year, rs = NULL)
+return_narrow_table_info(lookup_level, lookup_year, rs = NULL)
 }
 \description{
 Get initial data about query for "narrow" tables (with no lookup table)

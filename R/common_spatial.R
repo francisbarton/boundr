@@ -34,7 +34,7 @@ common_spatial <- function(
         )
       )
     }
-    query_info <- return_narrow_table_info(lookup, lookup_year, rs)
+    query_info <- return_narrow_bounds_info(lookup_level, lookup_year, rs)
     query_data <- query_info |>
       process_query_info(within_names, within_codes, return_width, query_option)
     
@@ -70,8 +70,8 @@ common_spatial <- function(
 # Helper functions -----------------------
 
 #' @keywords internal
-return_narrow_bounds <- function(lookup, lookup_year, rs) {
-  fn <- "return_narrow_bounds"
+return_narrow_bounds_info <- function(lookup, lookup_year, rs) {
+  fn <- "return_narrow_bounds_info"
   ul <- toupper(lookup)
 
   # create initial filtered schema
