@@ -84,7 +84,7 @@ boundr_options <- function(
     return_width = c("tidy", "full", "minimal"),
     crs = 4326,
     query_option = NULL) {
-  rw = arg_match(return_width)
+  rw <- arg_match(return_width)
   list(rs = condense(resolution), rw = rw, crs = crs, opt = query_option)
 }
 

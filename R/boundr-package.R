@@ -10,12 +10,12 @@
 NULL
 
 #' The base part of the OpenGeography API standard URLs, for convenience
-#' 
+#'
 #' @keywords internal
 og_ <- \() "https://services1.arcgis.com/ESMARspQHYMw9BZ9/ArcGIS/rest/services"
 
 #' Batch a vector into a list
-#' 
+#'
 #' @param x a vector
 #' @param batch_size the number of items in each batch of the returned list
 #' @keywords internal
@@ -25,15 +25,16 @@ batch_it <- function(x, batch_size) {
 }
 
 #' This is the same as `%||%` but I prefer bracketed functions to infixes
-#' 
+#'
 #' @param x,y R objects
 #' @keywords internal
 ifnull <- \(x, y) if (is.null(x)) y else x
 
 #' Conveniently wrap a regular expr in glue::glue_data() and pass to `grepl()`
-#' 
+#'
 #' @param x A character vector to check
-#' @param rx A string that after processing by glue_data() will be used as a regex pattern in `grepl()`
+#' @param rx A string that after processing by glue_data() will be used as a
+#'  regex pattern in `grepl()`
 #' @param ... Arguments passed onto `grepl()`
 #' @keywords internal
 # old_gregg <- \(x, rx, ...) grepl(glue(rx), x, ...)

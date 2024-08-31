@@ -9,7 +9,8 @@ gregg(x, rx, g = caller_env(), ...)
 \arguments{
 \item{x}{A character vector to check}
 
-\item{rx}{A string that after processing by glue_data() will be used as a regex pattern in \code{grepl()}}
+\item{rx}{A string that after processing by glue_data() will be used as a
+regex pattern in \code{grepl()}}
 
 \item{...}{Arguments passed onto \code{grepl()}}
 }
