@@ -80,7 +80,7 @@ points <- function(
 #' boundr_options(return_width = "full") # Ask boundr to return all data columns
 #' 
 #' @export
-opts <- boundr_options <- function(
+boundr_options <- opts <- function(
     resolution = res_codes(),
     return_width = c("tidy", "full", "minimal"),
     crs = 4326,
