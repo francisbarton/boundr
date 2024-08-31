@@ -60,7 +60,7 @@ return_lookup_table_info <- function(
   s1_names <- cd_colnames(s1)
 
   if (joinable) {
-    rx <- res_codes_regex()
+    rx <- condense(res_codes())
     sp <- opengeo_schema |>
       dplyr::filter(if_any("service_name", \(x) gregg(x, "^{ul}.*_{rx}"))) |>
       janitor::remove_empty("cols")
