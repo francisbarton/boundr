@@ -30,13 +30,13 @@ add_geometry_to_table <- add_geometry <- function(
   query_option <- opts[["opt"]]
   
   # select the leftmost matching column name
-  fallback_field <- grep(glue("^{l}.*cd$"), names(tbl), value = TRUE)[[1]]
-  geo_code_field <- geo_code_field %||% fallback_field
-  lookup <- lookup %||% stringr::str_extract(geo_code_field, ".*(?=\\d{2}cd$)")
+  l <- ifnull(lookup, "[a-z]")
+  fallback_field <- first(grep(glue("^{l}.*cd$"), names(tbl), value = TRUE))
+  gcf <- ifnull(geo_code_field, fallback_field)
 
   assert_that(
-    length(geo_code_field) == 1 && !is.na(geo_code_field),
-    msg = glue("{fun}: suitable geo_code_field not found from lookup table")
+    length(gcf) == 1 && !is.na(gcf),
+    msg = glue("{.fn {fn}}: no valid geo_code_field found from {.var {tbl}}")
   )
 
   final_filter <- ifelse(points, "Centroids", toupper(resolution))
