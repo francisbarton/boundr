@@ -33,7 +33,9 @@ bounds <- function(
 #' @inheritParams bounds
 #'
 #' @returns an `sfc` tibble (data frame with geometry)
-#' @examples points("msoa", "utla", "Swindon")
+#' @examples
+#' points("msoa", "utla", "Swindon")
+#' @rdname bounds
 #' @export
 points <- function(
     lookup,
