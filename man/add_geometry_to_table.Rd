@@ -2,53 +2,42 @@
 % Please edit documentation in R/add_geometry_to_table.R
 \name{add_geometry_to_table}
 \alias{add_geometry_to_table}
+\alias{add_geometry}
 \title{Use an existing tibble as the basis for a spatial query}
 \usage{
 add_geometry_to_table(
   tbl,
-  points = FALSE,
+  geometry = c("boundaries", "centroids"),
   lookup = NULL,
   geo_code_field = NULL,
-  return_width = c("tidy", "full", "minimal"),
-  crs = 4326,
-  resolution = c("BGC", "BSC", "BUC", "BFC", "BFE")
+  opts = boundr_options()
 )
 }
 \arguments{
-\item{tbl}{A tibble with a column for geographical codes. This function will
-use the lefthand-most column ending in 'cd' by default as the basis for
-retrieving boundary or point data}
+\item{tbl}{A tibble with a column for geographical codes. Table names ought
+to be in lower case. This function will use the lefthand-most column ending
+in 'cd' by default as the basis for retrieving boundary or point data.}
 
-\item{points}{Whether to retrieve area centroids (TRUE) or area boundaries
-(FALSE, the default)}
+\item{geometry}{character. Two options: "boundaries" (the default) and
+"centroids". By default, \code{bounds()} will return boundaries and \code{points()}
+will return centroids.}
 
-\item{lookup}{character. Lower level area code eg "lsoa", "wd", "lad".
-Equivalent to the \code{lookup} parameter in \code{bounds()}.}
+\item{lookup}{character. Lower level area code eg "lsoa", "wd", "lad".}
 
 \item{geo_code_field}{character The column name from \code{tbl} for which you
-wish to retrieve spatial data. By default, \code{add_bounds_to_table()} will use
-the lefthand-most column that ends in "cd"}
+wish to retrieve spatial data. By default, \code{add_geometry_to_table()} will
+use the lefthand-most column that ends in "cd".}
 
-\item{return_width}{character. How many of the possible columns in the
-returned table to keep. Options are "tidy", "full" or "minimal".}
-
-\item{crs}{the Coordinate Reference System (CRS) code to use. 4326 by
-default.}
-
-\item{resolution}{character. See argument options for available options. How
-generalised should the boundary be, and whether coastal boundaries should
-adhere to the coastline or to the full territorial extent. BGC by default
-(G = Generalised (20m), C = limited to the coastline.) F indicates Full
-resolution; S indicates Super-generalised (200m); U indicates Ultra-
-generalised (500m) boundary resolution. Use E instead of C for full
-extent boundaries (e.g. BFE). Not all combinations are available.}
+\item{opts}{Should be set with the \code{boundr_options()} function. See
+\code{?boundr_options} for detail on what can be set by the user, and on the
+default values.}
 }
 \value{
 If successful, will return the initial table with an additional
 geometry column added. Duplicate rows will be removed.
 }
 \description{
-If you have a tibble such as those produced by \code{create_lookup_table()} -
-that is, there is a column of geographical ONS codes ending in 'cd' -
-simply use this table as the basis for retrieving the relevant boundaries.
+If you have a tibble such as those produced by \code{lookup()} - that is, there is
+a column of geographical ONS codes ending in 'cd' - simply use this table as
+the basis for retrieving the relevant boundaries or centroids.
 }
