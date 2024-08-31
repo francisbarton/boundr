@@ -4,7 +4,7 @@
 \alias{gregg}
 \title{Conveniently wrap a regular expr in glue::glue_data() and pass to \code{grepl()}}
 \usage{
-gregg(x, rx, ...)
+gregg(x, rx, g = caller_env(), ...)
 }
 \arguments{
 \item{x}{A character vector to check}
