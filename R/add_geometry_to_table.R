@@ -23,15 +23,13 @@ add_geometry_to_table <- function(
     points = FALSE,
     lookup = NULL,
     geo_code_field = NULL,
-    return_width = c("tidy", "full", "minimal"),
-    crs = 4326,
-    resolution = c("BGC", "BSC", "BUC", "BFC", "BFE")
-) {
-
-  fun <- "add_geometry_to_table"
-  resolution <- match.arg(resolution)
-  return_width <- match.arg(return_width)
-  l <- lookup %||% ".*"
+    opts = boundr_options()) {
+  fn <- "add_geometry_to_table"
+  rs <- if (gm_type == "centroids") "(PopCentroids|PWC|AWC)" else opts[["rs"]]
+  return_width <- opts[["rw"]]
+  crs <- opts[["crs"]]
+  query_option <- opts[["opt"]]
+  
   # select the leftmost matching column name
   fallback_field <- grep(glue("^{l}.*cd$"), names(tbl), value = TRUE)[[1]]
   geo_code_field <- geo_code_field %||% fallback_field

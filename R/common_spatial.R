@@ -4,49 +4,114 @@ common_spatial <- function(
     within = NULL,
     within_names = NULL,
     within_codes = NULL,
-    return_width = c("tidy", "full", "minimal"),
     lookup_year = NULL,
     within_year = NULL,
-    country_filter = c("UK|GB|EW|EN|SC|WA", "UK", "GB", "EW", "EN", "SC", "WA"),
-    option = NULL,
-    crs = 4326,
-    resolution = c("BGC", "BSC", "BUC", "BFC", "BFE"),
-    centroids = FALSE
-) {
-  new_lookup <- process_aliases(lookup)
-  country_filter <- match.arg(country_filter)
-  resolution <- match.arg(resolution)
-  return_width <- match.arg(return_width)
+    # Reduce clutter! https://design.tidyverse.org/argument-clutter.html
+    opts = boundr_options(),
+    # "Prefer an enum"! https://design.tidyverse.org/boolean-strategies.html
+    geometry = c("boundaries", "centroids")) {
+  gm_type <- geometry
+  fn <- if (gm_type == "centroids") "points()" else "bounds()"
 
-  lookup_table <- create_lookup_table(
-    lookup,
-    within,
-    within_names,
-    within_codes,
-    return_width,
-    lookup_year,
-    within_year,
-    country_filter,
-    option,
-    standalone = FALSE
-  )
+  lookup <- tolower(lookup)
+  rs <- if (gm_type == "centroids") "(PopCentroids|PWC|AWC)" else opts[["rs"]]
+  return_width <- opts[["rw"]]
+  crs <- opts[["crs"]]
+  query_option <- opts[["opt"]]
 
-  assert_that(
-    nrow(lookup_table) > 0,
-    msg = glue("{fun}: create_lookup_table() has returned 0 rows")
-  )
+  if (is.null(within_level)) {
+    if (is.null(within_codes) && is.null(within_names)) {
+      assert_that(
+        !lookup %in% c("oa", "lsoa"),
+        msg = paste0(
+          "{boundr} won't let you download OA or LSOA geometry data without a ",
+          "`within*` argument in place to filter the results a bit!\n",
+          "Example: `bounds('lsoa', 'lad', within_names = 'Leeds')`"
+        )
+      )
+    }
+    query_info <- return_narrow_table_info(lookup, lookup_year, rs)
+    query_data <- query_info |>
+      process_query_info(within_names, within_codes, return_width, query_option)
+    tbl <- process_spatial_query_data(query_data, crs) |>
+      dplyr::bind_rows() |>
+      dplyr::select(!any_of(c("object_id", "global_id", "chgind"))) |>
+      dplyr::distinct()
+  } else {
+    lookup_tbl <- common_lookup(
+      lookup,
+      within_level,
+      within_names,
+      within_codes,
+      lookup_year,
+      within_year,
+      opts,
+      joinable = TRUE
+    )
+    tbl <- add_geometry(lookup_tbl, gm_type, lookup, NULL, opts)
+  }
 
-  geo_code_field <- names(lookup_table) |>
-    stringr::str_subset(glue("^{lookup}.*cd$")) |>
-    dplyr::first()
+  if (lookup == "msoa") tbl <- add_msoa_names(tbl)
+  if (return_width != "full") tbl <- remove_nmw(tbl)
 
-  add_geometry_to_table(
-    lookup_table,
-    centroids,
-    new_lookup,
-    geo_code_field,
-    return_width,
-    crs,
-    resolution
+  tbl |>
+    dplyr::distinct() |>
+    janitor::remove_empty("cols")
+}
+
+
+    
+
+    
+    
+# Helper functions -----------------------
+
+#' @keywords internal
+return_narrow_bounds <- function(lookup, lookup_year, rs) {
+  fn <- "return_narrow_bounds"
+  ul <- toupper(lookup)
+  
+  # create initial filtered schema
+  sp <- opengeo_schema |>
+    dplyr::filter(if_any("service_name", \(x) gregg(x, "^{ul}.*_{rs}"))) |>
+    janitor::remove_empty("cols")
+  assert_that(nrow(sp) > 0, msg = no_table_msg(fn))
+  sp_years <- as.numeric(stringr::str_extract(sp[["service_name"]], "\\d{4}"))
+  lookup_year <- ifnull(lookup_year, max(sp_years))
+  lu_code_field <- return_field_code(lookup, cd_colnames(sp), lookup_year, fn)
+  assert_that(!is.null(lu_code_field), msg = no_lu_field_msg(fn))
+  
+  s2 <- dplyr::filter(sp, !if_any(any_of(lu_code_field), is.na)) |>
+    janitor::remove_empty("cols")
+  
+  if (is_interactive()) cli_alert_info("Using {.val {lu_code_field}}")
+  list(
+    schema = s2,
+    lookup_code = lu_code_field,
+    within_code = NULL
   )
 }
+
+#' @keywords internal
+cd_colnames <- \(x) colnames(dplyr::select(x, ends_with("cd")))
+
+
+# Possible argument values ----------------
+
+#' A list of all available resolutions for boundary geometries in the current
+#' OpenGeography schema. Not all resolutions are available for all area types!
+#' The most common ones are listed first, with the "generalised" (20m
+#' resolution) BGC being the default option if you don't specify one.
+#' @export
+res_codes <- function() {
+  c(
+    "BGC", "BSC", "BUC", "BFC", "BGE", "BUE", "BFE",
+    "BGG", "FEB", "FCB", "GCB", "SGCB", "UGCB", "UGB"
+  )
+}
+
+#' @keywords internal
+res_codes_regex <- \() glue("({paste0(res_codes(), collapse = '|')})")
+
+#' @keywords internal
+# cf_values <- \() c("UK", "GB", "EW", "EN", "SC", "WA")
