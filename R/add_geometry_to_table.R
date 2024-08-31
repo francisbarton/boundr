@@ -88,13 +88,13 @@ add_geometry_to_table <- add_geometry <- function(
   }
 
   assert_that(
-    inherits(spatial_data_df, "data.frame"),
-    msg = glue("{fun}: spatial_data could not be row-bound into a data frame")
+    inherits(spatial_data_df, "tbl_df"),
+    msg = glue("{fn}: spatial_data could not be row-bound into a tibble")
   )
 
   assert_that(
     inherits(spatial_data_df, "sf"),
-    msg = glue("{fun}: the data frame spatial_data_df does not have 'sf' class")
+    msg = glue("{fn}: the data frame spatial_data_df does not have 'sf' class")
   )
 
   join_vars <- intersect(names(tbl), names(spatial_data_df))
