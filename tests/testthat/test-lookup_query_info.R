@@ -14,7 +14,6 @@ test_that("return_narrow_table_info works overall", {
   expect_equal(nrow(ti1[["schema"]]), 1)
   expect_equal(nrow(ti3[["schema"]]), 2)
   expect_equal(ti1[["lookup_code"]], "msoa21cd")
-  
 }) |>
   rlang::with_interactive(FALSE)
 
@@ -24,7 +23,8 @@ test_that("return_narrow_table_info works overall", {
     # FIXED NOW!
     # lookup("lad", "ctry", "Wales") currently not working
     # but it should find a lookup...:
-    # https://geoportal.statistics.gov.uk/datasets/edf4bab38dc747fa9400fb52ae85a8ae_0/about
+    # https://geoportal.statistics.gov.uk/datasets/
+    # edf4bab38dc747fa9400fb52ae85a8ae_0/about
     return_lookup_table_info("lad", "ctry", NULL, NULL, FALSE) |>
       # expect_error("^That combination of levels and year")
       expect_no_error()
@@ -67,7 +67,12 @@ test_that("return_narrow_table_info works overall", {
     expect_equal(query_info[[3]], "lad24cd")
 
     query_data <- query_info |>
-    process_query_info(within_names = "Stroud", within_codes = NULL, return_width = "full", query_opt = NULL)
+    process_query_info(
+      within_names = "Stroud",
+      within_codes = NULL,
+      return_width = "full",
+      query_opt = NULL
+    )
 
     expect_true(grepl("MSOA21.*LAD24.*_LU", query_data[[1]]))
     expect_equal(query_data[[2]], "*")
@@ -118,7 +123,7 @@ test_that("return_narrow_table_info works overall", {
     query_data <- query_info |>
       process_query_info("Shepway", NULL, "tidy", NULL) |>
       expect_no_error()
-    
+
     expect_equal(query_data[[1]], paste0(
       og_(),
       "/WD16_REGD16_LAD16_EW_LU_e40c67c9fe5245f7871f8857c8cd022b",

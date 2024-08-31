@@ -37,7 +37,7 @@ common_spatial <- function(
     query_info <- return_narrow_bounds_info(lookup_level, lookup_year, rs)
     query_data <- query_info |>
       process_query_info(within_names, within_codes, return_width, query_option)
-    
+
     tbl <- process_spatial_query_data(query_data, crs) |>
       dplyr::bind_rows() |>
       janitor::clean_names() |>
@@ -86,7 +86,7 @@ return_narrow_bounds_info <- function(lookup, lookup_year, rs) {
   assert_that(!is.null(lu_code_field), msg = no_lu_msg(fn))
 
   s2 <- dplyr::filter(sp, !if_any(.data[[lu_code_field]], is.na)) |>
-    arrange_service_names_by_res_codes() |>
+    arrange_service_nms_by_res() |>
     janitor::remove_empty("cols") |>
     rlang::with_options(lifecycle_verbosity = "quiet")
 

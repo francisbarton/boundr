@@ -1,7 +1,15 @@
 test_that("overall - run examples", {
   expect_no_error(bounds("msoa", "lad", "Swansea"))
   # previous example (MSOA to LAD lookup from 2015 no longer available from API)
-  expect_no_error(bounds("wd", "lad", "Shepway", within_year = 2016, opts = boundr_options(resolution = "SGCB")))
+  expect_no_error(
+    bounds(
+      "wd",
+      "lad",
+      "Shepway",
+      within_year = 2016,
+      opts = boundr_options(resolution = "SGCB")
+    )
+  )
   expect_no_error(bounds("rgn", opts = opts(resolution = "BUC")))
   # par = "parish"
   bounds("par", "lad", "Isles of Scilly", opts = boundr_options(crs = 27700)) |>

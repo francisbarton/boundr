@@ -1,5 +1,5 @@
 #' Get initial data about query for "narrow" tables (with no lookup table)
-#' 
+#'
 #' @keywords internal
 return_narrow_table_info <- function(lookup_level, lookup_year, rs = NULL) {
   fn <- "return_narrow_table_info"
@@ -39,7 +39,7 @@ return_narrow_table_info <- function(lookup_level, lookup_year, rs = NULL) {
 }
 
 #' Get initial data about query
-#' 
+#'
 #' @keywords internal
 return_lookup_table_info <- function(
     lookup_level,
@@ -86,7 +86,7 @@ return_lookup_table_info <- function(
     janitor::remove_empty("cols") |>
     rlang::with_options(lifecycle_verbosity = "quiet")
   assert_that(nrow(s3) > 0, msg = no_table_msg(fn))
-  
+
   if (is_interactive()) {
     cli_alert_info("Using {.val {lu_code_field}}, {.val {wn_code_field}}")
   }
@@ -100,7 +100,7 @@ return_lookup_table_info <- function(
 
 
 #' Just another piece of the pipeline
-#' 
+#'
 #' @inheritParams common_spatial
 #' @keywords internal
 process_query_info <- function(
@@ -133,7 +133,7 @@ process_query_info <- function(
     query_opt <- lr
   }
   query_url <- schema[["service_url"]][[query_opt]]
-  
+
   lookup_name_field <- sub("cd$", "nm", lookup_code_field)
   within_name_field <- sub("cd$", "nm", within_code_field)
   fields <- switch(return_width,

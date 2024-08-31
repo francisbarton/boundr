@@ -95,7 +95,7 @@ pull_query_url <- function(geo_code_field, lookup_level, rs) {
       if_any(.data[[geo_code_field]], \(x) !is.na(x)) &
       if_any("service_name", \(x) gregg(x, "^{ul}.*{rs}"))
     ) |>
-    arrange_service_names_by_res_codes() |>
+    arrange_service_nms_by_res() |>
     janitor::remove_empty("cols") |>
     rlang::with_options(lifecycle_verbosity = "quiet")
   assert_that(nrow(s1) > 0, msg = no_table_msg("pull_query_url"))
@@ -106,10 +106,10 @@ pull_query_url <- function(geo_code_field, lookup_level, rs) {
 }
 
 #' Arrange geo schema by preferred resolutions (only applies when no user pref)
-#' 
+#'
 #' @param x schema tibble
 #' @param r vector of resolution codes e.g. "BGC" "BFE"
-arrange_service_names_by_res_codes <- function(x, r = res_codes()) {
+arrange_service_nms_by_res <- function(x, r = res_codes()) {
   safe_min <- \(x) suppressWarnings(min(x)) # It's OK if we get an Inf!
   score <- \(nm) safe_min(which(purrr::map_lgl(r, \(x) grepl(x, nm))))
   dplyr::arrange(x, purrr::map_dbl(.data[["service_name"]], score))
