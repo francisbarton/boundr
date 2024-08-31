@@ -30,9 +30,11 @@ batch_it <- function(x, batch_size) {
 #' @keywords internal
 ifnull <- \(x, y) if (is.null(x)) y else x
 
-#' Conveniently wrap a regex in glue::glue and pass it to grepl
-#' @param x A character vector that you want to check
-#' @param rx A string that when processed by glue() will be used as a regex
-#' @param ... arguments passed onto grepl()
+#' Conveniently wrap a regular expr in glue::glue_data() and pass to `grepl()`
+#' 
+#' @param x A character vector to check
+#' @param rx A string that after processing by glue_data() will be used as a regex pattern in `grepl()`
+#' @param ... Arguments passed onto `grepl()`
 #' @keywords internal
-gregg <- \(x, rx, ...) grepl(glue(rx)[[1]], x, ...)
+# old_gregg <- \(x, rx, ...) grepl(glue(rx), x, ...)
+gregg <- \(x, rx, g = caller_env(), ...) grepl(glue_data(g, rx), x, ...)
