@@ -38,44 +38,27 @@ build_id_req <- function(url, where, ...) {
 }
 
 
-#' Build an API request for table data
+#' Build an API request for table data or spatial data
 #'
 #' @inheritParams opengeo_api_req
-#' @param ids the IDs of the data to be requested
-#' @param fields which fields to include in the table returned
-#' @param ... any arguments to be passed to `opengeo_api_req()`
+#' @param ids The IDs of the data to be requested
+#' @param fields Which fields to include in the table returned
+#' @param geo Whether this query should "returnGeometry" (TRUE) or not
+#' @param crs The Coordinate Reference System (CRS) code to use
+#' @param ... Any arguments to be passed to `opengeo_api_req()`
 #' @keywords internal
-table_data_req <- function(ids, url, fields, ...) {
+api_data_req <- function(ids, url, fields, geo = TRUE, crs = NULL, ...) {
+  return_geo <- if (geo) "true" else "false"
   ids <- stringr::str_flatten(ids, collapse = ",")
   fields <- stringr::str_flatten(fields, collapse = ",")
-  url |>
+  req <- url |>
     opengeo_api_req(...) |>
     httr2::req_url_query(objectIds = ids) |>
     httr2::req_url_query(outFields = fields) |>
-    httr2::req_url_query(returnGeometry = "false") |>
+    httr2::req_url_query(returnGeometry = return_geo) |>
     httr2::req_url_query(returnIdsOnly = "false")
+  if (is.null(crs)) req else httr2::req_url_query(req, outSR = crs)
 }
-
-
-
-#' Build an API request for spatial (geojson) data
-#'
-#' @inheritParams table_data_req
-#' @param crs the Coordinate Reference System (CRS) code to use. 4326 by
-#'  default.
-#' @keywords internal
-spatial_data_req <- function(ids, url, crs = 4326, ...) {
-  ids <- stringr::str_flatten(ids, collapse = ",")
-  url |>
-    opengeo_api_req(format = "geojson", ...) |>
-    httr2::req_url_query(objectIds = ids) |>
-    httr2::req_url_query(outFields = "*") |>
-    httr2::req_url_query(returnGeometry = "true") |>
-    httr2::req_url_query(returnIdsOnly = "false") |>
-    httr2::req_url_query(outSR = crs)
-}
-
-
 
 
 
@@ -158,7 +141,7 @@ return_result_ids <- function(url, where, max_tries = 3, verbosity = 0, ...) {
 
 #' Perform an API query and handle the returned table data
 #'
-#' @inheritParams table_data_req
+#' @inheritParams api_data_req
 #' @inheritParams query_opengeo_api
 #' @keywords internal
 return_table_data <- function(
@@ -167,9 +150,8 @@ return_table_data <- function(
     fields,
     max_tries = 3,
     verbosity = 0,
-    ...
-  ) {
-  ret <- table_data_req(ids, url, fields, ...) |>
+    ...) {
+  ret <- api_data_req(ids, url, fields, geo = FALSE, ...) |>
     possibly_query_opengeo_api(max_tries = max_tries, verbosity = verbosity)
 
   if (is.null(ret)) {
@@ -191,18 +173,18 @@ return_table_data <- function(
 
 #' Perform an API query and handle the returned spatial data
 #'
-#' @inheritParams spatial_data_req
+#' @inheritParams api_data_req
 #' @inheritParams query_opengeo_api
 #' @keywords internal
 return_spatial_data <- function(
     ids,
     url,
+    fields,
     crs = 4326,
     max_tries = 3,
     verbosity = 0,
-    ...
-  ) {
-  ret <- spatial_data_req(ids, url, crs, ...) |>
+    ...) {
+  ret <- api_data_req(ids, url, fields, geo = TRUE, crs, ...) |>
     possibly_query_opengeo_api(max_tries = max_tries, verbosity = verbosity)
   if (is.null(ret)) {
     cli::cli_alert_info("{.fn return_spatial_data} returned NULL data")
