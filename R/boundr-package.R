@@ -1,9 +1,8 @@
 #' @keywords internal
 "_PACKAGE"
 
-## usethis namespace: start
 #' @importFrom assertthat assert_that
-#' @importFrom cli cli_alert_info
+#' @importFrom cli cli_abort cli_alert_info
 #' @importFrom dplyr across desc first if_all if_any if_else pick
 #' @importFrom glue glue
 #' @importFrom rlang is_interactive arg_match
