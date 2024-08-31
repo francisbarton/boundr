@@ -1,5 +1,6 @@
 linters: linters_with_defaults( # see vignette("lintr")
   indentation_linter = NULL,
-  commented_code_linter = NULL
+  commented_code_linter = NULL,
+  cyclocomp_linter = NULL
   )
 encoding: "UTF-8"
