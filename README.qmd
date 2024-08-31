@@ -6,7 +6,7 @@ knitr:
     cache: true
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- README.md is generated from README.qmd. Please edit that file -->
 
 ```{r setup}
 #| include: false
@@ -14,7 +14,6 @@ knitr:
 library(boundr)
 library(tmap)
 library(ggplot2)
-conflicted::conflicts_prefer(boundr::points)
 
 ```
 
@@ -37,12 +36,12 @@ conflicted::conflicts_prefer(boundr::points)
 </div>
 
 <div>
-The main purpose of this package is to download area lookups and
-boundaries to R tables, using the ONS Open Geography API, for all
-areas at a specified level within a specified area.
+The main purpose of this package is to download area lookups and boundaries to
+  R tables, using the ONS Open Geography API, for all areas at a specified
+  level within a specified area.
 
-The main script `bounds()` will return a data frame with the sub-area
-geometry column, as an `sf` object ready to be visualised as a map.
+The main script `bounds()` will return a data frame with the sub-area geometry
+  column, as an `sf` object ready to be visualised as a map.
 </div>
 
 </div>
@@ -59,7 +58,7 @@ if you have the `remotes` package installed.
 
 ### Basic lookup of areas within a larger area, by name
 
-Returns sfc tibble with latest available data
+Returns `sfc` tibble with latest available data
 
 ```{r example-1}
 
@@ -70,69 +69,52 @@ bounds("msoa", "lad", "Swansea")
 
 ### Lookup areas with older dates
 
-Trial and error may be required - or start by looking up what is available on the OpenGeography site.
+Trial and error may be required - or start by looking up what is available on
+  the OpenGeography site.
 
 ```{r example-2}
 
-bounds("msoa", "lad", "Shepway", lookup_year = 2011, within_year = 2015)
-
-```
-
-
-### Alternative ways to achieve a goal
-
-In this case, the first option is notably quicker than the second, because they use different tables to create the lookup table.
-
-The second option fails to return boundaries unless the year option is included, as it creates a lookup table for rgn23 and ctry23 but boundaries are not available for rgn23 (only rgn22).
-
-Different columns are returned by each command.
-
-```{r example-3}
-#| message: false
-
-bounds("rgn", country_filter = "EN", resolution = "BUC")
-bounds("region", "country", "England", lookup_year = 2022, resolution = "BUC")
+bounds("wd", "lad", "Shepway", within_year = 2016) # Shepway no longer exists
 
 ```
 
 
 ### You can just request bare lookup tables - no spatial data attached
 
-```{r example-4}
+```{r example-3}
 
-create_lookup_table("spc", "spr")
+lookup("spc", "spr")
 
 ```
 
 
-### A lookup table for Welsh local authorities to Senedd electoral regions
+### A lookup table for wards to Senedd electoral regions
 
 Sometimes boundr needs a little help finding what you are looking for.
 Supplying a year or country filter can help get the right table.
 
 Using `return_with = "full"` includes all available columns, not just those referred to by the `lookup` and `within` arguments.
 
-```{r example-5}
+```{r example-4}
 
 # This doesn't succeed:
-# create_lookup_table("wd", "sener")
+lookup("wd", "sener")
 
 # supplying a year helps:
-create_lookup_table("wd", "sener", lookup_year = 2023, return_width = "full")
-
-# or a country filter:
-create_lookup_table("wd", "sener", country_filter = "WA", return_width = "full") |>
-  dplyr::filter(sener23nm == "South Wales West")
+lookup("wd", "sener", lookup_year = 2023, opts = opts(return_width = "full"))
 
 ```
 
 
-### The sfc tibble is ready to be passed to a mapping tool like `tmap::qtm()`:
+### The sfc tibble is ready to be passed to a mapping tool like `tmap::qtm()`
 
-```{r example-6}
+(Here I've chosen to do something a little more complex with `tmap`, but
+  `qtm()` works too).
+
+```{r example-5}
 #| message: false
 
-bounds("parish", "lad", "Isles of Scilly") |>
+bounds("par", "lad", "Isles of Scilly") |>
   tmap::tm_shape() +
   tmap::tm_polygons(
     col = "par23nm",
@@ -145,25 +127,30 @@ bounds("parish", "lad", "Isles of Scilly") |>
 ```
 
 
-### bounds now supports a shortcut which will return all bounds for a certain level, without having to specify a 'within' argument
+### bounds now supports a shortcut syntax...
+
+...which will return all bounds for a certain level, without having to specify
+  a `within_level` argument
 
 Take care - you might download a lot of data doing this!
 
-```{r example-7}
+```{r example-6}
 
 bounds("spr")
 
 ```
 
-### The points() function returns area (population-weighted) centroids where available
+### The `centroids()` function returns area centroids where available
 
-(Check the OpenGeography website).
+These are usually population-weighted (PWC) nowadays.
+(Some older centroids are address-weighted (AWC).
+Check the OpenGeography website).
 
-```{r example-8}
+```{r example-7}
 #| message: false
 
 sb <- bounds("msoa", "lad", "Swindon")
-sp <- points("msoa", "utla", "Swindon")
+sp <- centroids("msoa", "utla", "Swindon")
 
 sb |>
   ggplot2::ggplot() +
@@ -176,20 +163,21 @@ sb |>
 ### A ggplot2 example
 
 Here we specify a 'within_names' argument alongside the 'lookup' argument.
-There's no 'within' argument to be specified because there's nothing to lookup.
+There's no 'within_level' argument to be specified because there's nothing to
+  lookup against.
 (There aren't any lookup tables for National Parks - just the boundaries).
 
 
-```{r example-9}
+```{r example-8}
 
-bounds("npark", within_names = "Bannau Brycheiniog", resolution = "BUC") |>
+bounds("npark", within_names = "Bannau Brycheiniog") |>
   ggplot2::ggplot() +
   ggplot2::geom_sf()
 
 ```
 
 
-```{r example-10}
+```{r example-9}
 
 # https://github.com/francisbarton/mapirosa
 library(mapirosa)
@@ -200,8 +188,7 @@ library(tidyterra)
 bb <- bounds(
   "npark",
   within_names = "Bannau Brycheiniog",
-  resolution = "BUC",
-  crs = 27700
+  opts = boundr_options(crs = 27700)
 )
 
 bb_basemap <- mapirosa::build_basemap(
@@ -224,74 +211,65 @@ ggplot2::ggplot(bb) +
 ```
 
 
-### Aliases
-
-For certain geographic levels you can supply a more human-friendly alias, so you don't need to remember the abbreviated prefix.
-
-| alias   | actual argument (geo prefix) used |
-| ----    | ---- |
-| parish  | par  |
-| ward    | wd   |
-| region  | rgn  |
-| county  | cty  |
-| country | ctry |
-
-Ideas for other useful aliases happily received.
-
-
 ## Package internal structure
 
 The structure of the project looks a bit like this:
 
-    bounds() / points() [main UI functions]
+    bounds() / centroids() [main UI functions]
        ^
        |
        |
-        <-------  create_lookup_table() [available to the user]
+       <------add_geometry_to_table() [available to user]
+       |      |
+       |      |
+       |      lookup() [available to the user]
        |                ^
        |                |
-       |                 <--------- return_query_data()
        |                |
-       |                 <--------- return_lookup_query_info() 
+       |                 <--------- return_table_info() 
        |                                       \
        |                                        \
         <-------  return_spatial_data()           <----- opengeo_schema [data]
                         ^                       /              ^
                         |                      /               |
-                         <--------  pull_geo_query_url()       |
+                         <--------  return_bounds_info()       |
                                                                |
                                                          build_schema()
 
 When you call `bounds()` you specify a lower level area (eg ward) and a higher
-level area (eg local authority), and you specify either the name of the higher
-level area (or areas) or its code.
+  level area (eg local authority), and you specify either the name of the higher
+  level area (or areas) or its ONS code.
+Multiple higher level areas can be submitted.
+If no higher level area is specified then boundaries or a lookup will be
+  returned directly (without an intermediate lookup table being created).
 
-`return_lookup_query_info()` then finds the API query URL of a suitable lookup
-table - one that contains columns for both your lower and higher level areas.
+`return_table_info()` then finds the API query URL of a suitable lookup
+  table - one that contains columns for both your lower and higher level areas.
 It does this by filtering `opengeo_schema`, which is a cached copy of the
-various datasets available from the Open Geography API Services list.
-This schema is available as internal data in the package - but may need
-updating.
+  various datasets available from the Open Geography API Services list.
+This schema is available as internal data in the package,and is updated
+  periodically by the maintainer but may be slightly out of date.
 
-`create_lookup_table()` then builds a lookup table (a tibble) based on all the
-areas you have said you are interested in.
+`lookup()` then builds a lookup table (a tibble) based on all the
+  areas you have said you are interested in.
+
 At the same time, `return_spatial_data()` will - if you have specified you want
-spatial boundaries data for your areas - retrieve the boundary data at your
-chosen resolution for your lower level areas.
+  spatial boundaries data for your areas - retrieve the boundary data at your
+  chosen resolution for your lower level areas.
 These will then be joined onto the lookup table and provided to you as an
-`sfc` tibble.
+  `sfc` tibble.
 
 
 ## Contributing
 
-Suggestions for improvements are welcome, preferably posted as an issue
-here on GitHub.
+Suggestions for improvements are welcome, preferably posted as an issue on
+  Codeberg (or GitHub).
 Contributions as pull requests are also welcome.
 
-Please note that `boundr` is released with a [Contributor Code of
-Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html).
+Please note that `boundr` is released with a [Contributor Code of Conduct][coc].
 By contributing to this project, you agree to abide by its terms.
 
+[coc]: https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html
 
 
 ## News
@@ -299,23 +277,28 @@ By contributing to this project, you agree to abide by its terms.
 See [NEWS.md](NEWS.md) for version notes.
 
 
-`boundr` was previously
-[`jogger`](https://github.com/francisbarton/jogger).
+`boundr` was previously [`jogger`](https://github.com/francisbarton/jogger).
+
+```{r}
+#| echo: false
+
+yr <- format(Sys.Date(), "%Y")
+```
 
 ### Licences
 
 The code in this repo is MIT licensed.
 
 The data that the code helps you retrieve is issued under a variety of
-licences, including:
+  licences, including:
 
--   the [Open Government Licence
-    v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
+-   the [Open Government Licence v3.0][ogl3]
 
-> Licensing statement [as stipulated by the
-> ONS](https://www.ons.gov.uk/methodology/geography/licences):
+> Licensing statement [as stipulated by the ONS][ons-lic]:
 >
 > -   Source: Office for National Statistics licensed under the [Open
->     Government Licence
->     v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
-> -   Contains OS data © Crown copyright and database right `r format(Sys.Date(), "%Y")`
+>     Government Licence v3.0][ogl3]
+> -   Contains OS data © Crown copyright and database right `r yr`
+
+[ogl3]: https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/
+[ons-lic]: https://www.ons.gov.uk/methodology/geography/licences

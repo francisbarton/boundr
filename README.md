@@ -1,6 +1,6 @@
 
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- README.md is generated from README.qmd. Please edit that file -->
 
 # welcome to boundr
 
@@ -20,7 +20,6 @@
   />
 
 </div>
-
 <div>
 
 The main purpose of this package is to download area lookups and
@@ -39,6 +38,7 @@ geometry column, as an `sf` object ready to be visualised as a map.
 You can install this package from the `R` console by entering
 
 > remotes::install_git(“https://codeberg.org/francisbarton/boundr”)
+> remotes::install_git(“https://codeberg.org/francisbarton/boundr”)
 
 if you have the `remotes` package installed.
 
@@ -46,10 +46,40 @@ if you have the `remotes` package installed.
 
 ### Basic lookup of areas within a larger area, by name
 
-Returns sfc tibble with latest available data
+Returns `sfc` tibble with latest available data
 
 ``` r
 bounds("msoa", "lad", "Swansea")
+```
+
+    Simple feature collection with 30 features and 7 fields
+    Geometry type: MULTIPOLYGON
+    Dimension:     XY
+    Bounding box:  xmin: -4.333587 ymin: 51.53577 xmax: -3.842747 ymax: 51.77423
+    Geodetic CRS:  WGS 84
+    First 10 features:
+        msoa21cd    msoa21nm    msoa21nmw            msoa21hclnm
+    1  W02000168 Swansea 001 Abertawe 001          Pontarddulais
+    2  W02000169 Swansea 002 Abertawe 002         Clydach & Mawr
+    3  W02000170 Swansea 003 Abertawe 003        Morriston North
+    4  W02000171 Swansea 004 Abertawe 004 Llangyfelach & Tircoed
+    5  W02000172 Swansea 005 Abertawe 005              Gorseinon
+    6  W02000173 Swansea 006 Abertawe 006             Birchgrove
+    7  W02000174 Swansea 007 Abertawe 007                Loughor
+    8  W02000175 Swansea 008 Abertawe 008        Morriston South
+    9  W02000176 Swansea 009 Abertawe 009            Mynydd-bach
+    10 W02000177 Swansea 010 Abertawe 010             Llansamlet
+                  msoa21hclnmw   lad24cd lad24nm                       geometry
+    1            Pontarddulais W06000011 Swansea MULTIPOLYGON (((-4.044836 5...
+    2           Clydach a Mawr W06000011 Swansea MULTIPOLYGON (((-3.976283 5...
+    3         Gogledd Treforys W06000011 Swansea MULTIPOLYGON (((-3.913253 5...
+    4  Llangyfelach a Thircoed W06000011 Swansea MULTIPOLYGON (((-4.011018 5...
+    5                Gorseinon W06000011 Swansea MULTIPOLYGON (((-4.062941 5...
+    6                Gellifedw W06000011 Swansea MULTIPOLYGON (((-3.875069 5...
+    7               Casllwchwr W06000011 Swansea MULTIPOLYGON (((-4.053356 5...
+    8              De Treforys W06000011 Swansea MULTIPOLYGON (((-3.929819 5...
+    9              Mynydd-bach W06000011 Swansea MULTIPOLYGON (((-3.933911 5...
+    10              Llansamlet W06000011 Swansea MULTIPOLYGON (((-3.898853 5...
 ```
 
     Simple feature collection with 30 features and 7 fields
@@ -87,103 +117,35 @@ Trial and error may be required - or start by looking up what is
 available on the OpenGeography site.
 
 ``` r
-bounds("msoa", "lad", "Shepway", lookup_year = 2011, within_year = 2015)
+bounds("wd", "lad", "Shepway", within_year = 2016) # Shepway no longer exists
 ```
 
-    Simple feature collection with 14 features and 5 fields
+    Simple feature collection with 13 features and 4 fields
     Geometry type: POLYGON
     Dimension:     XY
-    Bounding box:  xmin: 0.7770266 ymin: 50.91095 xmax: 1.221137 ymax: 51.205
+    Bounding box:  xmin: 0.7768709 ymin: 50.91048 xmax: 1.221268 ymax: 51.205
     Geodetic CRS:  WGS 84
-    First 10 features:
-        msoa11cd    msoa11nm                          msoa11hclnm   lad15cd lad15nm
-    1  E02005102 Shepway 001             Lyminge, Densole & Elham E07000112 Shepway
-    2  E02005103 Shepway 002                             Hawkinge E07000112 Shepway
-    3  E02005104 Shepway 003                Folkestone North East E07000112 Shepway
-    4  E02005105 Shepway 004                     Folkestone Foord E07000112 Shepway
-    5  E02005106 Shepway 005               Cheriton & Horn Street E07000112 Shepway
-    6  E02005107 Shepway 006       Folkestone Morehall & Sandgate E07000112 Shepway
-    7  E02005109 Shepway 008     Saltwood, Seabrook & Etchinghill E07000112 Shepway
-    8  E02005110 Shepway 009                    Lympne & Palmarsh E07000112 Shepway
-    9  E02005111 Shepway 010                                Hythe E07000112 Shepway
-    10 E02005112 Shepway 011 Dymchurch, St Mary's Bay & Brookland E07000112 Shepway
-                             geometry
-    1  POLYGON ((1.089762 51.18973...
-    2  POLYGON ((1.170835 51.13259...
-    3  POLYGON ((1.184798 51.09985...
-    4  POLYGON ((1.189394 51.08954...
-    5  POLYGON ((1.135277 51.09801...
-    6  POLYGON ((1.17032 51.0953, ...
-    7  POLYGON ((1.111727 51.12941...
-    8  POLYGON ((1.000461 51.1184,...
-    9  POLYGON ((1.062613 51.07642...
-    10 POLYGON ((0.9884286 51.0706...
-
-### Alternative ways to achieve a goal
-
-In this case, the first option is notably quicker than the second,
-because they use different tables to create the lookup table.
-
-The second option fails to return boundaries unless the year option is
-included, as it creates a lookup table for rgn23 and ctry23 but
-boundaries are not available for rgn23 (only rgn22).
-
-Different columns are returned by each command.
-
-``` r
-bounds("rgn", country_filter = "EN", resolution = "BUC")
-```
-
-    Simple feature collection with 9 features and 2 fields
-    Geometry type: MULTIPOLYGON
-    Dimension:     XY
-    Bounding box:  xmin: -6.360297 ymin: 49.88234 xmax: 1.763706 ymax: 55.81121
-    Geodetic CRS:  WGS 84
-        rgn23cd                  rgn23nm                       geometry
-    1 E12000001               North East MULTIPOLYGON (((-1.401114 5...
-    2 E12000002               North West MULTIPOLYGON (((-3.242936 5...
-    3 E12000003 Yorkshire and The Humber MULTIPOLYGON (((-0.5207704 ...
-    4 E12000004            East Midlands MULTIPOLYGON (((-0.248476 5...
-    5 E12000005            West Midlands MULTIPOLYGON (((-1.860821 5...
-    6 E12000006          East of England MULTIPOLYGON (((0.6458286 5...
-    7 E12000007                   London MULTIPOLYGON (((-0.01191868...
-    8 E12000008               South East MULTIPOLYGON (((-1.55515 50...
-    9 E12000009               South West MULTIPOLYGON (((-6.349051 4...
-
-``` r
-bounds("region", "country", "England", lookup_year = 2022, resolution = "BUC")
-```
-
-    Simple feature collection with 9 features and 4 fields
-    Geometry type: MULTIPOLYGON
-    Dimension:     XY
-    Bounding box:  xmin: -6.360297 ymin: 49.88234 xmax: 1.763706 ymax: 55.81121
-    Geodetic CRS:  WGS 84
-        rgn22cd                  rgn22nm  ctry22cd ctry22nm
-    1 E12000001               North East E92000001  England
-    2 E12000002               North West E92000001  England
-    3 E12000003 Yorkshire and The Humber E92000001  England
-    4 E12000004            East Midlands E92000001  England
-    5 E12000005            West Midlands E92000001  England
-    6 E12000006          East of England E92000001  England
-    7 E12000007                   London E92000001  England
-    8 E12000008               South East E92000001  England
-    9 E12000009               South West E92000001  England
-                            geometry
-    1 MULTIPOLYGON (((-1.779088 5...
-    2 MULTIPOLYGON (((-3.242936 5...
-    3 MULTIPOLYGON (((-0.5207704 ...
-    4 MULTIPOLYGON (((-0.248476 5...
-    5 MULTIPOLYGON (((-1.860732 5...
-    6 MULTIPOLYGON (((0.8374914 5...
-    7 MULTIPOLYGON (((-0.01191868...
-    8 MULTIPOLYGON (((-1.55515 50...
-    9 MULTIPOLYGON (((-6.349051 4...
+    # A tibble: 13 × 5
+       wd16cd    wd16nm                    lad16cd lad16nm                  geometry
+       <chr>     <chr>                     <chr>   <chr>               <POLYGON [°]>
+     1 E05010015 Broadmead                 E07000… Shepway ((1.155543 51.08448, 1.1…
+     2 E05010016 Cheriton                  E07000… Shepway ((1.159752 51.10128, 1.1…
+     3 E05010017 East Folkestone           E07000… Shepway ((1.184824 51.09986, 1.1…
+     4 E05010018 Folkestone Central        E07000… Shepway ((1.177906 51.07553, 1.1…
+     5 E05010019 Folkestone Harbour        E07000… Shepway ((1.184824 51.09986, 1.1…
+     6 E05010020 Hythe                     E07000… Shepway ((1.119319 51.08961, 1.1…
+     7 E05010021 Hythe Rural               E07000… Shepway ((1.036358 51.08556, 1.0…
+     8 E05010022 New Romney                E07000… Shepway ((0.9804397 51.00251, 0.…
+     9 E05010023 North Downs East          E07000… Shepway ((1.147638 51.17718, 1.1…
+    10 E05010024 North Downs West          E07000… Shepway ((1.097309 51.18892, 1.0…
+    11 E05010025 Romney Marsh              E07000… Shepway ((1.035288 51.04665, 1.0…
+    12 E05010026 Sandgate & West Folkesto… E07000… Shepway ((1.155534 51.08386, 1.1…
+    13 E05010027 Walland & Denge Marsh     E07000… Shepway ((0.8944822 51.03699, 0.…
 
 ### You can just request bare lookup tables - no spatial data attached
 
 ``` r
-create_lookup_table("spc", "spr")
+lookup("spc", "spr")
 ```
 
     # A tibble: 73 × 4
@@ -201,20 +163,31 @@ create_lookup_table("spc", "spr")
     10 S16000104 Edinburgh Central              S17000012 Lothian              
     # ℹ 63 more rows
 
-### A lookup table for Welsh local authorities to Senedd electoral regions
-
-Sometimes boundr needs a little help finding what you are looking for.
-Supplying a year or country filter can help get the right table.
-
 Using `return_with = "full"` includes all available columns, not just
 those referred to by the `lookup` and `within` arguments.
 
+### A lookup table for wards to Senedd electoral regions
 ``` r
-# This doesn't succeed:
-# create_lookup_table("wd", "sener")
+lookup("wd", "sener")
+```
 
-# supplying a year helps:
-create_lookup_table("wd", "sener", lookup_year = 2023, return_width = "full")
+    # A tibble: 764 × 4
+       wd23cd    wd23nm                          sener23cd sener23nm  
+       <chr>     <chr>                           <chr>     <chr>      
+     1 W05001715 Bangor Is-y-Coed                W10000001 North Wales
+     2 W05001714 Acton and Maesydre              W10000001 North Wales
+     3 W05001713 Acrefair North                  W10000001 North Wales
+     4 W05001615 Whitford                        W10000001 North Wales
+     5 W05001614 Treuddyn                        W10000001 North Wales
+     6 W05001613 Shotton West                    W10000001 North Wales
+     7 W05001612 Shotton East and Shotton Higher W10000001 North Wales
+     8 W05001611 Saltney Ferry                   W10000001 North Wales
+     9 W05001610 Queensferry and Sealand         W10000001 North Wales
+    10 W05001609 Pen-y-ffordd                    W10000001 North Wales
+    # ℹ 754 more rows
+
+``` r
+lookup("wd", "sener", lookup_year = 2023, opts = opts(return_width = "full"))
 ```
 
     # A tibble: 764 × 9
@@ -232,24 +205,13 @@ create_lookup_table("wd", "sener", lookup_year = 2023, return_width = "full")
     10 W05001609 Pen-y… Pen-y-… W0600… Flint… Sir y … W10000001 North Wa… Gogledd C…
     # ℹ 754 more rows
 
-``` r
-# or a country filter:
-create_lookup_table("wd", "sener", country_filter = "WA", return_width = "full") |>
-  dplyr::filter(sener23nm == "South Wales West")
-```
+### The sfc tibble is ready to be passed to a mapping tool like `tmap::qtm()`
 
-    # A tibble: 4 × 9
-      wd23cd    wd23nm  wd23nmw ua23cd ua23nm ua23nmw sener23cd sener23nm sener23nmw
-      <chr>     <chr>   <chr>   <chr>  <chr>  <chr>   <chr>     <chr>     <chr>     
-    1 W05001099 Pontyc… Gorlle… W0600… Rhond… Rhondd… W10000009 South Wa… Gorllewin…
-    2 W05001088 Llanha… Llanha… W0600… Rhond… Rhondd… W10000009 South Wa… Gorllewin…
-    3 W05001084 Glyn-c… Glyn-c… W0600… Rhond… Rhondd… W10000009 South Wa… Gorllewin…
-    4 W05001076 Brynna… Brynna… W0600… Rhond… Rhondd… W10000009 South Wa… Gorllewin…
-
-### The sfc tibble is ready to be passed to a mapping tool like `tmap::qtm()`:
+(Here I’ve chosen to do something a little more complex with `tmap`, but
+`qtm()` works too).
 
 ``` r
-bounds("parish", "lad", "Isles of Scilly") |>
+bounds("par", "lad", "Isles of Scilly") |>
   tmap::tm_shape() +
   tmap::tm_polygons(
     col = "par23nm",
@@ -260,9 +222,12 @@ bounds("parish", "lad", "Isles of Scilly") |>
   tmap::tm_style("natural", bg.color = "#7cb7bb")
 ```
 
-![](man/figures/README-example-6-1.png)
+![](man/figures/README-example-5-1.png)
 
-### bounds now supports a shortcut which will return all bounds for a certain level, without having to specify a ‘within’ argument
+### bounds now supports a shortcut syntax…
+
+…which will return all bounds for a certain level, without having to
+specify a `within_level` argument
 
 Take care - you might download a lot of data doing this!
 
@@ -270,28 +235,36 @@ Take care - you might download a lot of data doing this!
 bounds("spr")
 ```
 
+    Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, : GDAL
+    Message 1: organizePolygons() received a polygon with more than 100 parts.  The
+    processing may be really slow.  You can skip the processing by setting
+    METHOD=SKIP.
+
     Simple feature collection with 8 features and 2 fields
     Geometry type: MULTIPOLYGON
     Dimension:     XY
     Bounding box:  xmin: -8.649996 ymin: 54.63326 xmax: -0.7246158 ymax: 60.86077
     Geodetic CRS:  WGS 84
-        spr22cd               spr22nm                       geometry
-    1 S17000011 Highlands and Islands MULTIPOLYGON (((-5.572266 5...
-    2 S17000012               Lothian MULTIPOLYGON (((-3.17174 55...
-    3 S17000013 Mid Scotland and Fife MULTIPOLYGON (((-3.302574 5...
-    4 S17000014   North East Scotland MULTIPOLYGON (((-2.531457 5...
-    5 S17000015        South Scotland MULTIPOLYGON (((-4.085281 5...
-    6 S17000018         West Scotland MULTIPOLYGON (((-5.118861 5...
-    7 S17000019      Central Scotland MULTIPOLYGON (((-3.795887 5...
-    8 S17000020               Glasgow MULTIPOLYGON (((-4.271141 5...
+    # A tibble: 8 × 3
+      spr22cd   spr22nm                                                     geometry
+      <chr>     <chr>                                             <MULTIPOLYGON [°]>
+    1 S17000011 Highlands and Islands (((-5.572266 55.28656, -5.570243 55.28481, -5…
+    2 S17000012 Lothian               (((-3.17174 55.9875, -3.17105 55.98732, -3.17…
+    3 S17000013 Mid Scotland and Fife (((-3.302574 56.03094, -3.302508 56.03033, -3…
+    4 S17000014 North East Scotland   (((-2.531457 56.71581, -2.530777 56.71507, -2…
+    5 S17000015 South Scotland        (((-4.085281 54.7686, -4.084491 54.7683, -4.0…
+    6 S17000018 West Scotland         (((-5.118861 55.42869, -5.118397 55.42741, -5…
+    7 S17000019 Central Scotland      (((-3.795887 56.10006, -3.795648 56.09964, -3…
+    8 S17000020 Glasgow               (((-4.271141 55.9281, -4.270303 55.92808, -4.…
 
-### The points() function returns area (population-weighted) centroids where available
+### The `centroids()` function returns area centroids where available
 
-(Check the OpenGeography website).
+These are usually population-weighted (PWC) nowadays. (Some older
+centroids are address-weighted (AWC). Check the OpenGeography website).
 
 ``` r
 sb <- bounds("msoa", "lad", "Swindon")
-sp <- points("msoa", "utla", "Swindon")
+sp <- centroids("msoa", "utla", "Swindon")
 
 sb |>
   ggplot2::ggplot() +
@@ -300,22 +273,22 @@ sb |>
   ggplot2::theme_void()
 ```
 
-![](man/figures/README-example-8-1.png)
+![](man/figures/README-example-7-1.png)
 
 ### A ggplot2 example
 
 Here we specify a ‘within_names’ argument alongside the ‘lookup’
-argument. There’s no ‘within’ argument to be specified because there’s
-nothing to lookup. (There aren’t any lookup tables for National Parks -
-just the boundaries).
+argument. There’s no ‘within_level’ argument to be specified because
+there’s nothing to lookup against. (There aren’t any lookup tables for
+National Parks - just the boundaries).
 
 ``` r
-bounds("npark", within_names = "Bannau Brycheiniog", resolution = "BUC") |>
+bounds("npark", within_names = "Bannau Brycheiniog") |>
   ggplot2::ggplot() +
   ggplot2::geom_sf()
 ```
 
-![](man/figures/README-example-9-1.png)
+![](man/figures/README-example-8-1.png)
 
 ``` r
 # https://github.com/francisbarton/mapirosa
@@ -327,8 +300,7 @@ library(tidyterra)
 bb <- bounds(
   "npark",
   within_names = "Bannau Brycheiniog",
-  resolution = "BUC",
-  crs = 27700
+  opts = boundr_options(crs = 27700)
 )
 
 bb_basemap <- mapirosa::build_basemap(
@@ -337,7 +309,8 @@ bb_basemap <- mapirosa::build_basemap(
   style = "outdoor",
   squarify = TRUE,
   crs = 27700
-)
+) |>
+  rlang::with_interactive(FALSE)
 
 ggplot2::ggplot(bb) +
   tidyterra::geom_spatraster_rgb(
@@ -349,68 +322,62 @@ ggplot2::ggplot(bb) +
   ggplot2::geom_sf(colour = "coral", fill = "aquamarine", alpha = 0.3)
 ```
 
-![](man/figures/README-example-10-1.png)
-
-### Aliases
-
-For certain geographic levels you can supply a more human-friendly
-alias, so you don’t need to remember the abbreviated prefix.
-
-| alias   | actual argument (geo prefix) used |
-|---------|-----------------------------------|
-| parish  | par                               |
-| ward    | wd                                |
-| region  | rgn                               |
-| county  | cty                               |
-| country | ctry                              |
-
-Ideas for other useful aliases happily received.
+![](man/figures/README-example-9-1.png)
 
 ## Package internal structure
 
 The structure of the project looks a bit like this:
 
-    bounds() / points() [main UI functions]
+    bounds() / centroids() [main UI functions]
        ^
        |
        |
-        <-------  create_lookup_table() [available to the user]
+       <------add_geometry_to_table() [available to user]
+       |      |
+       |      |
+       |      lookup() [available to the user]
        |                ^
        |                |
-       |                 <--------- return_query_data()
        |                |
-       |                 <--------- return_lookup_query_info() 
+       |                 <--------- return_table_info() 
        |                                       \
        |                                        \
         <-------  return_spatial_data()           <----- opengeo_schema [data]
                         ^                       /              ^
                         |                      /               |
-                         <--------  pull_geo_query_url()       |
+                         <--------  return_bounds_info()       |
                                                                |
                                                          build_schema()
 
 When you call `bounds()` you specify a lower level area (eg ward) and a
 higher level area (eg local authority), and you specify either the name
-of the higher level area (or areas) or its code.
+of the higher level area (or areas) or its ONS code. Multiple higher
+level areas can be submitted. If no higher level area is specified then
+boundaries or a lookup will be returned directly (without an
+intermediate lookup table being created).
 
-`return_lookup_query_info()` then finds the API query URL of a suitable
-lookup table - one that contains columns for both your lower and higher
-level areas. It does this by filtering `opengeo_schema`, which is a
-cached copy of the various datasets available from the Open Geography
-API Services list. This schema is available as internal data in the
-package - but may need updating.
+`return_table_info()` then finds the API query URL of a suitable lookup
+table - one that contains columns for both your lower and higher level
+areas. It does this by filtering `opengeo_schema`, which is a cached
+copy of the various datasets available from the Open Geography API
+Services list. This schema is available as internal data in the
+package,and is updated periodically by the maintainer but may be
+slightly out of date.
 
-`create_lookup_table()` then builds a lookup table (a tibble) based on
-all the areas you have said you are interested in. At the same time,
-`return_spatial_data()` will - if you have specified you want spatial
-boundaries data for your areas - retrieve the boundary data at your
-chosen resolution for your lower level areas. These will then be joined
-onto the lookup table and provided to you as an `sfc` tibble.
+`lookup()` then builds a lookup table (a tibble) based on all the areas
+you have said you are interested in.
+
+At the same time, `return_spatial_data()` will - if you have specified
+you want spatial boundaries data for your areas - retrieve the boundary
+data at your chosen resolution for your lower level areas. These will
+then be joined onto the lookup table and provided to you as an `sfc`
+tibble.
 
 ## Contributing
 
 Suggestions for improvements are welcome, preferably posted as an issue
-here on GitHub. Contributions as pull requests are also welcome.
+on Codeberg (or GitHub). Contributions as pull requests are also
+welcome.
 
 Please note that `boundr` is released with a [Contributor Code of
 Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html).
@@ -432,10 +399,16 @@ licences, including:
 
 - the [Open Government Licence
   v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
+- the [Open Government Licence
+  v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
 
 > Licensing statement [as stipulated by the
 > ONS](https://www.ons.gov.uk/methodology/geography/licences):
 >
+> - Source: Office for National Statistics licensed under the [Open
+>   Government Licence
+>   v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
+> - Contains OS data © Crown copyright and database right 2024
 > - Source: Office for National Statistics licensed under the [Open
 >   Government Licence
 >   v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
