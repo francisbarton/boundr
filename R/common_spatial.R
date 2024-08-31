@@ -1,7 +1,7 @@
-#' Common spatial query build procedure used for both `bounds()` and `points()`
+#' Spatial query build procedure used for both `bounds()` and `centroids()`
 #'
 #' @param geometry character. Two options: "boundaries" (the default) and
-#'  "centroids". By default, `bounds()` will return boundaries and `points()`
+#'  "centroids". By default, `bounds()` will return boundaries and `centroids()`
 #'  will return centroids.
 #' @inheritParams bounds
 #' @keywords internal

@@ -27,7 +27,7 @@ to be in lower case. This function will use the lefthand-most column ending
 in 'cd' by default as the basis for retrieving boundary or point data.}
 
 \item{geometry}{character. Two options: "boundaries" (the default) and
-"centroids". By default, \code{bounds()} will return boundaries and \code{points()}
+"centroids". By default, \code{bounds()} will return boundaries and \code{centroids()}
 will return centroids.}
 
 \item{lookup_level}{character. Lower level area code eg "lsoa", "wd", "lad".}

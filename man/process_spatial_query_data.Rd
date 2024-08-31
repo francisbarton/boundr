@@ -3,14 +3,14 @@
 \name{process_spatial_query_data}
 \alias{process_spatial_query_data}
 \title{This function is the one that handles all actual querying of the API for
-\code{bounds()}/\code{points()}. Previous queries in the pipeline have been working
+\code{bounds()}/\code{centroids()}. Previous queries in the pipeline have been working
 "offline" with just the schema data provided within the package.}
 \usage{
 process_spatial_query_data(query_data, crs)
 }
 \description{
 This function is the one that handles all actual querying of the API for
-\code{bounds()}/\code{points()}. Previous queries in the pipeline have been working
+\code{bounds()}/\code{centroids()}. Previous queries in the pipeline have been working
 "offline" with just the schema data provided within the package.
 }
 \keyword{internal}

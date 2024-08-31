@@ -7,7 +7,7 @@ test_that("overall - run examples", {
   bounds("par", "lad", "Isles of Scilly", opts = boundr_options(crs = 27700)) |>
     expect_no_error()
   expect_no_error(bounds("npark", within_names = "Bannau Brycheiniog"))
-  expect_no_error(points("msoa", "utla", "Swindon"))
+  expect_no_error(centroids("msoa", "utla", "Swindon"))
 })
 
 

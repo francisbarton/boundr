@@ -2,7 +2,7 @@
 % Please edit documentation in R/bounds.R
 \name{bounds}
 \alias{bounds}
-\alias{points}
+\alias{centroids}
 \title{Return boundary data at a specified level and area from the ONS OG API}
 \usage{
 bounds(
@@ -15,7 +15,7 @@ bounds(
   opts = boundr_options()
 )
 
-points(
+centroids(
   lookup_level,
   within_level = NULL,
   within_names = NULL,
@@ -78,7 +78,7 @@ bounds("par", "lad", "Isles of Scilly") # par = "parish"
 bounds("spr")
 bounds("npark", within_names = "Bannau Brycheiniog")
 
-points("msoa", "utla", "Swindon")
+centroids("msoa", "utla", "Swindon")
 }
 \seealso{
 boundr_options

@@ -180,7 +180,7 @@ process_lookup_query_data <- function(query_data) {
 }
 
 #' This function is the one that handles all actual querying of the API for
-#'  `bounds()`/`points()`. Previous queries in the pipeline have been working
+#'  `bounds()`/`centroids()`. Previous queries in the pipeline have been working
 #'  "offline" with just the schema data provided within the package.
 #' @keywords internal
 process_spatial_query_data <- function(query_data, crs) {

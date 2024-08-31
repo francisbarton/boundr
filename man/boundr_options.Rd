@@ -3,7 +3,7 @@
 \name{boundr_options}
 \alias{boundr_options}
 \alias{opts}
-\title{Use this to set custom options for \code{bounds()} and \code{points()}}
+\title{Use this to set custom options for \code{bounds()} and \code{centroids()}}
 \usage{
 boundr_options(
   resolution = res_codes(),

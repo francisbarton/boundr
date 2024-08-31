@@ -34,10 +34,10 @@ bounds <- function(
 #'
 #' @returns an `sfc` tibble (data frame with geometry)
 #' @examples
-#' points("msoa", "utla", "Swindon")
+#' centroids("msoa", "utla", "Swindon")
 #' @rdname bounds
 #' @export
-points <- function(
+centroids <- function(
     lookup_level,
     within_level = NULL,
     within_names = NULL,
@@ -49,7 +49,7 @@ points <- function(
   rlang::inject(common_spatial(!!!curr_args, geometry = "centroids"))
 }
 
-#' Use this to set custom options for `bounds()` and `points()`
+#' Use this to set custom options for `bounds()` and `centroids()`
 #'
 #' `opts()` is an alias for this function.
 #'
