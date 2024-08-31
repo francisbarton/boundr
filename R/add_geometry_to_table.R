@@ -39,7 +39,7 @@ add_geometry_to_table <- function(
     msg = glue("{fun}: suitable geo_code_field not found from lookup table")
   )
 
-  final_filter <- ifelse(points, "PWC|Centroids", toupper(resolution))
+  final_filter <- ifelse(points, "Centroids", toupper(resolution))
   query_base_url <- pull_query_url(geo_code_field, lookup, final_filter)
 
   if (is.null(query_base_url)) {
@@ -113,7 +113,6 @@ add_geometry_to_table <- function(
 pull_query_url <- function(field, lookup, final_filter) {
   results <- opengeo_schema |>
     dplyr::filter(
-      if_any("has_geometry") &
       if_any(all_of({{ field }}), \(x) !is.na(x)) &
       if_any("service_name", \(x) stringr::str_starts(x, toupper(lookup))) &
       if_any("service_name", \(x) stringr::str_detect(x, {{ final_filter }}))
