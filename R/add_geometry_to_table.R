@@ -39,53 +39,27 @@ add_geometry_to_table <- add_geometry <- function(
     msg = glue("{.fn {fn}}: no valid geo_code_field found from {.var {tbl}}")
   )
 
-  final_filter <- ifelse(points, "Centroids", toupper(resolution))
-  query_base_url <- pull_query_url(geo_code_field, lookup, final_filter)
+  # if lookup is NULL, use the first bit of the geo field (preceding eg '23cd')
+  fallback_lookup <- stringr::str_extract(gcf, ".*(?=\\d{2}cd$)")
+  lookup <- ifnull(lookup, fallback_lookup)
 
-  if (is.null(query_base_url)) {
-    gtype <- ifelse(points, "centroid", "boundary") # nolint
-    gcf <- geo_code_field # nolint
-    cli::cli_abort(c(
-      "Unfortunately no {gtype} data was found to match the code {.var {gcf}} ",
-      "in the supplied table."
-    ))
-  }
+  query_url <- pull_query_url(gcf, lookup, rs)
 
-  area_codes <- tbl |>
-    dplyr::pull({{ geo_code_field }}) |>
-    batch_it(50) |> # turns out this limit is rather crucial!
-    purrr::map(\(x) build_flat_query(geo_code_field, x))
+  where_list <- unique(tbl[[gcf]]) |>
+    batch_it(50L) |> # turns out this limit is rather crucial!
+    purrr::map(\(x) build_flat_query(gcf, x))
 
-  ids <- area_codes |>
-    purrr::map(\(x) return_result_ids(url = query_base_url, where = x)) |>
-    purrr::list_c()
-
-  assert_that(
-    is.vector(ids) && !is.list(ids) && length(ids),
-    msg = glue("{fun}: return_result_ids() has not returned a vector of IDs.")
+  query_data <- list(
+    query_url = query_url,
+    fields = if (return_width == "full") "*" else gcf,
+    where_list = where_list
   )
 
-  spatial_data <- ids |>
-    batch_it(500) |> # experimenting with 500 instead of 100
-    purrr::map(
-      \(x) return_spatial_data(x, query_base_url, crs),
-      .progress = "Looking up spatial data"
-    )
-
-  assert_that(
-    is.list(spatial_data) && length(spatial_data) > 0,
-    msg = glue("{fun}: return_spatial_data() hasn't returned a list of data")
-  )
-
-  spatial_data_df <- spatial_data |>
+  spatial_data_df <- process_spatial_query_data(query_data, crs) |>
     dplyr::bind_rows() |>
-    dplyr::distinct() |>
-    janitor::clean_names()
-
-  if (return_width != "full") {
-    spatial_data_df <- spatial_data_df |>
-      dplyr::select(c({{ geo_code_field }}, "geometry"))
-  }
+    janitor::clean_names() |>
+    dplyr::select(!any_of(c("object_id", "global_id", "chgind"))) |>
+    dplyr::distinct()
 
   assert_that(
     inherits(spatial_data_df, "tbl_df"),
