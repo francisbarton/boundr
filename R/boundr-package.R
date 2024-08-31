@@ -6,7 +6,7 @@
 #' @importFrom dplyr across desc first if_all if_any if_else pick
 #' @importFrom glue glue glue_data
 #' @importFrom rlang .data arg_match caller_env is_interactive is_missing
-#' @importFrom tidyselect all_of any_of ends_with
+#' @importFrom tidyselect all_of any_of contains ends_with
 NULL
 
 #' The base part of the OpenGeography API standard URLs, for convenience
