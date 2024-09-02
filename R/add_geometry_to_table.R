@@ -2,14 +2,13 @@
 #'
 #' If you have a tibble such as those produced by `lookup()` - that is, there is
 #'  a column of geographical ONS codes ending in 'cd' - simply use this table as
-#'  the basis for retrieving the relevant boundaries or centroids.
+#'  the basis for retrieving the relevant boundaries or centroids. 
+#'  `add_geometry_to_table()` will use the lefthand-most column ending with
+#'  "cd".
 #'
 #' @param tbl A tibble with a column for geographical codes. Table names ought
 #'  to be in lower case. This function will use the lefthand-most column ending
 #'  in 'cd' by default as the basis for retrieving boundary or point data.
-#' @param geo_code_field character The column name from `tbl` for which you
-#'  wish to retrieve spatial data. By default, `add_geometry_to_table()` will
-#'  use the lefthand-most column that ends in "cd".
 #' @inheritParams bounds
 #' @inheritParams common_spatial
 #'
@@ -21,8 +20,6 @@
 add_geometry_to_table <- function(
     tbl,
     geometry = c("boundaries", "centroids"),
-    lookup_level = NULL,
-    geo_code_field = NULL,
     opts = boundr_options()) {
   fn <- "add_geometry_to_table"
   gm_type <- arg_match(geometry)
@@ -32,19 +29,14 @@ add_geometry_to_table <- function(
   query_option <- opts[["opt"]]
 
   # select the leftmost matching column name
-  l <- ifnull(lookup_level, "[a-z]")
-  fallback_field <- first(grep(glue("^{l}.*cd$"), names(tbl), value = TRUE))
-  gcf <- ifnull(geo_code_field, fallback_field)
+  gcf <- first(grep(glue("^{l}.*cd$"), names(tbl), value = TRUE))
 
   assert_that(
     length(gcf) == 1 && !is.na(gcf),
     msg = glue("{.fn {fn}}: no valid geo_code_field found from {.var {tbl}}")
   )
 
-  # if lookup is NULL, use the first bit of the geo field (preceding eg '23cd')
-  fallback_lookup <- stringr::str_extract(gcf, ".*(?=\\d{2}cd$)")
-  lookup_level <- ifnull(lookup_level, fallback_lookup)
-
+  lookup_level <- stringr::str_extract(gcf, ".*(?=\\d{2}cd$)")
   query_url <- pull_query_url(gcf, lookup_level, rs)
 
   where_list <- unique(tbl[[gcf]]) |>
