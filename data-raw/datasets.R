@@ -50,7 +50,7 @@ build_schema <- function() {
   }
 
   # Data pipeline
-  api_services_data <- og_() |>
+  api_services_data <- ogu() |>
     opengeo_api_req(append = "") |>
     query_opengeo_api() |>
     httr2::resp_body_json() |>
