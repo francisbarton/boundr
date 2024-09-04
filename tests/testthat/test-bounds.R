@@ -15,14 +15,13 @@ test_that("overall - run examples", {
   bounds("par", "lad", "Isles of Scilly", opts = boundr_options(crs = 27700)) |>
     expect_no_error()
   expect_no_error(bounds("npark", within_names = "Bannau Brycheiniog"))
-  expect_no_error(centroids("msoa", "utla", "Swindon"))
+  expect_no_error(bounds("msoa", "utla", "Swindon", geometry = "centroids"))
 })
 
 
 "gregg!" |>
   test_that({
     expect_no_error(bounds("msoa", "lad", "Swansea"))
-    expect_no_error(common_spatial("msoa", "lad", "Swansea"))
     tbl <- expect_no_error(
       common_lookup(
         lookup_level = "msoa",
@@ -82,7 +81,6 @@ test_that("overall - run examples", {
 "something not working - 'match needs vector' error" |>
   test_that({
     expect_no_error(bounds("rgn", opts = opts(resolution = "BUC")))
-    expect_no_error(common_spatial("rgn", opts = opts(resolution = "BUC")))
     gm_type <- "boundaries"
     rs <- "(BUC)"
     return_width <- "tidy"

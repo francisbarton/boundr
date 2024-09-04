@@ -2,7 +2,6 @@
 % Please edit documentation in R/bounds.R
 \name{bounds}
 \alias{bounds}
-\alias{centroids}
 \title{Return boundary data at a specified level and area from the ONS OG API}
 \usage{
 bounds(
@@ -12,17 +11,8 @@ bounds(
   within_codes = NULL,
   lookup_year = NULL,
   within_year = NULL,
-  opts = boundr_options()
-)
-
-centroids(
-  lookup_level,
-  within_level = NULL,
-  within_names = NULL,
-  within_codes = NULL,
-  lookup_year = NULL,
-  within_year = NULL,
-  opts = boundr_options()
+  opts = boundr_options(),
+  geometry = c("boundaries", "centroids")
 )
 }
 \arguments{
@@ -59,16 +49,16 @@ return data for the most recent year available. Provide as YYYY.}
 \item{opts}{Should be set with the \code{boundr_options()} function. See
 \code{?boundr_options} for detail on what can be set by the user, and on the
 default values.}
+
+\item{geometry}{character. Two options: "boundaries" (the default) and
+"centroids". By default, \code{bounds()} will return area boundaries. Set this
+explicitly to "centroids" to get area centroids instead.}
 }
 \value{
-an \code{sfc} tibble (data frame with geometry)
-
 an \code{sfc} tibble (data frame with geometry)
 }
 \description{
 Return boundary data at a specified level and area from the ONS OG API
-
-Return centroid points at a specified level and area from the ONS OG API
 }
 \examples{
 bounds("msoa", "lad", "Swansea")
@@ -77,8 +67,8 @@ bounds("rgn", opts = boundr_options(resolution = "BUC"))
 bounds("par", "lad", "Isles of Scilly") # par = "parish"
 bounds("spr")
 bounds("npark", within_names = "Bannau Brycheiniog")
+bounds("msoa", "utla", "Swindon", geometry = "centroids")
 
-centroids("msoa", "utla", "Swindon")
 }
 \seealso{
 boundr_options

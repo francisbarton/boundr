@@ -11,3 +11,5 @@
 ^boundr\.code-workspace$
 ^.lintr$
 ^README_cache/.*$
+^\.nojekyll/.*$
+^pkgdown.yml$
