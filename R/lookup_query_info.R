@@ -101,7 +101,7 @@ return_lookup_table_info <- function(
 
 #' Just another piece of the pipeline
 #'
-#' @inheritParams common_spatial
+#' @inheritParams bounds
 #' @keywords internal
 process_query_info <- function(
     query_info,

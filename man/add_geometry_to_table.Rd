@@ -7,38 +7,26 @@
 \usage{
 add_geometry_to_table(
   tbl,
-  geometry = c("boundaries", "centroids"),
-  lookup_level = NULL,
-  geo_code_field = NULL,
-  opts = boundr_options()
+  opts = boundr_options(),
+  geometry = c("boundaries", "centroids")
 )
 
 add_geometry(
   tbl,
-  geometry = c("boundaries", "centroids"),
-  lookup_level = NULL,
-  geo_code_field = NULL,
-  opts = boundr_options()
+  opts = boundr_options(),
+  geometry = c("boundaries", "centroids")
 )
 }
 \arguments{
-\item{tbl}{A tibble with a column for geographical codes. Table names ought
-to be in lower case. This function will use the lefthand-most column ending
-in 'cd' by default as the basis for retrieving boundary or point data.}
-
-\item{geometry}{character. Two options: "boundaries" (the default) and
-"centroids". By default, \code{bounds()} will return boundaries and \code{centroids()}
-will return centroids.}
-
-\item{lookup_level}{character. Lower level area code eg "lsoa", "wd", "lad".}
-
-\item{geo_code_field}{character The column name from \code{tbl} for which you
-wish to retrieve spatial data. By default, \code{add_geometry_to_table()} will
-use the lefthand-most column that ends in "cd".}
+\item{tbl}{A tibble with a column containing ONS geographical codes.}
 
 \item{opts}{Should be set with the \code{boundr_options()} function. See
 \code{?boundr_options} for detail on what can be set by the user, and on the
 default values.}
+
+\item{geometry}{character. Two options: "boundaries" (the default) and
+"centroids". By default, \code{bounds()} will return area boundaries. Set this
+explicitly to "centroids" to get area centroids instead.}
 }
 \value{
 If successful, will return the initial table with an additional

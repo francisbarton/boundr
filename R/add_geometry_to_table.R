@@ -2,15 +2,12 @@
 #'
 #' If you have a tibble such as those produced by `lookup()` - that is, there is
 #'  a column of geographical ONS codes ending in 'cd' - simply use this table as
-#'  the basis for retrieving the relevant boundaries or centroids. 
+#'  the basis for retrieving the relevant boundaries or centroids.
 #'  `add_geometry_to_table()` will use the lefthand-most column ending with
 #'  "cd".
 #'
-#' @param tbl A tibble with a column for geographical codes. Table names ought
-#'  to be in lower case. This function will use the lefthand-most column ending
-#'  in 'cd' by default as the basis for retrieving boundary or point data.
+#' @param tbl A tibble with a column containing ONS geographical codes.
 #' @inheritParams bounds
-#' @inheritParams common_spatial
 #'
 #' @returns If successful, will return the initial table with an additional
 #'  geometry column added. Duplicate rows will be removed.
@@ -19,8 +16,8 @@
 #' @export
 add_geometry_to_table <- function(
     tbl,
-    geometry = c("boundaries", "centroids"),
-    opts = boundr_options()) {
+    opts = boundr_options(),
+    geometry = c("boundaries", "centroids")) {
   fn <- "add_geometry_to_table"
   gm_type <- arg_match(geometry)
   rs <- if (gm_type == "centroids") "(PopCentroids|PWC|AWC)" else opts[["rs"]]
