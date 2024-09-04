@@ -148,7 +148,7 @@ Check the OpenGeography website).
 #| message: false
 
 sb <- bounds("msoa", "lad", "Swindon")
-sp <- centroids("msoa", "utla", "Swindon")
+sp <- bounds("msoa", "utla", "Swindon", geometry = "centroids")
 
 sb |>
   ggplot2::ggplot() +
@@ -213,26 +213,25 @@ ggplot2::ggplot(bb) +
 
 The structure of the project looks a bit like this:
 
-    bounds() / centroids() [main UI functions]
+    bounds() [main UI function]
        ^
        |
        |
-       <------add_geometry_to_table() [available to user]
+       ------- <----- add_geometry_to_table() [also available to user]
        |      |
        |      |
-       |      lookup() [available to the user]
+       |      lookup() [main function available to the user]
        |                ^
        |                |
        |                |
-       |                 <--------- return_table_info() 
+       |                 <-------- return_table_info() 
        |                                       \
        |                                        \
-        <-------  return_spatial_data()           <----- opengeo_schema [data]
-                        ^                       /              ^
-                        |                      /               |
-                         <--------  return_bounds_info()       |
-                                                               |
-                                                         build_schema()
+        <------- return_spatial_data()           <----- opengeo_schema
+                        ^                       /          [pkg data]
+                        |                      /               ^
+                         <-------- return_bounds_info()        |
+                                                          build_schema()
 
 When you call `bounds()` you specify a lower level area (eg ward) and a higher
   level area (eg local authority), and you specify either the name of the higher
