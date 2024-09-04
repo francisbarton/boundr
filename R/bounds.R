@@ -124,4 +124,62 @@ boundr_options <- function(
 #' @export
 opts <- boundr_options
 
+# Possible argument values ----------------
+
+#' A list of all available resolutions for boundary geometries in the current
+#' OpenGeography schema. Not all resolutions are available for all area types!
+#' The most common ones are listed first, with the "generalised" (20m
+#' resolution) BGC being the preferred option if you don't specify one.
+#' @export
+res_codes <- function() {
+  c(
+    "BGC", "BSC", "BUC", "BFC", "BGE", "BFE", "BUE",
+    "GCB", "SGCB", "UGB", "UGCB", "FCB", "FEB", "BGG"
+  )
+}
+
+#' @keywords internal
 condense <- \(vec) glue("({paste0(vec, collapse = '|')})")
+
+
+# Helper functions -----------------------
+
+#' @keywords internal
+return_narrow_bounds_info <- function(lookup, lookup_year, rs) {
+  fn <- "return_narrow_bounds_info"
+  ul <- toupper(lookup)
+
+  # create initial filtered schema
+  sp <- opengeo_schema |>
+    dplyr::filter(if_any("service_name", \(x) gregg(x, "^{ul}.*_{rs}"))) |>
+    janitor::remove_empty("cols")
+  assert_that(nrow(sp) > 0, msg = no_table_msg(fn))
+  sp_years <- as.numeric(stringr::str_extract(sp[["service_name"]], "\\d{4}"))
+  lookup_year <- ifnull(lookup_year, max(sp_years))
+  lu_code_field <- return_field_code(lookup, cd_colnames(sp), lookup_year, fn)
+  assert_that(!is.null(lu_code_field), msg = no_lu_msg(fn))
+
+  s2 <- dplyr::filter(sp, !if_any(.data[[lu_code_field]], is.na)) |>
+    arrange_service_nms_by_res() |>
+    janitor::remove_empty("cols") |>
+    rlang::with_options(lifecycle_verbosity = "quiet")
+
+  if (is_interactive()) cli_alert_info("Using {.val {lu_code_field}}")
+  list(
+    schema = s2,
+    lookup_code = lu_code_field,
+    within_code = NULL
+  )
+}
+
+
+#' @keywords internal
+cd_colnames <- \(x) colnames(dplyr::select(x, ends_with("cd")))
+
+
+#' @keywords internal
+drop_cols <- function(crs = NULL) {
+  to_drop <- as.character(ifnull(crs, 0)) |>
+    switch("4326" = c("bng_e", "bng_n"), "27700" = c("long", "lat"), NULL)
+  c("fid", "object_id", "global_id", "chngind", to_drop)
+}

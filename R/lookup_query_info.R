@@ -160,6 +160,7 @@ process_query_info <- function(
   )
 }
 
+
 #' This function is the one that handles all actual querying of the API for
 #'  `lookup()`. Previous queries in the pipeline have been working "offline"
 #'  with just the schema data provided within the package.
@@ -178,6 +179,7 @@ process_lookup_query_data <- function(query_data) {
       .progress = if (is_interactive()) "Retrieving table data" else FALSE
     )
 }
+
 
 #' This function is the one that handles all actual querying of the API for
 #'  `bounds()`/`centroids()`. Previous queries in the pipeline have been working
@@ -198,6 +200,7 @@ process_spatial_query_data <- function(query_data, crs) {
     )
 }
 
+
 #' This function also actually queries the API
 #' @keywords internal
 return_query_ids <- function(query_url, where_string) {
@@ -216,7 +219,6 @@ return_query_ids <- function(query_url, where_string) {
 }
 
 
-
 # Helper functions --------------------------------
 
 #' This is such a crucial function to the whole package! But so simple.
@@ -226,6 +228,7 @@ build_flat_query <- function(var, vec) {
   glue("{var} IN ({fvec})")
 }
 
+
 #' @keywords internal
 build_where_list <- function(var, vec) {
   unique(vec) |>
@@ -233,8 +236,6 @@ build_where_list <- function(var, vec) {
     purrr::map_chr(\(x) build_flat_query(var, x))
 }
 
-#' @keywords internal
-cd_colnames <- \(x) colnames(dplyr::select(x, ends_with("cd")))
 
 #' @keywords internal
 return_field_code <- function(x, names_vec, year = NULL, fn = NULL) {
@@ -269,11 +270,13 @@ return_field_code <- function(x, names_vec, year = NULL, fn = NULL) {
   field_code
 }
 
+
 no_table_msg <- \(fn) {
   cli::format_error(c(
     "{.fn {fn}}: No relevant lookup tables for `lookup` found in schema.\n",
     "Try a different lookup year?"
   ))
 }
+
 
 no_lu_msg <- \(fn) cli_alert_info("{.fn {fn}}: No suitable lookup field found.")
