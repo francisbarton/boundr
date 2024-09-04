@@ -11,8 +11,9 @@
 #'
 #' @returns If successful, will return the initial table with an additional
 #'  geometry column added. Duplicate rows will be removed.
+#' @examples
 #' tibble::tibble(wd23cd = c("S13003001", "N08000520", "W05001522")) |>
-#'   add_geometry_to_table(geo_code_field = "wd23cd")
+#'   add_geometry_to_table()
 #' @export
 add_geometry_to_table <- function(
     tbl,
@@ -25,12 +26,12 @@ add_geometry_to_table <- function(
   crs <- opts[["crs"]]
   query_option <- opts[["opt"]]
 
-  # select the leftmost matching column name
-  gcf <- first(grep(glue("^{l}.*cd$"), names(tbl), value = TRUE))
+  # select the leftmost column name ending with "cd"
+  gcf <- first(grep("cd$", names(tbl), value = TRUE))
 
   assert_that(
     length(gcf) == 1 && !is.na(gcf),
-    msg = glue("{.fn {fn}}: no valid geo_code_field found from {.var {tbl}}")
+    msg = glue("{.fn {fn}}: no valid field found from {.var {tbl}}")
   )
 
   lookup_level <- stringr::str_extract(gcf, ".*(?=\\d{2}cd$)")
