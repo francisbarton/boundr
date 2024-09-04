@@ -12,7 +12,7 @@ NULL
 #' The base part of the OpenGeography API standard URLs, for convenience
 #'
 #' @keywords internal
-og_ <- \() "https://services1.arcgis.com/ESMARspQHYMw9BZ9/ArcGIS/rest/services"
+ogu <- \() "https://services1.arcgis.com/ESMARspQHYMw9BZ9/ArcGIS/rest/services"
 
 #' Batch a vector into a list
 #'

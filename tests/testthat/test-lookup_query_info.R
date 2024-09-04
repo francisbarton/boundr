@@ -125,7 +125,7 @@ test_that("return_narrow_table_info works overall", {
       expect_no_error()
 
     expect_equal(query_data[[1]], paste0(
-      og_(),
+      ogu(),
       "/WD16_REGD16_LAD16_EW_LU_e40c67c9fe5245f7871f8857c8cd022b",
       "/FeatureServer"
     ))

@@ -53,7 +53,7 @@ test_that("overall - run examples", {
     lookup_level <- ifnull(lookup_level, fallback_lookup)
     query_url <- pull_query_url(gcf, lookup_level, rs)
     exp_url <- paste0(
-      og_(),
+      ogu(),
       "/Middle_layer_Super_Output_Areas_December_2021_Boundaries_EW_BGC_V3",
       "/FeatureServer"
     )
@@ -96,7 +96,7 @@ test_that("overall - run examples", {
     expect_equal(fields, c("rgn23cd", "rgn23nm"))
     expect_equal(
       query_data[[1]],
-      paste0(og_(), "/Regions_December_2023_Boundaries_EN_BUC/FeatureServer")
+      paste0(ogu(), "/Regions_December_2023_Boundaries_EN_BUC/FeatureServer")
     )
     tbl <- process_spatial_query_data(query_data, crs) |>
       dplyr::bind_rows() |>
