@@ -41,6 +41,67 @@ lookup <- function(
     lookup_year = NULL,
     within_year = NULL,
     opts = boundr_options()) {
+  common_lookup(
+    lookup_level,
+    within_level,
+    within_names,
+    within_codes,
+    lookup_year,
+    within_year,
+    opts
+  )
+}
+
+
+#' Common procedure for joinable and not-necessarily-joinable lookup()s
+#'
+#' @param joinable logical. Whether this query is joinable (`TRUE`) or
+#'  forms part of a geospatial query (`FALSE`). In the latter case, this
+#'  function will try to return a lookup table that contains the appropriate
+#'  field for spatial data (that is, boundaries or centroids) to be joined onto.
+#' @keywords internal
+common_lookup <- function(
+    lookup_level,
+    within_level = NULL,
+    within_names = NULL,
+    within_codes = NULL,
+    lookup_year = NULL,
+    within_year = NULL,
+    opts = boundr_options(),
+    joinable = FALSE) {
+  lookup_level <- tolower(lookup_level)
+  return_width <- opts[["rw"]]
+  query_option <- opts[["opt"]]
+
+  if (is.null(within_level)) {
+    query_info <- return_narrow_table_info(lookup_level, lookup_year)
+  } else {
+    query_info <- return_lookup_table_info(
+      lookup_level,
+      within_level,
+      lookup_year,
+      within_year,
+      joinable
+    )
+  }
+
+  query_data <- query_info |>
+    process_query_info(within_names, within_codes, return_width, query_option)
+  tbl <- process_lookup_query_data(query_data) |>
+    dplyr::bind_rows() |>
+    janitor::clean_names() |>
+    dplyr::select(!any_of(drop_cols())) |>
+    dplyr::distinct()
+
+  if (lookup_level == "msoa") tbl <- add_msoa_names(tbl)
+  if (return_width != "full") tbl <- remove_nmw(tbl)
+
+  tbl |>
+    dplyr::distinct() |>
+    janitor::remove_empty("cols")
+}
+
+
 # Helper functions
 
 #' If our `lookup` is MSOA, add the House of Commons Library MSOA Names -
