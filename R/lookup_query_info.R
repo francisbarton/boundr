@@ -18,7 +18,7 @@ return_narrow_table_info <- function(lookup_level, lookup_year, rs = NULL) {
   s1 <- opengeo_schema |>
     dplyr::filter(if_any("service_name", \(x) gregg(x, "^{ul}.*_{rs}"))) |>
     janitor::remove_empty("cols")
-  assert_that(nrow(s1) > 0, msg = no_table_msg(fn))
+  assert_that(nrow(s1) > 0, msg = no_table_msg(fn, ul))
 
   s1_years <- as.numeric(stringr::str_extract(s1[["service_name"]], "\\d{4}"))
   lookup_year <- ifnull(lookup_year, max(s1_years))
@@ -68,7 +68,7 @@ return_lookup_table_info <- function(
     sp <- opengeo_schema |>
       dplyr::filter(if_any("service_name", \(x) gregg(x, "^{ul}.*_{rx}"))) |>
       janitor::remove_empty("cols")
-    assert_that(nrow(sp) > 0, msg = no_table_msg(fn))
+    assert_that(nrow(sp) > 0, msg = no_table_msg(fn, ul))
     s1_names <- intersect(s1_names, cd_colnames(sp))
   }
 
@@ -78,14 +78,14 @@ return_lookup_table_info <- function(
     dplyr::filter(!if_any(.data[[lu_code_field]], is.na)) |>
     janitor::remove_empty("cols") |>
     rlang::with_options(lifecycle_verbosity = "quiet")
-  assert_that(nrow(s2) > 0, msg = no_table_msg(fn))
+  assert_that(nrow(s2) > 0, msg = no_table_msg(fn, lu_code_field))
 
   wn_code_field <- return_field_code(within_level, cd_colnames(s2), within_year)
   s3 <- s2 |>
     dplyr::filter(!if_any(.data[[wn_code_field]], is.na)) |>
     janitor::remove_empty("cols") |>
     rlang::with_options(lifecycle_verbosity = "quiet")
-  assert_that(nrow(s3) > 0, msg = no_table_msg(fn))
+  assert_that(nrow(s3) > 0, msg = no_table_msg(fn, wn_code_field))
 
   if (is_interactive()) {
     cli_alert_info("Using {.val {lu_code_field}}, {.val {wn_code_field}}")
@@ -264,17 +264,17 @@ return_field_code <- function(x, names_vec, year = NULL, fn = NULL) {
     length(field_code) == 1 && !is.na(field_code),
     msg = cli::format_error(c(
       "{.fn {fn}}: That combination of levels and year has not returned a ",
-      "result.\nPerhaps try a different year?"
+      "result. Perhaps try a different year?"
     ))
   )
   field_code
 }
 
 
-no_table_msg <- \(fn) {
+no_table_msg <- \(fn, field_name) {
   cli::format_error(c(
-    "{.fn {fn}}: No relevant lookup tables for `lookup` found in schema.\n",
-    "Try a different lookup year?"
+    "{.fn {fn}}: No relevant lookup tables for {.code {field_name}} found in ",
+    "schema. Try a different lookup year?"
   ))
 }
 
