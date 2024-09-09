@@ -1,10 +1,10 @@
 
-
 <!-- README.md is generated from README.qmd. Please edit that file -->
 
 # welcome to boundr
 
 <!-- badges: start -->
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
 
 ### Retrieve area boundaries and data from the ONS Open Geography Portal
