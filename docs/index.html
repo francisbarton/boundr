@@ -49,13 +49,13 @@
 <div class="page-header"><h1 id="welcome-to-boundr">welcome to boundr<a class="anchor" aria-label="anchor" href="#welcome-to-boundr"></a>
 </h1></div>
 <!-- badges: start -->
-<!-- badges: end -->
+
 <div class="section level3">
 <h3 id="retrieve-area-boundaries-and-data-from-the-ons-open-geography-portal">Retrieve area boundaries and data from the ONS Open Geography Portal<a class="anchor" aria-label="anchor" href="#retrieve-area-boundaries-and-data-from-the-ons-open-geography-portal"></a>
 </h3>
 <div style="display: flex; align-items: center;">
 <div style="flex: 0 0 auto; margin-right: 20px;">
-<p><img src="../inst/boundr_hex_logo.png" height="300px" width="259px" hspace="20" vspace="20" alt="The boundr package hexagonal logo - the word boundr superimposed on a
+<p><img src="boundr_hex_logo.png" height="300px" width="259px" hspace="20" vspace="20" alt="The boundr package hexagonal logo - the word boundr superimposed on a
       cropped map of the Isles of Scilly, with the island parishes differently
       coloured, on a sea blue background."><br clear="all"></p>
 </div>
@@ -226,7 +226,7 @@
 <p>These are usually population-weighted (PWC) nowadays. (Some older centroids are address-weighted (AWC). Check the OpenGeography website).</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sb</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bounds.html">bounds</a></span><span class="op">(</span><span class="st">"msoa"</span>, <span class="st">"lad"</span>, <span class="st">"Swindon"</span><span class="op">)</span></span>
-<span><span class="va">sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bounds.html">centroids</a></span><span class="op">(</span><span class="st">"msoa"</span>, <span class="st">"utla"</span>, <span class="st">"Swindon"</span><span class="op">)</span></span>
+<span><span class="va">sp</span> <span class="op">&lt;-</span> <span class="fu">centroids</span><span class="op">(</span><span class="st">"msoa"</span>, <span class="st">"utla"</span>, <span class="st">"Swindon"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sb</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -375,7 +375,12 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://opensource.org/licenses/MIT" class="external-link"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>
