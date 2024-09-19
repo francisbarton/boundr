@@ -1,10 +1,13 @@
 
+
 <!-- README.md is generated from README.qmd. Please edit that file -->
 
 # welcome to boundr
 
 <!-- badges: start -->
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+[![License:
+MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
 
 ### Retrieve area boundaries and data from the ONS Open Geography Portal
@@ -59,29 +62,21 @@ bounds("msoa", "lad", "Swansea")
     Dimension:     XY
     Bounding box:  xmin: -4.333587 ymin: 51.53577 xmax: -3.842747 ymax: 51.77423
     Geodetic CRS:  WGS 84
-    First 10 features:
-        msoa21cd    msoa21nm    msoa21nmw            msoa21hclnm
-    1  W02000168 Swansea 001 Abertawe 001          Pontarddulais
-    2  W02000169 Swansea 002 Abertawe 002         Clydach & Mawr
-    3  W02000170 Swansea 003 Abertawe 003        Morriston North
-    4  W02000171 Swansea 004 Abertawe 004 Llangyfelach & Tircoed
-    5  W02000172 Swansea 005 Abertawe 005              Gorseinon
-    6  W02000173 Swansea 006 Abertawe 006             Birchgrove
-    7  W02000174 Swansea 007 Abertawe 007                Loughor
-    8  W02000175 Swansea 008 Abertawe 008        Morriston South
-    9  W02000176 Swansea 009 Abertawe 009            Mynydd-bach
-    10 W02000177 Swansea 010 Abertawe 010             Llansamlet
-                  msoa21hclnmw   lad24cd lad24nm                       geometry
-    1            Pontarddulais W06000011 Swansea MULTIPOLYGON (((-4.044836 5...
-    2           Clydach a Mawr W06000011 Swansea MULTIPOLYGON (((-3.976283 5...
-    3         Gogledd Treforys W06000011 Swansea MULTIPOLYGON (((-3.913253 5...
-    4  Llangyfelach a Thircoed W06000011 Swansea MULTIPOLYGON (((-4.011018 5...
-    5                Gorseinon W06000011 Swansea MULTIPOLYGON (((-4.062941 5...
-    6                Gellifedw W06000011 Swansea MULTIPOLYGON (((-3.875069 5...
-    7               Casllwchwr W06000011 Swansea MULTIPOLYGON (((-4.053356 5...
-    8              De Treforys W06000011 Swansea MULTIPOLYGON (((-3.929819 5...
-    9              Mynydd-bach W06000011 Swansea MULTIPOLYGON (((-3.933911 5...
-    10              Llansamlet W06000011 Swansea MULTIPOLYGON (((-3.898853 5...
+    # A tibble: 30 × 8
+       msoa21cd  msoa21nm    lad24cd   lad24nm msoa21nmw    msoa21hclnm msoa21hclnmw
+       <chr>     <chr>       <chr>     <chr>   <chr>        <chr>       <chr>       
+     1 W02000168 Swansea 001 W06000011 Swansea Abertawe 001 Pontarddul… Pontarddula…
+     2 W02000169 Swansea 002 W06000011 Swansea Abertawe 002 Clydach & … Clydach a M…
+     3 W02000170 Swansea 003 W06000011 Swansea Abertawe 003 Morriston … Gogledd Tre…
+     4 W02000171 Swansea 004 W06000011 Swansea Abertawe 004 Llangyfela… Llangyfelac…
+     5 W02000172 Swansea 005 W06000011 Swansea Abertawe 005 Gorseinon   Gorseinon   
+     6 W02000173 Swansea 006 W06000011 Swansea Abertawe 006 Birchgrove  Gellifedw   
+     7 W02000174 Swansea 007 W06000011 Swansea Abertawe 007 Loughor     Casllwchwr  
+     8 W02000175 Swansea 008 W06000011 Swansea Abertawe 008 Morriston … De Treforys 
+     9 W02000176 Swansea 009 W06000011 Swansea Abertawe 009 Mynydd-bach Mynydd-bach 
+    10 W02000177 Swansea 010 W06000011 Swansea Abertawe 010 Llansamlet  Llansamlet  
+    # ℹ 20 more rows
+    # ℹ 1 more variable: geometry <MULTIPOLYGON [°]>
 
 ### Lookup areas with older dates
 
@@ -150,16 +145,16 @@ lookup("wd", "sener", opts = opts(return_width = "full"))
     # A tibble: 764 × 9
        wd23cd    wd23nm wd23nmw ua23cd ua23nm ua23nmw sener23cd sener23nm sener23nmw
        <chr>     <chr>  <chr>   <chr>  <chr>  <chr>   <chr>     <chr>     <chr>     
-     1 W05001715 Bango… Bangor… W0600… Wrexh… Wrecsam W10000001 North Wa… Gogledd C…
-     2 W05001714 Acton… Gwauny… W0600… Wrexh… Wrecsam W10000001 North Wa… Gogledd C…
-     3 W05001713 Acref… Gogled… W0600… Wrexh… Wrecsam W10000001 North Wa… Gogledd C…
-     4 W05001615 Whitf… Chwitf… W0600… Flint… Sir y … W10000001 North Wa… Gogledd C…
-     5 W05001614 Treud… Treudd… W0600… Flint… Sir y … W10000001 North Wa… Gogledd C…
-     6 W05001613 Shott… Gorlle… W0600… Flint… Sir y … W10000001 North Wa… Gogledd C…
-     7 W05001612 Shott… Dwyrai… W0600… Flint… Sir y … W10000001 North Wa… Gogledd C…
-     8 W05001611 Saltn… Saltne… W0600… Flint… Sir y … W10000001 North Wa… Gogledd C…
-     9 W05001610 Queen… Queens… W0600… Flint… Sir y … W10000001 North Wa… Gogledd C…
-    10 W05001609 Pen-y… Pen-y-… W0600… Flint… Sir y … W10000001 North Wa… Gogledd C…
+     1 W05001492 Aethwy Aethwy  W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…
+     2 W05001493 Bodow… Bodowyr W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…
+     3 W05001494 Bro A… Bro Ab… W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…
+     4 W05001495 Bro'r… Bro'r … W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…
+     5 W05001496 Canol… Canolb… W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…
+     6 W05001497 Cefni  Cefni   W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…
+     7 W05001498 Crigy… Crigyll W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…
+     8 W05001499 Lligwy Lligwy  W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…
+     9 W05001500 Parc … Parc a… W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…
+    10 W05001501 Seiri… Seiriol W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…
     # ℹ 754 more rows
 
 ### The sfc tibble is ready to be passed to a mapping tool like `tmap::qtm()`
@@ -192,11 +187,6 @@ Take care - you might download a lot of data doing this!
 bounds("spr")
 ```
 
-    Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, : GDAL
-    Message 1: organizePolygons() received a polygon with more than 100 parts.  The
-    processing may be really slow.  You can skip the processing by setting
-    METHOD=SKIP.
-
     Simple feature collection with 8 features and 2 fields
     Geometry type: MULTIPOLYGON
     Dimension:     XY
@@ -214,14 +204,14 @@ bounds("spr")
     7 S17000019 Central Scotland      (((-3.795887 56.10006, -3.795648 56.09964, -3…
     8 S17000020 Glasgow               (((-4.271141 55.9281, -4.270303 55.92808, -4.…
 
-### The `centroids()` function returns area centroids where available
+### The “centroids” option returns area centroids where available
 
 These are usually population-weighted (PWC) nowadays. (Some older
 centroids are address-weighted (AWC). Check the OpenGeography website).
 
 ``` r
 sb <- bounds("msoa", "lad", "Swindon")
-sp <- centroids("msoa", "utla", "Swindon")
+sp <- bounds("msoa", "utla", "Swindon", geometry = "centroids")
 
 sb |>
   ggplot2::ggplot() +
@@ -285,26 +275,25 @@ ggplot2::ggplot(bb) +
 
 The structure of the project looks a bit like this:
 
-    bounds() / centroids() [main UI functions]
+    bounds() [main UI function]
        ^
        |
        |
-       <------add_geometry_to_table() [available to user]
+       ------- <----- add_geometry_to_table() [also available to user]
        |      |
        |      |
-       |      lookup() [available to the user]
+       |      lookup() [main function available to the user]
        |                ^
        |                |
        |                |
-       |                 <--------- return_table_info() 
+       |                 <-------- return_table_info() 
        |                                       \
        |                                        \
-        <-------  return_spatial_data()           <----- opengeo_schema [data]
-                        ^                       /              ^
-                        |                      /               |
-                         <--------  return_bounds_info()       |
-                                                               |
-                                                         build_schema()
+        <------- return_spatial_data()           <----- opengeo_schema
+                        ^                       /          [pkg data]
+                        |                      /               ^
+                         <-------- return_bounds_info()        |
+                                                          build_schema()
 
 When you call `bounds()` you specify a lower level area (eg ward) and a
 higher level area (eg local authority), and you specify either the name

@@ -4,6 +4,7 @@ knitr:
   opts_chunk:
     fig.path: "man/figures/README-"
     cache: true
+warning: false
 ---
 
 <!-- README.md is generated from README.qmd. Please edit that file -->
@@ -138,7 +139,7 @@ bounds("spr")
 
 ```
 
-### The `centroids()` function returns area centroids where available
+### The "centroids" option returns area centroids where available
 
 These are usually population-weighted (PWC) nowadays.
 (Some older centroids are address-weighted (AWC).
