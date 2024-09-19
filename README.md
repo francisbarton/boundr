@@ -14,7 +14,9 @@ MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.or
 
 <div style="display: flex; align-items: center;">
 
+
 <div style="flex: 0 0 auto; margin-right: 20px;">
+
 
 <img
     src="inst/boundr_hex_logo.png"
