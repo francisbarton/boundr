@@ -1,12 +1,10 @@
 pandoc: 3.1.11
 pkgdown: 2.1.0.9000
 pkgdown_sha: ee72108bc3a9827dcf313817525652dbd9d4284d
+pkgdown: 2.1.0.9000
+pkgdown_sha: ee72108bc3a9827dcf313817525652dbd9d4284d
 articles: {}
-<<<<<<< HEAD
-last_built: 2024-08-31T02:19Z
-=======
 last_built: 2024-08-31T02:55Z
->>>>>>> 4c7ede1 (Regenerate pages with pkgdown)
 urls:
   reference: https://francisbarton.codeberg.page/boundr/docs/reference
   article: https://francisbarton.codeberg.page/boundr/docs/articles

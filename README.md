@@ -1,5 +1,7 @@
 
 
+<!-- README.md is generated from README.qmd. Please edit that file -->
+
 # welcome to boundr
 
 <!-- badges: start -->
@@ -10,7 +12,9 @@
 
 <div style="display: flex; align-items: center;">
 
+
 <div style="flex: 0 0 auto; margin-right: 20px;">
+
 
 <img
     src="inst/boundr_hex_logo.png"
