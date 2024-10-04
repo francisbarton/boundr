@@ -101,35 +101,35 @@ test_that("return_narrow_table_info works overall", {
   }) |>
   rlang::with_interactive(FALSE)
 
-"It can find a suitable lookup year based on within_year" |>
-  test_that({
-    lookup(
-      "wd", "lad", "Shepway", within_year = 2016,
-      opts = boundr_options(resolution = "SGCB")
-    ) |>
-      expect_no_error()
 
-    query_info <- return_lookup_table_info(
-      lookup = "wd",
-      within_level = "lad",
-      lookup_year = NULL,
-      within_year = 2016,
-      joinable = TRUE
-    )
-    expect_equal(nrow(query_info[[1]]), 8)
-    expect_equal(query_info[[2]], "wd16cd")
-    expect_equal(query_info[[3]], "lad16cd")
+test_that("It can find a suitable lookup year based on within_year", {
+  lookup(
+    "wd", "lad", "Shepway", within_year = 2016,
+    opts = boundr_options(resolution = "SGCB")
+  ) |>
+    expect_no_error()
 
-    query_data <- query_info |>
-      process_query_info("Shepway", NULL, "tidy", NULL) |>
-      expect_no_error()
+  query_info <- return_lookup_table_info(
+    lookup = "wd",
+    within_level = "lad",
+    lookup_year = NULL,
+    within_year = 2016,
+    joinable = TRUE
+  )
+  expect_equal(nrow(query_info[[1]]), 8)
+  expect_equal(query_info[[2]], "wd16cd")
+  expect_equal(query_info[[3]], "lad16cd")
 
-    expect_equal(query_data[[1]], paste0(
-      ogu(),
-      "/WD16_REGD16_LAD16_EW_LU_e40c67c9fe5245f7871f8857c8cd022b",
-      "/FeatureServer"
-    ))
-    expect_equal(query_data[[2]], c("wd16cd", "wd16nm", "lad16cd", "lad16nm"))
-    expect_equal(query_data[[3]], "lad16nm IN ('Shepway')")
+  query_data <- query_info |>
+    process_query_info("Shepway", NULL, "tidy", NULL) |>
+    expect_no_error()
 
-  })
+  expect_equal(query_data[[1]], paste0(
+    ogu(),
+    "/WD16_REGD16_LAD16_EW_LU_e40c67c9fe5245f7871f8857c8cd022b",
+    "/FeatureServer"
+  ))
+  expect_equal(query_data[[2]], c("wd16cd", "wd16nm", "lad16cd", "lad16nm"))
+  expect_equal(query_data[[3]], "lad16nm IN ('Shepway')")
+
+})
