@@ -10,10 +10,11 @@
 #'  header of each query. Sends the string `"boundr R package"` by default
 #' @keywords internal
 opengeo_api_req <- function(
-  url,
-  append = "0/query",
-  format = "pjson",
-  user_agent = "boundr R package (https://codeberg.org/francisbarton/boundr)") {
+    url,
+    append = "0/query",
+    format = "pjson",
+    user_agent = "boundr R package (https://codeberg.org/francisbarton/boundr)"
+) {
   url |>
     httr2::request() |>
     httr2::req_user_agent(user_agent) |>
