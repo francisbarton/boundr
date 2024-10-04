@@ -173,7 +173,7 @@ process_lookup_query_data <- function(query_data) {
     purrr::map(\(x) return_query_ids(query_url, where_string = x)) |>
     purrr::list_c()
   ids |>
-    batch_it(100) |> # Could this go to more than 100? 500?
+    batch_it(100L) |> # Could this go to more than 100? 500?
     purrr::map(
       \(x) return_table_data(x, query_url, fields),
       .progress = if (is_interactive()) "Retrieving table data" else FALSE
@@ -186,8 +186,8 @@ process_lookup_query_data <- function(query_data) {
 #'  "offline" with just the schema data provided within the package.
 #' @keywords internal
 process_spatial_query_data <- function(query_data, crs) {
-  query_url  <- query_data[["query_url"]]
-  fields  <- query_data[["fields"]]
+  query_url <- query_data[["query_url"]]
+  fields <- query_data[["fields"]]
   where_list <- query_data[["where_list"]]
   ids <- where_list |>
     purrr::map(\(x) return_query_ids(query_url, where_string = x)) |>
