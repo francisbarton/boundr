@@ -79,7 +79,7 @@ build_schema <- function() {
   service_urls <- api_services_data[["service_url"]][-fails]
 
   # Final data format process
-  data_from_api |>
+  schema <- data_from_api |>
     purrr::compact() |>
     purrr::map(httr2::resp_body_json) |>
     purrr::map2(
@@ -159,6 +159,10 @@ build_schema <- function() {
           "_FRCB" = "FCB"
         ))
       })
+    ) |>
+    # Weird thing where a dataset has no presence in the schema - fix here:
+    dplyr::mutate(
+      pcds21cd = dplyr::if_else(service_name == "OA21_PCDS21_EW_LU", "PCDS21CD", NA)
     ) |>
     dplyr::arrange(desc(pick("data_edit_date")))
 }

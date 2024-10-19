@@ -133,3 +133,43 @@ test_that("It can find a suitable lookup year based on within_year", {
   expect_equal(query_data[[3]], "lad16nm IN ('Shepway')")
 
 })
+
+
+test_that("Try to understand why this one not working", {
+  # commented out - don't run! takes ages
+  # expect_no_error(lookup("oa", "pcds"))
+  # expect_no_error(common_lookup("oa", "pcds", NULL, NULL, NULL, NULL, opts()))
+
+  query_info <- return_lookup_table_info(
+      "oa",
+      "pcds",
+      lookup_year = 2021,
+      within_year = 2021,
+      joinable = FALSE
+    ) |>
+    expect_no_error()
+
+  fn <- "return_lookup_table_info"
+  ul <- toupper("oa")
+  wl <- toupper("pcds")
+  lookup_year <- 2021
+  within_year <- 2021
+  repl_empty <- \(x) if (rlang::is_empty(x)) "" else x
+  uy <- repl_empty(as.numeric(lookup_year) %% 100)
+  wy <- repl_empty(as.numeric(within_year) %% 100)
+
+  s1 <- opengeo_schema |>
+    # prioritise tables with "lookup_level" at the start, or nearer to it
+    dplyr::filter(
+      if_any("service_name", \(x) gregg(x, "{ul}{uy}.*{wl}{wy}.*_LU"))
+    ) |>
+    dplyr::arrange(nchar(sub(glue("{ul}.*$"), "", .data[["service_name"]]))) |>
+    janitor::remove_empty("cols") |>
+    expect_no_error()
+
+  s1_names <- cd_colnames(s1)
+  # pcds21cd was for some reason missing from the schema
+  # this has now been manually fixed so the overall query should now succeed
+  expect_equal(s1_names, c("oa21cd", "pcds21cd"))
+
+})
