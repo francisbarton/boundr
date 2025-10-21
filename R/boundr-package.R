@@ -14,13 +14,24 @@ NULL
 #' @keywords internal
 ogu <- \() "https://services1.arcgis.com/ESMARspQHYMw9BZ9/ArcGIS/rest/services"
 
-#' Batch a vector into a list
+#' Batch a vector or list into a list of elements with a maximum size
 #'
-#' @param x a vector
-#' @param batch_size the number of items in each batch of the returned list
-#' @keywords internal
+#' @param x A vector or list
+#' @param batch_size integer. The size (length) of batches to create
+#' @examples batch_it(letters, 6L)
+#' @returns A list
+#' @export
 batch_it <- function(x, batch_size) {
-  f <- rep(1:ceiling(length(x) / batch_size), each = batch_size)[seq_along(x)]
+  assertthat::assert_that(
+    rlang::is_vector(x),
+    rlang::is_scalar_integerish(batch_size),
+    batch_size >= 1L
+  )
+  bsize <- min(length(x), batch_size)
+
+  # Create a vector of factors of length length(x), then pass this as the factor
+  # argument to [split()].
+  f <- rep(seq_len(ceiling(length(x) / bsize)), each = bsize)[seq_along(x)]
   unname(split(x, f))
 }
 
@@ -30,12 +41,13 @@ batch_it <- function(x, batch_size) {
 #' @keywords internal
 ifnull <- \(x, y) if (is.null(x)) y else x
 
-#' Conveniently wrap a regular expr in glue::glue_data() and pass to `grepl()`
-#'
+
+#' grepl a glued regex
+#' @description Facilitates using regex in search/filter patterns, and puts the
+#'  arguments "the right way round" (x first, then pattern), unlike [grepl()]
 #' @param x A character vector to check
-#' @param rx A string that after processing by glue_data() will be used as a
-#'  regex pattern in `grepl()`
-#' @param ... Arguments passed onto `grepl()`
+#' @param rx A string that after processing by [glue::glue_data()] will be used
+#'  as a regex pattern in [grepl()]
+#' @returns A logical value
 #' @keywords internal
-# old_gregg <- \(x, rx, ...) grepl(glue(rx), x, ...)
-gregg <- \(x, rx, g = caller_env(), ...) grepl(glue_data(g, rx), x, ...)
+gregg <- \(x, rx, g = parent.frame()) grepl(glue::glue_data(g, rx), x)
