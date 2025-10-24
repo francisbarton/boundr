@@ -250,7 +250,9 @@ return_field_code <- function(x, names_vec, year = NULL, fn = NULL) {
     length(names_vec) > 0,
     msg = cli::format_error("{.fn {fn}}: No names vector supplied.")
   )
-  if (is.null(x) || is.na(x)) return(NULL)
+  if (is.null(x) || is.na(x)) {
+    NULL
+  }
   if (is.null(year)) {
     y2 <- names_vec |>
       stringr::str_subset(glue("(?<=^{x})\\d+")) |>

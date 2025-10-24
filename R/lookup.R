@@ -114,7 +114,7 @@ common_lookup <- function(
 #' @keywords internal
 add_msoa_names <- function(x) {
   if (!any(grepl("^msoa[12]1cd$", names(x)))) {
-    return(x)
+    x
   } else {
     mcol <- first(stringr::str_subset(names(x), "^msoa[12]1cd$"))
     hocl_tbl <- if (mcol == "msoa21cd") hocl_msoa21_names else hocl_msoa11_names
