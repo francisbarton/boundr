@@ -161,16 +161,11 @@ build_schema <- function() {
             "Full_extent" = "FEB",
             "_UGB" = "UGCB",
             "_FECB" = "FEB",
-            "_FRCB" = "FCB"
+            "_FRCB" = "FCB",
+            # fixes an error discovered in the schema
+            "LAD22_IOL22_EN_LU" = "LTLA22_IOL22_EN_LU"
           )
         )
-      }),
-      # fixes an error discovered in the schema
-      across("ltla22cd", \(x) {
-        if_else(.data[["service_name"]] == "LAD22_IOL22_EN_LU", NA, x)
-      }),
-      across("lad22cd", \(x) {
-        if_else(.data[["service_name"]] == "LAD22_IOL22_EN_LU", "LAD22CD", x)
       })
     ) |>
     dplyr::arrange(desc(pick("data_edit_date")))
