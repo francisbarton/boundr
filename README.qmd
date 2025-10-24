@@ -28,31 +28,34 @@ library(tmap)
 
 <div style="display: flex; align-items: center;">
 <div style="flex: 0 0 auto; margin-right: 20px;">
-<img
-    src="inst/boundr_hex_logo.png"
-    height="300px" width="259px" hspace=20 vspace=20
+<a href="https://francisbarton.codeberg.page/boundr/docs">
+  <img
+    src="man/figures/logo.png"
+    align="right" height=139 hspace=20 vspace=20
     alt="The boundr package hexagonal logo - the word boundr superimposed on a
       cropped map of the Isles of Scilly, with the island parishes differently
       coloured, on a sea blue background."
-/>
+  />
+</a>
 <br clear="all" />
 </div>
+</div>
 
-<div>
+
 The main purpose of this package is to download area lookups and boundaries to
   R tables, using the ONS Open Geography API, for all areas at a specified
   level within a specified area.
 
 The main script `bounds()` will return a data frame with the sub-area geometry
   column, as an `sf` object ready to be visualised as a map.
-</div>
-</div>
 
 ## Installation
 
 You can install this package from the `R` console by entering
 
-> remotes::install_git("https://codeberg.org/francisbarton/boundr")
+```r
+remotes::install_git("https://codeberg.org/francisbarton/boundr")
+```
 
 if you have the `remotes` package installed.
 
@@ -63,9 +66,7 @@ if you have the `remotes` package installed.
 Returns `sfc` tibble with latest available data
 
 ```{r example-1}
-
 bounds("msoa", "lad", "Swansea")
-
 ```
 
 
@@ -75,18 +76,14 @@ Trial and error may be required - or start by looking up what is available on
   the OpenGeography site.
 
 ```{r example-2}
-
 bounds("wd", "lad", "Shepway", within_year = 2016) # Shepway no longer exists
-
 ```
 
 
 ### You can just request bare lookup tables - no spatial data attached
 
 ```{r example-3}
-
 lookup("spc", "spr")
-
 ```
 
 
@@ -99,9 +96,7 @@ Using `return_with = "full"` includes all available columns, not just those
   referred to by the `lookup_level` and `within_level` arguments.
 
 ```{r example-4}
-
 lookup("wd", "sener", opts = opts(return_width = "full"))
-
 ```
 
 
@@ -116,13 +111,12 @@ lookup("wd", "sener", opts = opts(return_width = "full"))
 bounds("par", "lad", "Isles of Scilly") |>
   tmap::tm_shape() +
   tmap::tm_polygons(
-    col = "par23nm",
+    fill = "par24nm",
     palette = "-Accent",
     legend.show = FALSE,
     border.col = "grey40"
   ) +
   tmap::tm_style("natural", bg.color = "#7cb7bb")
-
 ```
 
 
@@ -134,9 +128,7 @@ bounds("par", "lad", "Isles of Scilly") |>
 Take care - you might download a lot of data doing this!
 
 ```{r example-6}
-
 bounds("spr")
-
 ```
 
 ### The "centroids" option returns area centroids where available
@@ -149,14 +141,13 @@ Check the OpenGeography website).
 #| message: false
 
 sb <- bounds("msoa", "lad", "Swindon")
-sp <- bounds("msoa", "utla", "Swindon", geometry = "centroids")
+sp <- bounds("msoa", "lad", "Swindon", geometry = "centroids")
 
 sb |>
   ggplot2::ggplot() +
   ggplot2::geom_sf(colour = "grey33", fill = "grey95") +
   ggplot2::geom_sf(data = sp, colour = "orange") +
   ggplot2::theme_void()
-
 ```
 
 ### A ggplot2 example
@@ -168,11 +159,9 @@ There's no 'within_level' argument to be specified because there's nothing to
 
 
 ```{r example-8}
-
 bounds("npark", within_names = "Bannau Brycheiniog") |>
   ggplot2::ggplot() +
   ggplot2::geom_sf()
-
 ```
 
 
@@ -225,7 +214,7 @@ The structure of the project looks a bit like this:
        |                ^
        |                |
        |                |
-       |                 <-------- return_table_info() 
+       |                 <-------- return_table_info()
        |                                       \
        |                                        \
         <------- return_spatial_data()           <----- opengeo_schema

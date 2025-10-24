@@ -6,13 +6,19 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Retrieve Area Boundaries and Data from the ONS Open Geography Portal • boundr</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" sizes="any" href="favicon.ico">
+<link rel="manifest" href="site.webmanifest">
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Retrieve Area Boundaries and Data from the ONS Open Geography Portal">
 <meta name="description" content="The main purpose of this package is to download area lookups and boundaries (in GeoJSON format) using the ONS Open Geography API, for all areas at a specified level within a specified area.">
 <meta property="og:description" content="The main purpose of this package is to download area lookups and boundaries (in GeoJSON format) using the ONS Open Geography API, for all areas at a specified level within a specified area.">
+<meta property="og:image" content="https://francisbarton.codeberg.page/boundr/docs/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -38,6 +44,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://codeberg.org/francisbarton/boundr/" aria-label="Codeberg"><span class="fa fas fa-code fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -46,32 +53,32 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="welcome-to-boundr">welcome to boundr<a class="anchor" aria-label="anchor" href="#welcome-to-boundr"></a>
-</h1></div>
+<div class="page-header">
+<img src="logo.png" class="logo" alt=""><h1 id="welcome-to-boundr">welcome to boundr<a class="anchor" aria-label="anchor" href="#welcome-to-boundr"></a>
+</h1>
+</div>
 <!-- badges: start -->
 
 <div class="section level3">
 <h3 id="retrieve-area-boundaries-and-data-from-the-ons-open-geography-portal">Retrieve area boundaries and data from the ONS Open Geography Portal<a class="anchor" aria-label="anchor" href="#retrieve-area-boundaries-and-data-from-the-ons-open-geography-portal"></a>
 </h3>
+<p><img src="" alt="boundr website"></p>
 <div style="display: flex; align-items: center;">
 <div style="flex: 0 0 auto; margin-right: 20px;">
-<p><img src="boundr_hex_logo.png" height="300px" width="259px" hspace="20" vspace="20" alt="The boundr package hexagonal logo - the word boundr superimposed on a
+<p><a href="https://francisbarton.codeberg.page/boundr/docs"> <img src="reference/figures/logo.png" align="right" height="139" hspace="20" vspace="20" alt="The boundr package hexagonal logo - the word boundr superimposed on a
       cropped map of the Isles of Scilly, with the island parishes differently
-      coloured, on a sea blue background."><br clear="all"></p>
+      coloured, on a sea blue background."></a> <br clear="all"></p>
 </div>
-<div>
+</div>
 <p>The main purpose of this package is to download area lookups and boundaries to R tables, using the ONS Open Geography API, for all areas at a specified level within a specified area.</p>
 <p>The main script <code><a href="reference/bounds.html">bounds()</a></code> will return a data frame with the sub-area geometry column, as an <code>sf</code> object ready to be visualised as a map.</p>
-</div>
-</div>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>You can install this package from the <code>R</code> console by entering</p>
-<blockquote>
-<p>remotes::install_git(“<a href="https://codeberg.org/francisbarton/boundr" class="external-link uri">https://codeberg.org/francisbarton/boundr</a>”)</p>
-</blockquote>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_git.html" class="external-link">install_git</a></span><span class="op">(</span><span class="st">"https://codeberg.org/francisbarton/boundr"</span><span class="op">)</span></span></code></pre></div>
 <p>if you have the <code>remotes</code> package installed.</p>
 </div>
 <div class="section level2">
@@ -81,109 +88,109 @@
 <h3 id="basic-lookup-of-areas-within-a-larger-area-by-name">Basic lookup of areas within a larger area, by name<a class="anchor" aria-label="anchor" href="#basic-lookup-of-areas-within-a-larger-area-by-name"></a>
 </h3>
 <p>Returns <code>sfc</code> tibble with latest available data</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/bounds.html">bounds</a></span><span class="op">(</span><span class="st">"msoa"</span>, <span class="st">"lad"</span>, <span class="st">"Swansea"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>Simple feature collection with <span class="dv">30</span> features and <span class="dv">7</span> fields</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>Geometry type<span class="sc">:</span> MULTIPOLYGON</span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>Dimension<span class="sc">:</span>     XY</span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>Bounding box<span class="sc">:</span>  xmin<span class="sc">:</span> <span class="sc">-</span><span class="fl">4.333587</span> ymin<span class="sc">:</span> <span class="fl">51.53577</span> xmax<span class="sc">:</span> <span class="sc">-</span><span class="fl">3.842747</span> ymax<span class="sc">:</span> <span class="fl">51.77423</span></span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>Geodetic CRS<span class="sc">:</span>  WGS <span class="dv">84</span></span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co"># A tibble: 30 × 8</span></span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>   msoa21cd  msoa21nm    lad24cd   lad24nm msoa21nmw    msoa21hclnm msoa21hclnmw</span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>   <span class="sc">&lt;</span>chr<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>       <span class="er">&lt;</span>chr<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>   <span class="er">&lt;</span>chr<span class="sc">&gt;</span>        <span class="er">&lt;</span>chr<span class="sc">&gt;</span>       <span class="er">&lt;</span>chr<span class="sc">&gt;</span>       </span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a> <span class="dv">1</span> W02000168 Swansea <span class="dv">001</span> W06000011 Swansea Abertawe <span class="dv">001</span> Pontarddul… Pontarddula…</span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a> <span class="dv">2</span> W02000169 Swansea <span class="dv">002</span> W06000011 Swansea Abertawe <span class="dv">002</span> Clydach <span class="sc">&amp;</span> … Clydach a M…</span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a> <span class="dv">3</span> W02000170 Swansea <span class="dv">003</span> W06000011 Swansea Abertawe <span class="dv">003</span> Morriston … Gogledd Tre…</span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a> <span class="dv">4</span> W02000171 Swansea <span class="dv">004</span> W06000011 Swansea Abertawe <span class="dv">004</span> Llangyfela… Llangyfelac…</span>
-<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a> <span class="dv">5</span> W02000172 Swansea <span class="dv">005</span> W06000011 Swansea Abertawe <span class="dv">005</span> Gorseinon   Gorseinon   </span>
-<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a> <span class="dv">6</span> W02000173 Swansea <span class="dv">006</span> W06000011 Swansea Abertawe <span class="dv">006</span> Birchgrove  Gellifedw   </span>
-<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a> <span class="dv">7</span> W02000174 Swansea <span class="dv">007</span> W06000011 Swansea Abertawe <span class="dv">007</span> Loughor     Casllwchwr  </span>
-<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a> <span class="dv">8</span> W02000175 Swansea <span class="dv">008</span> W06000011 Swansea Abertawe <span class="dv">008</span> Morriston … De Treforys </span>
-<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a> <span class="dv">9</span> W02000176 Swansea <span class="dv">009</span> W06000011 Swansea Abertawe <span class="dv">009</span> Mynydd<span class="sc">-</span>bach Mynydd<span class="sc">-</span>bach </span>
-<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="dv">10</span> W02000177 Swansea <span class="dv">010</span> W06000011 Swansea Abertawe <span class="dv">010</span> Llansamlet  Llansamlet  </span>
-<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="co"># ℹ 20 more rows</span></span>
-<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co"># ℹ 1 more variable: geometry &lt;MULTIPOLYGON [°]&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>Simple feature collection with <span class="dv">30</span> features and <span class="dv">7</span> fields</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>Geometry type<span class="sc">:</span> MULTIPOLYGON</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>Dimension<span class="sc">:</span>     XY</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>Bounding box<span class="sc">:</span>  xmin<span class="sc">:</span> <span class="sc">-</span><span class="fl">4.333587</span> ymin<span class="sc">:</span> <span class="fl">51.53577</span> xmax<span class="sc">:</span> <span class="sc">-</span><span class="fl">3.842747</span> ymax<span class="sc">:</span> <span class="fl">51.77423</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>Geodetic CRS<span class="sc">:</span>  WGS <span class="dv">84</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co"># A tibble: 30 × 8</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>   msoa21cd  msoa21nm    lad25cd   lad25nm msoa21nmw    msoa21hclnm msoa21hclnmw</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>   <span class="sc">&lt;</span>chr<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>       <span class="er">&lt;</span>chr<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>   <span class="er">&lt;</span>chr<span class="sc">&gt;</span>        <span class="er">&lt;</span>chr<span class="sc">&gt;</span>       <span class="er">&lt;</span>chr<span class="sc">&gt;</span>       </span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a> <span class="dv">1</span> W02000168 Swansea <span class="dv">001</span> W06000011 Swansea Abertawe <span class="dv">001</span> Pontarddul… Pontarddula…</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a> <span class="dv">2</span> W02000169 Swansea <span class="dv">002</span> W06000011 Swansea Abertawe <span class="dv">002</span> Clydach <span class="sc">&amp;</span> … Clydach a M…</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a> <span class="dv">3</span> W02000170 Swansea <span class="dv">003</span> W06000011 Swansea Abertawe <span class="dv">003</span> Morriston … Gogledd Tre…</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a> <span class="dv">4</span> W02000171 Swansea <span class="dv">004</span> W06000011 Swansea Abertawe <span class="dv">004</span> Llangyfela… Llangyfelac…</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a> <span class="dv">5</span> W02000172 Swansea <span class="dv">005</span> W06000011 Swansea Abertawe <span class="dv">005</span> Gorseinon   Gorseinon   </span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a> <span class="dv">6</span> W02000173 Swansea <span class="dv">006</span> W06000011 Swansea Abertawe <span class="dv">006</span> Birchgrove  Gellifedw   </span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a> <span class="dv">7</span> W02000174 Swansea <span class="dv">007</span> W06000011 Swansea Abertawe <span class="dv">007</span> Loughor     Casllwchwr  </span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a> <span class="dv">8</span> W02000175 Swansea <span class="dv">008</span> W06000011 Swansea Abertawe <span class="dv">008</span> Morriston … De Treforys </span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a> <span class="dv">9</span> W02000176 Swansea <span class="dv">009</span> W06000011 Swansea Abertawe <span class="dv">009</span> Mynydd<span class="sc">-</span>bach Mynydd<span class="sc">-</span>bach </span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="dv">10</span> W02000177 Swansea <span class="dv">010</span> W06000011 Swansea Abertawe <span class="dv">010</span> Llansamlet  Llansamlet  </span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co"># ℹ 20 more rows</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co"># ℹ 1 more variable: geometry &lt;MULTIPOLYGON [°]&gt;</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="lookup-areas-with-older-dates">Lookup areas with older dates<a class="anchor" aria-label="anchor" href="#lookup-areas-with-older-dates"></a>
 </h3>
 <p>Trial and error may be required - or start by looking up what is available on the OpenGeography site.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/bounds.html">bounds</a></span><span class="op">(</span><span class="st">"wd"</span>, <span class="st">"lad"</span>, <span class="st">"Shepway"</span>, within_year <span class="op">=</span> <span class="fl">2016</span><span class="op">)</span> <span class="co"># Shepway no longer exists</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>Simple feature collection with <span class="dv">13</span> features and <span class="dv">4</span> fields</span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>Geometry type<span class="sc">:</span> POLYGON</span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>Dimension<span class="sc">:</span>     XY</span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>Bounding box<span class="sc">:</span>  xmin<span class="sc">:</span> <span class="fl">0.7768709</span> ymin<span class="sc">:</span> <span class="fl">50.91048</span> xmax<span class="sc">:</span> <span class="fl">1.221268</span> ymax<span class="sc">:</span> <span class="fl">51.205</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>Geodetic CRS<span class="sc">:</span>  WGS <span class="dv">84</span></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co"># A tibble: 13 × 5</span></span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>   wd16cd    wd16nm                    lad16cd lad16nm                  geometry</span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>   <span class="sc">&lt;</span>chr<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>                     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>   <span class="er">&lt;</span>chr<span class="sc">&gt;</span>               <span class="er">&lt;</span>POLYGON [°]<span class="sc">&gt;</span></span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a> <span class="dv">1</span> E05010015 Broadmead                 E07000… <span class="fu">Shepway</span> ((<span class="fl">1.155543</span> <span class="fl">51.08448</span>, <span class="fl">1.1</span>…</span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a> <span class="dv">2</span> E05010016 Cheriton                  E07000… <span class="fu">Shepway</span> ((<span class="fl">1.159752</span> <span class="fl">51.10128</span>, <span class="fl">1.1</span>…</span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a> <span class="dv">3</span> E05010017 East Folkestone           E07000… <span class="fu">Shepway</span> ((<span class="fl">1.184824</span> <span class="fl">51.09986</span>, <span class="fl">1.1</span>…</span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a> <span class="dv">4</span> E05010018 Folkestone Central        E07000… <span class="fu">Shepway</span> ((<span class="fl">1.177906</span> <span class="fl">51.07553</span>, <span class="fl">1.1</span>…</span>
-<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a> <span class="dv">5</span> E05010019 Folkestone Harbour        E07000… <span class="fu">Shepway</span> ((<span class="fl">1.184824</span> <span class="fl">51.09986</span>, <span class="fl">1.1</span>…</span>
-<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a> <span class="dv">6</span> E05010020 Hythe                     E07000… <span class="fu">Shepway</span> ((<span class="fl">1.119319</span> <span class="fl">51.08961</span>, <span class="fl">1.1</span>…</span>
-<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a> <span class="dv">7</span> E05010021 Hythe Rural               E07000… <span class="fu">Shepway</span> ((<span class="fl">1.036358</span> <span class="fl">51.08556</span>, <span class="fl">1.0</span>…</span>
-<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a> <span class="dv">8</span> E05010022 New Romney                E07000… <span class="fu">Shepway</span> ((<span class="fl">0.9804397</span> <span class="fl">51.00251</span>, <span class="fl">0.</span>…</span>
-<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a> <span class="dv">9</span> E05010023 North Downs East          E07000… <span class="fu">Shepway</span> ((<span class="fl">1.147638</span> <span class="fl">51.17718</span>, <span class="fl">1.1</span>…</span>
-<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="dv">10</span> E05010024 North Downs West          E07000… <span class="fu">Shepway</span> ((<span class="fl">1.097309</span> <span class="fl">51.18892</span>, <span class="fl">1.0</span>…</span>
-<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="dv">11</span> E05010025 Romney Marsh              E07000… <span class="fu">Shepway</span> ((<span class="fl">1.035288</span> <span class="fl">51.04665</span>, <span class="fl">1.0</span>…</span>
-<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="dv">12</span> E05010026 Sandgate <span class="sc">&amp;</span> West Folkesto… E07000… <span class="fu">Shepway</span> ((<span class="fl">1.155534</span> <span class="fl">51.08386</span>, <span class="fl">1.1</span>…</span>
-<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="dv">13</span> E05010027 Walland <span class="sc">&amp;</span> Denge Marsh     E07000… <span class="fu">Shepway</span> ((<span class="fl">0.8944822</span> <span class="fl">51.03699</span>, <span class="fl">0.</span>…</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>Simple feature collection with <span class="dv">13</span> features and <span class="dv">4</span> fields</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>Geometry type<span class="sc">:</span> POLYGON</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>Dimension<span class="sc">:</span>     XY</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>Bounding box<span class="sc">:</span>  xmin<span class="sc">:</span> <span class="fl">0.7768709</span> ymin<span class="sc">:</span> <span class="fl">50.91048</span> xmax<span class="sc">:</span> <span class="fl">1.221268</span> ymax<span class="sc">:</span> <span class="fl">51.205</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>Geodetic CRS<span class="sc">:</span>  WGS <span class="dv">84</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co"># A tibble: 13 × 5</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>   wd16cd    wd16nm                    lad16cd lad16nm                  geometry</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>   <span class="sc">&lt;</span>chr<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>                     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>   <span class="er">&lt;</span>chr<span class="sc">&gt;</span>               <span class="er">&lt;</span>POLYGON [°]<span class="sc">&gt;</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a> <span class="dv">1</span> E05010015 Broadmead                 E07000… <span class="fu">Shepway</span> ((<span class="fl">1.155543</span> <span class="fl">51.08448</span>, <span class="fl">1.1</span>…</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a> <span class="dv">2</span> E05010016 Cheriton                  E07000… <span class="fu">Shepway</span> ((<span class="fl">1.159752</span> <span class="fl">51.10128</span>, <span class="fl">1.1</span>…</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a> <span class="dv">3</span> E05010017 East Folkestone           E07000… <span class="fu">Shepway</span> ((<span class="fl">1.184824</span> <span class="fl">51.09986</span>, <span class="fl">1.1</span>…</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a> <span class="dv">4</span> E05010018 Folkestone Central        E07000… <span class="fu">Shepway</span> ((<span class="fl">1.177906</span> <span class="fl">51.07553</span>, <span class="fl">1.1</span>…</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a> <span class="dv">5</span> E05010019 Folkestone Harbour        E07000… <span class="fu">Shepway</span> ((<span class="fl">1.184824</span> <span class="fl">51.09986</span>, <span class="fl">1.1</span>…</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a> <span class="dv">6</span> E05010020 Hythe                     E07000… <span class="fu">Shepway</span> ((<span class="fl">1.119319</span> <span class="fl">51.08961</span>, <span class="fl">1.1</span>…</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a> <span class="dv">7</span> E05010021 Hythe Rural               E07000… <span class="fu">Shepway</span> ((<span class="fl">1.036358</span> <span class="fl">51.08556</span>, <span class="fl">1.0</span>…</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a> <span class="dv">8</span> E05010022 New Romney                E07000… <span class="fu">Shepway</span> ((<span class="fl">0.9804397</span> <span class="fl">51.00251</span>, <span class="fl">0.</span>…</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a> <span class="dv">9</span> E05010023 North Downs East          E07000… <span class="fu">Shepway</span> ((<span class="fl">1.147638</span> <span class="fl">51.17718</span>, <span class="fl">1.1</span>…</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="dv">10</span> E05010024 North Downs West          E07000… <span class="fu">Shepway</span> ((<span class="fl">1.097309</span> <span class="fl">51.18892</span>, <span class="fl">1.0</span>…</span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="dv">11</span> E05010025 Romney Marsh              E07000… <span class="fu">Shepway</span> ((<span class="fl">1.035288</span> <span class="fl">51.04665</span>, <span class="fl">1.0</span>…</span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="dv">12</span> E05010026 Sandgate <span class="sc">&amp;</span> West Folkesto… E07000… <span class="fu">Shepway</span> ((<span class="fl">1.155534</span> <span class="fl">51.08386</span>, <span class="fl">1.1</span>…</span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="dv">13</span> E05010027 Walland <span class="sc">&amp;</span> Denge Marsh     E07000… <span class="fu">Shepway</span> ((<span class="fl">0.8944822</span> <span class="fl">51.03699</span>, <span class="fl">0.</span>…</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="you-can-just-request-bare-lookup-tables---no-spatial-data-attached">You can just request bare lookup tables - no spatial data attached<a class="anchor" aria-label="anchor" href="#you-can-just-request-bare-lookup-tables---no-spatial-data-attached"></a>
 </h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/lookup.html">lookup</a></span><span class="op">(</span><span class="st">"spc"</span>, <span class="st">"spr"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># A tibble: 73 × 4</span></span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>   spc23cd   spc23nm                        spr23cd   spr23nm              </span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>   <span class="sc">&lt;</span>chr<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>                          <span class="er">&lt;</span>chr<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>                </span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a> <span class="dv">1</span> S16000083 Argyll and Bute                S17000011 Highlands and Islands</span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a> <span class="dv">2</span> S16000086 Caithness, Sutherland and Ross S17000011 Highlands and Islands</span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a> <span class="dv">3</span> S16000110 Na h<span class="sc">-</span>Eileanan an Iar           S17000011 Highlands and Islands</span>
-<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a> <span class="dv">4</span> S16000125 Inverness and Nairn            S17000011 Highlands and Islands</span>
-<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a> <span class="dv">5</span> S16000132 Moray                          S17000011 Highlands and Islands</span>
-<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a> <span class="dv">6</span> S16000135 Orkney Islands                 S17000011 Highlands and Islands</span>
-<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a> <span class="dv">7</span> S16000142 Shetland Islands               S17000011 Highlands and Islands</span>
-<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a> <span class="dv">8</span> S16000143 Skye, Lochaber and Badenoch    S17000011 Highlands and Islands</span>
-<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a> <span class="dv">9</span> S16000080 Almond Valley                  S17000012 Lothian              </span>
-<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="dv">10</span> S16000104 Edinburgh Central              S17000012 Lothian              </span>
-<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co"># ℹ 63 more rows</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># A tibble: 73 × 4</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>   spc24cd   spc24nm                        spr24cd   spr24nm              </span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>   <span class="sc">&lt;</span>chr<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>                          <span class="er">&lt;</span>chr<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>                </span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a> <span class="dv">1</span> S16000083 Argyll and Bute                S17000011 Highlands and Islands</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a> <span class="dv">2</span> S16000086 Caithness, Sutherland and Ross S17000011 Highlands and Islands</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a> <span class="dv">3</span> S16000110 Na h<span class="sc">-</span>Eileanan an Iar           S17000011 Highlands and Islands</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a> <span class="dv">4</span> S16000125 Inverness and Nairn            S17000011 Highlands and Islands</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a> <span class="dv">5</span> S16000132 Moray                          S17000011 Highlands and Islands</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a> <span class="dv">6</span> S16000135 Orkney Islands                 S17000011 Highlands and Islands</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a> <span class="dv">7</span> S16000142 Shetland Islands               S17000011 Highlands and Islands</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a> <span class="dv">8</span> S16000143 Skye, Lochaber and Badenoch    S17000011 Highlands and Islands</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a> <span class="dv">9</span> S16000080 Almond Valley                  S17000012 Lothian              </span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="dv">10</span> S16000104 Edinburgh Central              S17000012 Lothian              </span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co"># ℹ 63 more rows</span></span></code></pre></div>
 <p>Sometimes boundr needs a little help finding what you are looking for. Supplying a year or country filter can help get the right table.</p>
 </div>
 <div class="section level3">
 <h3 id="a-lookup-table-for-wards-to-senedd-electoral-regions">A lookup table for wards to Senedd electoral regions<a class="anchor" aria-label="anchor" href="#a-lookup-table-for-wards-to-senedd-electoral-regions"></a>
 </h3>
 <p>Using <code>return_with = "full"</code> includes all available columns, not just those referred to by the <code>lookup_level</code> and <code>within_level</code> arguments.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/lookup.html">lookup</a></span><span class="op">(</span><span class="st">"wd"</span>, <span class="st">"sener"</span>, opts <span class="op">=</span> <span class="fu"><a href="reference/boundr_options.html">opts</a></span><span class="op">(</span>return_width <span class="op">=</span> <span class="st">"full"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># A tibble: 764 × 9</span></span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>   wd23cd    wd23nm wd23nmw ua23cd ua23nm ua23nmw sener23cd sener23nm sener23nmw</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>   <span class="sc">&lt;</span>chr<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>  <span class="er">&lt;</span>chr<span class="sc">&gt;</span>   <span class="er">&lt;</span>chr<span class="sc">&gt;</span>  <span class="er">&lt;</span>chr<span class="sc">&gt;</span>  <span class="er">&lt;</span>chr<span class="sc">&gt;</span>   <span class="er">&lt;</span>chr<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>     </span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a> <span class="dv">1</span> W05001492 Aethwy Aethwy  W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…</span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a> <span class="dv">2</span> W05001493 Bodow… Bodowyr W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…</span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a> <span class="dv">3</span> W05001494 Bro A… Bro Ab… W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…</span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a> <span class="dv">4</span> W05001495 Bro<span class="st">'r… Bro'</span>r … W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…</span>
-<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a> <span class="dv">5</span> W05001496 Canol… Canolb… W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…</span>
-<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a> <span class="dv">6</span> W05001497 Cefni  Cefni   W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…</span>
-<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a> <span class="dv">7</span> W05001498 Crigy… Crigyll W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…</span>
-<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a> <span class="dv">8</span> W05001499 Lligwy Lligwy  W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…</span>
-<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a> <span class="dv">9</span> W05001500 Parc … Parc a… W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…</span>
-<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="dv">10</span> W05001501 Seiri… Seiriol W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…</span>
-<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co"># ℹ 754 more rows</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># A tibble: 764 × 8</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>   wd24cd    wd24nm         ua24cd ua24nm ua24nmw sener24cd sener24nm sener24nmw</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>   <span class="sc">&lt;</span>chr<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>          <span class="er">&lt;</span>chr<span class="sc">&gt;</span>  <span class="er">&lt;</span>chr<span class="sc">&gt;</span>  <span class="er">&lt;</span>chr<span class="sc">&gt;</span>   <span class="er">&lt;</span>chr<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>     </span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a> <span class="dv">1</span> W05001332 Alyn Valley    W0600… Denbi… Sir Dd… W10000001 North Wa… Gogledd C…</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a> <span class="dv">2</span> W05001333 Bodelwyddan    W0600… Denbi… Sir Dd… W10000001 North Wa… Gogledd C…</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a> <span class="dv">3</span> W05001334 Denbigh Caled… W0600… Denbi… Sir Dd… W10000001 North Wa… Gogledd C…</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a> <span class="dv">4</span> W05001335 Denbigh Lower  W0600… Denbi… Sir Dd… W10000001 North Wa… Gogledd C…</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a> <span class="dv">5</span> W05001336 Dyserth        W0600… Denbi… Sir Dd… W10000001 North Wa… Gogledd C…</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a> <span class="dv">6</span> W05001337 Edeirnion      W0600… Denbi… Sir Dd… W10000001 North Wa… Gogledd C…</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a> <span class="dv">7</span> W05001338 Efenechdyd     W0600… Denbi… Sir Dd… W10000001 North Wa… Gogledd C…</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a> <span class="dv">8</span> W05001339 Llandyrnog     W0600… Denbi… Sir Dd… W10000001 North Wa… Gogledd C…</span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a> <span class="dv">9</span> W05001340 Llanfair Dyff… W0600… Denbi… Sir Dd… W10000001 North Wa… Gogledd C…</span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="dv">10</span> W05001341 Llangollen     W0600… Denbi… Sir Dd… W10000001 North Wa… Gogledd C…</span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="co"># ℹ 754 more rows</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="the-sfc-tibble-is-ready-to-be-passed-to-a-mapping-tool-like-tmapqtm">The sfc tibble is ready to be passed to a mapping tool like <code>tmap::qtm()</code>
 <a class="anchor" aria-label="anchor" href="#the-sfc-tibble-is-ready-to-be-passed-to-a-mapping-tool-like-tmapqtm"></a>
 </h3>
 <p>(Here I’ve chosen to do something a little more complex with <code>tmap</code>, but <code>qtm()</code> works too).</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/bounds.html">bounds</a></span><span class="op">(</span><span class="st">"par"</span>, <span class="st">"lad"</span>, <span class="st">"Isles of Scilly"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">tmap</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html" class="external-link">tm_polygons</a></span><span class="op">(</span></span>
-<span>    col <span class="op">=</span> <span class="st">"par23nm"</span>,</span>
+<span>    fill <span class="op">=</span> <span class="st">"par24nm"</span>,</span>
 <span>    palette <span class="op">=</span> <span class="st">"-Accent"</span>,</span>
 <span>    legend.show <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>    border.col <span class="op">=</span> <span class="st">"grey40"</span></span>
@@ -196,32 +203,32 @@
 </h3>
 <p>…which will return all bounds for a certain level, without having to specify a <code>within_level</code> argument</p>
 <p>Take care - you might download a lot of data doing this!</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/bounds.html">bounds</a></span><span class="op">(</span><span class="st">"spr"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>Simple feature collection with <span class="dv">8</span> features and <span class="dv">2</span> fields</span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>Geometry type<span class="sc">:</span> MULTIPOLYGON</span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>Dimension<span class="sc">:</span>     XY</span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>Bounding box<span class="sc">:</span>  xmin<span class="sc">:</span> <span class="sc">-</span><span class="fl">8.649996</span> ymin<span class="sc">:</span> <span class="fl">54.63326</span> xmax<span class="sc">:</span> <span class="sc">-</span><span class="fl">0.7246158</span> ymax<span class="sc">:</span> <span class="fl">60.86077</span></span>
-<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>Geodetic CRS<span class="sc">:</span>  WGS <span class="dv">84</span></span>
-<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co"># A tibble: 8 × 3</span></span>
-<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>  spr22cd   spr22nm                                                     geometry</span>
-<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>  <span class="sc">&lt;</span>chr<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>                                             <span class="er">&lt;</span>MULTIPOLYGON [°]<span class="sc">&gt;</span></span>
-<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="dv">1</span> S17000011 Highlands and <span class="fu">Islands</span> (((<span class="sc">-</span><span class="fl">5.572266</span> <span class="fl">55.28656</span>, <span class="sc">-</span><span class="fl">5.570243</span> <span class="fl">55.28481</span>, <span class="sc">-</span><span class="dv">5</span>…</span>
-<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a><span class="dv">2</span> S17000012 <span class="fu">Lothian</span>               (((<span class="sc">-</span><span class="fl">3.17174</span> <span class="fl">55.9875</span>, <span class="sc">-</span><span class="fl">3.17105</span> <span class="fl">55.98732</span>, <span class="sc">-</span><span class="fl">3.17</span>…</span>
-<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a><span class="dv">3</span> S17000013 Mid Scotland and <span class="fu">Fife</span> (((<span class="sc">-</span><span class="fl">3.302574</span> <span class="fl">56.03094</span>, <span class="sc">-</span><span class="fl">3.302508</span> <span class="fl">56.03033</span>, <span class="sc">-</span><span class="dv">3</span>…</span>
-<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a><span class="dv">4</span> S17000014 North East <span class="fu">Scotland</span>   (((<span class="sc">-</span><span class="fl">2.531457</span> <span class="fl">56.71581</span>, <span class="sc">-</span><span class="fl">2.530777</span> <span class="fl">56.71507</span>, <span class="sc">-</span><span class="dv">2</span>…</span>
-<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a><span class="dv">5</span> S17000015 South <span class="fu">Scotland</span>        (((<span class="sc">-</span><span class="fl">4.085281</span> <span class="fl">54.7686</span>, <span class="sc">-</span><span class="fl">4.084491</span> <span class="fl">54.7683</span>, <span class="sc">-</span><span class="fl">4.0</span>…</span>
-<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a><span class="dv">6</span> S17000018 West <span class="fu">Scotland</span>         (((<span class="sc">-</span><span class="fl">5.118861</span> <span class="fl">55.42869</span>, <span class="sc">-</span><span class="fl">5.118397</span> <span class="fl">55.42741</span>, <span class="sc">-</span><span class="dv">5</span>…</span>
-<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a><span class="dv">7</span> S17000019 Central <span class="fu">Scotland</span>      (((<span class="sc">-</span><span class="fl">3.795887</span> <span class="fl">56.10006</span>, <span class="sc">-</span><span class="fl">3.795648</span> <span class="fl">56.09964</span>, <span class="sc">-</span><span class="dv">3</span>…</span>
-<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a><span class="dv">8</span> S17000020 <span class="fu">Glasgow</span>               (((<span class="sc">-</span><span class="fl">4.271141</span> <span class="fl">55.9281</span>, <span class="sc">-</span><span class="fl">4.270303</span> <span class="fl">55.92808</span>, <span class="sc">-</span><span class="fl">4.</span>…</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>Simple feature collection with <span class="dv">8</span> features and <span class="dv">2</span> fields</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>Geometry type<span class="sc">:</span> MULTIPOLYGON</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>Dimension<span class="sc">:</span>     XY</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>Bounding box<span class="sc">:</span>  xmin<span class="sc">:</span> <span class="sc">-</span><span class="fl">8.649996</span> ymin<span class="sc">:</span> <span class="fl">54.63326</span> xmax<span class="sc">:</span> <span class="sc">-</span><span class="fl">0.7246158</span> ymax<span class="sc">:</span> <span class="fl">60.86077</span></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>Geodetic CRS<span class="sc">:</span>  WGS <span class="dv">84</span></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="co"># A tibble: 8 × 3</span></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>  spr22cd   spr22nm                                                     geometry</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>  <span class="sc">&lt;</span>chr<span class="sc">&gt;</span>     <span class="er">&lt;</span>chr<span class="sc">&gt;</span>                                             <span class="er">&lt;</span>MULTIPOLYGON [°]<span class="sc">&gt;</span></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="dv">1</span> S17000011 Highlands and <span class="fu">Islands</span> (((<span class="sc">-</span><span class="fl">5.572266</span> <span class="fl">55.28656</span>, <span class="sc">-</span><span class="fl">5.570243</span> <span class="fl">55.28481</span>, <span class="sc">-</span><span class="dv">5</span>…</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="dv">2</span> S17000012 <span class="fu">Lothian</span>               (((<span class="sc">-</span><span class="fl">3.17174</span> <span class="fl">55.9875</span>, <span class="sc">-</span><span class="fl">3.17105</span> <span class="fl">55.98732</span>, <span class="sc">-</span><span class="fl">3.17</span>…</span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a><span class="dv">3</span> S17000013 Mid Scotland and <span class="fu">Fife</span> (((<span class="sc">-</span><span class="fl">3.302574</span> <span class="fl">56.03094</span>, <span class="sc">-</span><span class="fl">3.302508</span> <span class="fl">56.03033</span>, <span class="sc">-</span><span class="dv">3</span>…</span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a><span class="dv">4</span> S17000014 North East <span class="fu">Scotland</span>   (((<span class="sc">-</span><span class="fl">2.531457</span> <span class="fl">56.71581</span>, <span class="sc">-</span><span class="fl">2.530777</span> <span class="fl">56.71507</span>, <span class="sc">-</span><span class="dv">2</span>…</span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a><span class="dv">5</span> S17000015 South <span class="fu">Scotland</span>        (((<span class="sc">-</span><span class="fl">4.085281</span> <span class="fl">54.7686</span>, <span class="sc">-</span><span class="fl">4.084491</span> <span class="fl">54.7683</span>, <span class="sc">-</span><span class="fl">4.0</span>…</span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a><span class="dv">6</span> S17000018 West <span class="fu">Scotland</span>         (((<span class="sc">-</span><span class="fl">5.118861</span> <span class="fl">55.42869</span>, <span class="sc">-</span><span class="fl">5.118397</span> <span class="fl">55.42741</span>, <span class="sc">-</span><span class="dv">5</span>…</span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a><span class="dv">7</span> S17000019 Central <span class="fu">Scotland</span>      (((<span class="sc">-</span><span class="fl">3.795887</span> <span class="fl">56.10006</span>, <span class="sc">-</span><span class="fl">3.795648</span> <span class="fl">56.09964</span>, <span class="sc">-</span><span class="dv">3</span>…</span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a><span class="dv">8</span> S17000020 <span class="fu">Glasgow</span>               (((<span class="sc">-</span><span class="fl">4.271141</span> <span class="fl">55.9281</span>, <span class="sc">-</span><span class="fl">4.270303</span> <span class="fl">55.92808</span>, <span class="sc">-</span><span class="fl">4.</span>…</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="the-centroids-option-returns-area-centroids-where-available">The “centroids” option returns area centroids where available<a class="anchor" aria-label="anchor" href="#the-centroids-option-returns-area-centroids-where-available"></a>
 </h3>
 <p>These are usually population-weighted (PWC) nowadays. (Some older centroids are address-weighted (AWC). Check the OpenGeography website).</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sb</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bounds.html">bounds</a></span><span class="op">(</span><span class="st">"msoa"</span>, <span class="st">"lad"</span>, <span class="st">"Swindon"</span><span class="op">)</span></span>
-<span><span class="va">sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bounds.html">bounds</a></span><span class="op">(</span><span class="st">"msoa"</span>, <span class="st">"utla"</span>, <span class="st">"Swindon"</span>, geometry <span class="op">=</span> <span class="st">"centroids"</span><span class="op">)</span></span>
+<span><span class="va">sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bounds.html">bounds</a></span><span class="op">(</span><span class="st">"msoa"</span>, <span class="st">"lad"</span>, <span class="st">"Swindon"</span>, geometry <span class="op">=</span> <span class="st">"centroids"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sb</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -234,12 +241,12 @@
 <h3 id="a-ggplot2-example">A ggplot2 example<a class="anchor" aria-label="anchor" href="#a-ggplot2-example"></a>
 </h3>
 <p>Here we specify a ‘within_names’ argument alongside the ‘lookup’ argument. There’s no ‘within_level’ argument to be specified because there’s nothing to lookup against. (There aren’t any lookup tables for National Parks - just the boundaries).</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/bounds.html">bounds</a></span><span class="op">(</span><span class="st">"npark"</span>, within_names <span class="op">=</span> <span class="st">"Bannau Brycheiniog"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-example-8-1.png"></p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># https://github.com/francisbarton/mapirosa</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">mapirosa</span><span class="op">)</span></span>
 <span></span>
@@ -276,25 +283,25 @@
 <h2 id="package-internal-structure">Package internal structure<a class="anchor" aria-label="anchor" href="#package-internal-structure"></a>
 </h2>
 <p>The structure of the project looks a bit like this:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">bounds</span>() [main UI <span class="cf">function</span>]</span>
-<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>   <span class="sc">^</span></span>
-<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>   <span class="er">|</span></span>
-<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>   <span class="er">|</span></span>
-<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>   <span class="sc">-------</span> <span class="er">&lt;</span><span class="sc">-----</span> <span class="fu">add_geometry_to_table</span>() [also available to user]</span>
-<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>   <span class="sc">|</span>      <span class="er">|</span></span>
-<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>   <span class="er">|</span>      <span class="er">|</span></span>
-<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>   <span class="er">|</span>      <span class="fu">lookup</span>() [main <span class="cf">function</span> available to the user]</span>
-<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>   <span class="sc">|</span>                <span class="er">^</span></span>
-<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>   <span class="er">|</span>                <span class="er">|</span></span>
-<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a>   <span class="er">|</span>                <span class="er">|</span></span>
-<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a>   <span class="er">|</span>                 <span class="er">&lt;</span><span class="sc">--------</span> <span class="fu">return_table_info</span>() </span>
-<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a>   <span class="sc">|</span>                                       \</span>
-<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a>   <span class="sc">|</span>                                        \</span>
-<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a>    <span class="ot">&lt;-</span><span class="sc">------</span> <span class="fu">return_spatial_data</span>()           <span class="ot">&lt;-</span><span class="sc">----</span> opengeo_schema</span>
-<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a>                    <span class="sc">^</span>                       <span class="er">/</span>          [pkg data]</span>
-<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a>                    <span class="sc">|</span>                      <span class="er">/</span>               <span class="er">^</span></span>
-<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a>                     <span class="er">&lt;</span><span class="sc">--------</span> <span class="fu">return_bounds_info</span>()        <span class="sc">|</span></span>
-<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a>                                                      <span class="fu">build_schema</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">bounds</span>() [main UI <span class="cf">function</span>]</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>   <span class="sc">^</span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>   <span class="er">|</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>   <span class="er">|</span></span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>   <span class="sc">-------</span> <span class="er">&lt;</span><span class="sc">-----</span> <span class="fu">add_geometry_to_table</span>() [also available to user]</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>   <span class="sc">|</span>      <span class="er">|</span></span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>   <span class="er">|</span>      <span class="er">|</span></span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>   <span class="er">|</span>      <span class="fu">lookup</span>() [main <span class="cf">function</span> available to the user]</span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>   <span class="sc">|</span>                <span class="er">^</span></span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>   <span class="er">|</span>                <span class="er">|</span></span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>   <span class="er">|</span>                <span class="er">|</span></span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a>   <span class="er">|</span>                 <span class="er">&lt;</span><span class="sc">--------</span> <span class="fu">return_table_info</span>()</span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a>   <span class="sc">|</span>                                       \</span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a>   <span class="sc">|</span>                                        \</span>
+<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a>    <span class="ot">&lt;-</span><span class="sc">------</span> <span class="fu">return_spatial_data</span>()           <span class="ot">&lt;-</span><span class="sc">----</span> opengeo_schema</span>
+<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a>                    <span class="sc">^</span>                       <span class="er">/</span>          [pkg data]</span>
+<span id="cb16-17"><a href="#cb16-17" tabindex="-1"></a>                    <span class="sc">|</span>                      <span class="er">/</span>               <span class="er">^</span></span>
+<span id="cb16-18"><a href="#cb16-18" tabindex="-1"></a>                     <span class="er">&lt;</span><span class="sc">--------</span> <span class="fu">return_bounds_info</span>()        <span class="sc">|</span></span>
+<span id="cb16-19"><a href="#cb16-19" tabindex="-1"></a>                                                      <span class="fu">build_schema</span>()</span></code></pre></div>
 <p>When you call <code><a href="reference/bounds.html">bounds()</a></code> you specify a lower level area (eg ward) and a higher level area (eg local authority), and you specify either the name of the higher level area (or areas) or its ONS code. Multiple higher level areas can be submitted. If no higher level area is specified then boundaries or a lookup will be returned directly (without an intermediate lookup table being created).</p>
 <p><code>return_table_info()</code> then finds the API query URL of a suitable lookup table - one that contains columns for both your lower and higher level areas. It does this by filtering <code>opengeo_schema</code>, which is a cached copy of the various datasets available from the Open Geography API Services list. This schema is available as internal data in the package,and is updated periodically by the maintainer but may be slightly out of date.</p>
 <p><code><a href="reference/lookup.html">lookup()</a></code> then builds a lookup table (a tibble) based on all the areas you have said you are interested in.</p>
@@ -325,7 +332,7 @@
 <ul>
 <li>Source: Office for National Statistics licensed under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" class="external-link">Open Government Licence v3.0</a>
 </li>
-<li>Contains OS data © Crown copyright and database right 2024</li>
+<li>Contains OS data © Crown copyright and database right 2025</li>
 </ul>
 </blockquote>
 </div>
@@ -334,6 +341,7 @@
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://codeberg.org/francisbarton/boundr/" class="external-link">Browse source code</a></li>
 <li><a href="https://codeberg.org/francisbarton/boundr/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
@@ -365,7 +373,7 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Francis Barton <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-5650-1176" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Francis Barton <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-5650-1176" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 </ul>
 </div>
 
@@ -385,7 +393,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.9000.</p>
 </div>
 
     </footer>

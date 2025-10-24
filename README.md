@@ -14,21 +14,19 @@ MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.or
 
 <div style="display: flex; align-items: center;">
 
-
 <div style="flex: 0 0 auto; margin-right: 20px;">
 
-
-<img
-    src="inst/boundr_hex_logo.png"
-    height="300px" width="259px" hspace=20 vspace=20
+<a href="https://francisbarton.codeberg.page/boundr/docs"> <img
+    src="man/figures/logo.png"
+    align="right" height=139 hspace=20 vspace=20
     alt="The boundr package hexagonal logo - the word boundr superimposed on a
       cropped map of the Isles of Scilly, with the island parishes differently
       coloured, on a sea blue background."
-/> <br clear="all" />
+  /> </a> <br clear="all" />
 
 </div>
 
-<div>
+</div>
 
 The main purpose of this package is to download area lookups and
 boundaries to R tables, using the ONS Open Geography API, for all areas
@@ -37,15 +35,13 @@ at a specified level within a specified area.
 The main script `bounds()` will return a data frame with the sub-area
 geometry column, as an `sf` object ready to be visualised as a map.
 
-</div>
-
-</div>
-
 ## Installation
 
 You can install this package from the `R` console by entering
 
-> remotes::install_git(“https://codeberg.org/francisbarton/boundr”)
+``` r
+remotes::install_git("https://codeberg.org/francisbarton/boundr")
+```
 
 if you have the `remotes` package installed.
 
@@ -65,7 +61,7 @@ bounds("msoa", "lad", "Swansea")
     Bounding box:  xmin: -4.333587 ymin: 51.53577 xmax: -3.842747 ymax: 51.77423
     Geodetic CRS:  WGS 84
     # A tibble: 30 × 8
-       msoa21cd  msoa21nm    lad24cd   lad24nm msoa21nmw    msoa21hclnm msoa21hclnmw
+       msoa21cd  msoa21nm    lad25cd   lad25nm msoa21nmw    msoa21hclnm msoa21hclnmw
        <chr>     <chr>       <chr>     <chr>   <chr>        <chr>       <chr>       
      1 W02000168 Swansea 001 W06000011 Swansea Abertawe 001 Pontarddul… Pontarddula…
      2 W02000169 Swansea 002 W06000011 Swansea Abertawe 002 Clydach & … Clydach a M…
@@ -118,7 +114,7 @@ lookup("spc", "spr")
 ```
 
     # A tibble: 73 × 4
-       spc23cd   spc23nm                        spr23cd   spr23nm              
+       spc24cd   spc24nm                        spr24cd   spr24nm              
        <chr>     <chr>                          <chr>     <chr>                
      1 S16000083 Argyll and Bute                S17000011 Highlands and Islands
      2 S16000086 Caithness, Sutherland and Ross S17000011 Highlands and Islands
@@ -144,19 +140,19 @@ those referred to by the `lookup_level` and `within_level` arguments.
 lookup("wd", "sener", opts = opts(return_width = "full"))
 ```
 
-    # A tibble: 764 × 9
-       wd23cd    wd23nm wd23nmw ua23cd ua23nm ua23nmw sener23cd sener23nm sener23nmw
-       <chr>     <chr>  <chr>   <chr>  <chr>  <chr>   <chr>     <chr>     <chr>     
-     1 W05001492 Aethwy Aethwy  W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…
-     2 W05001493 Bodow… Bodowyr W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…
-     3 W05001494 Bro A… Bro Ab… W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…
-     4 W05001495 Bro'r… Bro'r … W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…
-     5 W05001496 Canol… Canolb… W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…
-     6 W05001497 Cefni  Cefni   W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…
-     7 W05001498 Crigy… Crigyll W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…
-     8 W05001499 Lligwy Lligwy  W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…
-     9 W05001500 Parc … Parc a… W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…
-    10 W05001501 Seiri… Seiriol W0600… Isle … Ynys M… W10000001 North Wa… Gogledd C…
+    # A tibble: 764 × 8
+       wd24cd    wd24nm         ua24cd ua24nm ua24nmw sener24cd sener24nm sener24nmw
+       <chr>     <chr>          <chr>  <chr>  <chr>   <chr>     <chr>     <chr>     
+     1 W05001332 Alyn Valley    W0600… Denbi… Sir Dd… W10000001 North Wa… Gogledd C…
+     2 W05001333 Bodelwyddan    W0600… Denbi… Sir Dd… W10000001 North Wa… Gogledd C…
+     3 W05001334 Denbigh Caled… W0600… Denbi… Sir Dd… W10000001 North Wa… Gogledd C…
+     4 W05001335 Denbigh Lower  W0600… Denbi… Sir Dd… W10000001 North Wa… Gogledd C…
+     5 W05001336 Dyserth        W0600… Denbi… Sir Dd… W10000001 North Wa… Gogledd C…
+     6 W05001337 Edeirnion      W0600… Denbi… Sir Dd… W10000001 North Wa… Gogledd C…
+     7 W05001338 Efenechdyd     W0600… Denbi… Sir Dd… W10000001 North Wa… Gogledd C…
+     8 W05001339 Llandyrnog     W0600… Denbi… Sir Dd… W10000001 North Wa… Gogledd C…
+     9 W05001340 Llanfair Dyff… W0600… Denbi… Sir Dd… W10000001 North Wa… Gogledd C…
+    10 W05001341 Llangollen     W0600… Denbi… Sir Dd… W10000001 North Wa… Gogledd C…
     # ℹ 754 more rows
 
 ### The sfc tibble is ready to be passed to a mapping tool like `tmap::qtm()`
@@ -168,7 +164,7 @@ lookup("wd", "sener", opts = opts(return_width = "full"))
 bounds("par", "lad", "Isles of Scilly") |>
   tmap::tm_shape() +
   tmap::tm_polygons(
-    col = "par23nm",
+    fill = "par24nm",
     palette = "-Accent",
     legend.show = FALSE,
     border.col = "grey40"
@@ -213,7 +209,7 @@ centroids are address-weighted (AWC). Check the OpenGeography website).
 
 ``` r
 sb <- bounds("msoa", "lad", "Swindon")
-sp <- bounds("msoa", "utla", "Swindon", geometry = "centroids")
+sp <- bounds("msoa", "lad", "Swindon", geometry = "centroids")
 
 sb |>
   ggplot2::ggplot() +
@@ -288,7 +284,7 @@ The structure of the project looks a bit like this:
        |                ^
        |                |
        |                |
-       |                 <-------- return_table_info() 
+       |                 <-------- return_table_info()
        |                                       \
        |                                        \
         <------- return_spatial_data()           <----- opengeo_schema
@@ -354,4 +350,4 @@ licences, including:
 > - Source: Office for National Statistics licensed under the [Open
 >   Government Licence
 >   v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
-> - Contains OS data © Crown copyright and database right 2024
+> - Contains OS data © Crown copyright and database right 2025

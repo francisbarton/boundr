@@ -4,3 +4,4 @@
 .Ruserdata
 README_cache
 *.R.old
+.vscode/*
