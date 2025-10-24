@@ -18,7 +18,7 @@ ogu <- \() "https://services1.arcgis.com/ESMARspQHYMw9BZ9/ArcGIS/rest/services"
 #'
 #' @param x A vector or list
 #' @param batch_size integer. The size (length) of batches to create
-#' @examples batch_it(letters, 6L)
+#' @examples \dontrun{batch_it(letters, 6L)}
 #' @returns A list
 #' @keywords internal
 batch_it <- function(x, batch_size) {
@@ -35,7 +35,7 @@ batch_it <- function(x, batch_size) {
   unname(split(x, f))
 }
 
-#' This is the same as `%||%` but I prefer bracketed functions to infixes
+#' This is the same as `%||%` but I just prefer bracketed functions to infixes
 #'
 #' @param x,y R objects
 #' @keywords internal

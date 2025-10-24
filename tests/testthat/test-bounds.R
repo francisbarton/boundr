@@ -10,12 +10,16 @@ test_that("overall - run examples", {
       opts = boundr_options(resolution = "SGCB")
     )
   )
-  expect_no_error(bounds("rgn", opts = opts(resolution = "BUC")))
+  expect_no_error(bounds(
+    "rgn",
+    lookup_year = 2024,
+    opts = opts(resolution = "BUC")
+  ))
   # par = "parish"
   bounds("par", "lad", "Isles of Scilly", opts = boundr_options(crs = 27700)) |>
     expect_no_error()
   expect_no_error(bounds("npark", within_names = "Bannau Brycheiniog"))
-  expect_no_error(bounds("msoa", "utla", "Swindon", geometry = "centroids"))
+  expect_no_error(bounds("msoa", "lad", "Swindon", geometry = "centroids"))
 })
 
 
@@ -80,23 +84,28 @@ test_that("overall - run examples", {
 
 "something not working - 'match needs vector' error" |>
   test_that({
-    expect_no_error(bounds("rgn", opts = opts(resolution = "BUC")))
+    expect_no_error(bounds(
+      "rgn",
+      lookup_year = 2024,
+      opts = opts(resolution = "BUC")
+    ))
     gm_type <- "boundaries"
     rs <- "(BUC)"
     return_width <- "tidy"
     crs <- 4326
     query_option <- NULL
     lookup_level <- "rgn"
-    query_info <- return_narrow_bounds_info(lookup_level, NULL, rs) |>
+    lookup_year <- 2024
+    query_info <- return_narrow_bounds_info(lookup_level, lookup_year, rs) |>
       expect_no_error()
     query_data <- query_info |>
       process_query_info(NULL, NULL, return_width, query_option) |>
       expect_no_error()
     fields <- query_data[[2]]
-    expect_equal(fields, c("rgn23cd", "rgn23nm"))
+    expect_equal(fields, c("rgn24cd", "rgn24nm"))
     expect_equal(
       query_data[[1]],
-      paste0(ogu(), "/Regions_December_2023_Boundaries_EN_BUC/FeatureServer")
+      paste0(ogu(), "/Regions_December_2024_Boundaries_EN_BUC/FeatureServer")
     )
     tbl <- process_spatial_query_data(query_data, crs) |>
       dplyr::bind_rows() |>

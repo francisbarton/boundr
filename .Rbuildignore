@@ -13,3 +13,4 @@
 ^README_cache/.*$
 ^\.nojekyll/.*$
 ^pkgdown.yml$
+^\.vscode/.*$

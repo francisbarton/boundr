@@ -18,6 +18,6 @@ A list
 Batch a vector or list into a list of elements with a maximum size
 }
 \examples{
-batch_it(letters, 6L)
+\dontrun{batch_it(letters, 6L)}
 }
 \keyword{internal}

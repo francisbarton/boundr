@@ -4,5 +4,40 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"windowColor.mainColor": "#230fd7",
+		"window.title": "{boundr}",
+		"workbench.colorCustomizations": {
+			"editorRuler.foreground": "#ff4081",
+			"statusBarItem.warningBackground": "#10b5d5",
+			"statusBarItem.warningForeground": "#000000",
+			"statusBarItem.warningHoverBackground": "#10b5d5",
+			"statusBarItem.warningHoverForeground": "#00000090",
+			"statusBarItem.remoteBackground": "#1dc2e2",
+			"statusBarItem.remoteForeground": "#000000",
+			"statusBarItem.remoteHoverBackground": "#2acfef",
+			"statusBarItem.remoteHoverForeground": "#00000090",
+			"statusBar.background": "#10b5d5",
+			"statusBar.foreground": "#000000",
+			"statusBar.border": "#10b5d5",
+			"statusBar.debuggingBackground": "#10b5d5",
+			"statusBar.debuggingForeground": "#000000",
+			"statusBar.debuggingBorder": "#10b5d5",
+			"statusBar.noFolderBackground": "#10b5d5",
+			"statusBar.noFolderForeground": "#000000",
+			"statusBar.noFolderBorder": "#10b5d5",
+			"statusBar.prominentBackground": "#10b5d5",
+			"statusBar.prominentForeground": "#000000",
+			"statusBar.prominentHoverBackground": "#10b5d5",
+			"statusBar.prominentHoverForeground": "#00000090"
+		},
+		"projectColors.mainColor": "#10b5d5",
+		"projectColors.name": "{boundr}",
+		"projectColors.isActivityBarColored": false,
+		"projectColors.isTitleBarColored": false,
+		"projectColors.isStatusBarColored": true,
+		"projectColors.isProjectNameColored": true,
+		"projectColors.isActiveItemsColored": false,
+		"projectColors.setWindowTitle": true
+	}
 }

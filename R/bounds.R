@@ -11,11 +11,11 @@
 #' @examples
 #' bounds("msoa", "lad", "Swansea")
 #' bounds("wd", "lad", "Shepway", within_year = 2016) # Shepway no longer exists
-#' bounds("rgn", opts = boundr_options(resolution = "BUC"))
+#' bounds("rgn", lookup_year = 2024, opts = boundr_options(resolution = "BUC"))
 #' bounds("par", "lad", "Isles of Scilly") # par = "parish"
 #' bounds("spr")
 #' bounds("npark", within_names = "Bannau Brycheiniog")
-#' bounds("msoa", "utla", "Swindon", geometry = "centroids")
+#' bounds("msoa", "lad", "Swindon", geometry = "centroids")
 #'
 #' @seealso boundr_options
 #' @returns an `sfc` tibble (data frame with geometry)
