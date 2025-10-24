@@ -2,16 +2,22 @@
 % Please edit documentation in R/boundr-package.R
 \name{batch_it}
 \alias{batch_it}
-\title{Batch a vector into a list}
+\title{Batch a vector or list into a list of elements with a maximum size}
 \usage{
 batch_it(x, batch_size)
 }
 \arguments{
-\item{x}{a vector}
+\item{x}{A vector or list}
 
-\item{batch_size}{the number of items in each batch of the returned list}
+\item{batch_size}{integer. The size (length) of batches to create}
+}
+\value{
+A list
 }
 \description{
-Batch a vector into a list
+Batch a vector or list into a list of elements with a maximum size
+}
+\examples{
+batch_it(letters, 6L)
 }
 \keyword{internal}

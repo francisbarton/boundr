@@ -20,7 +20,7 @@ ogu <- \() "https://services1.arcgis.com/ESMARspQHYMw9BZ9/ArcGIS/rest/services"
 #' @param batch_size integer. The size (length) of batches to create
 #' @examples batch_it(letters, 6L)
 #' @returns A list
-#' @export
+#' @keywords internal
 batch_it <- function(x, batch_size) {
   assertthat::assert_that(
     rlang::is_vector(x),
