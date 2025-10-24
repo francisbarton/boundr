@@ -47,8 +47,28 @@
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
-  </main></div>
+
+<dl><dt id="arg-within-names-within-codes">within_names, within_codes<a class="anchor" aria-label="anchor" href="#arg-within-names-within-codes"></a></dt>
+<dd><p>character. In order to restrict data
+returned to a specific area, either <code>within_names</code> or <code>within_codes</code> must
+be provided. Otherwise all available boundaries at that level will be
+retrieved. Use place names eg "Essex" to restrict to a certain
+geographical area. Or use ONS area codes eg "W02000103" likewise (this is
+useful with wards, where there are many that share identical names).
+To use this argument to filter <code>within_level</code>, the <code>within_level</code> must be
+specified! Otherwise <code>{boundr}</code> will apply them to <code>lookup_level</code> instead.
+See examples.
+Vectors of multiple names or multiple codes can be supplied.
+If you supply both <code>within_names</code> and <code>within_codes</code>, only <code>within_names</code>
+will be used; (<code>within_codes</code> will be ignored).</p></dd>
+
+</dl></div>
+
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
