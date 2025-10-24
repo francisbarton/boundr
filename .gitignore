@@ -7,3 +7,4 @@ README_cache
 docs/
 .nojekyll
 .vscode
+*.Rproj
