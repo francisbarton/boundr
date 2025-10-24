@@ -30,7 +30,9 @@ return_narrow_table_info <- function(lookup_level, lookup_year, rs = NULL) {
     janitor::remove_empty("cols") |>
     rlang::with_options(lifecycle_verbosity = "quiet")
 
-  if (is_interactive()) cli_alert_info("Using {.val {lu_code_field}}")
+  if (is_interactive()) {
+    cli_alert_info("Using {.val {lu_code_field}}")
+  }
   list(
     schema = s2,
     lookup_code = lu_code_field,
@@ -42,11 +44,12 @@ return_narrow_table_info <- function(lookup_level, lookup_year, rs = NULL) {
 #'
 #' @keywords internal
 return_lookup_table_info <- function(
-    lookup_level,
-    within_level,
-    lookup_year,
-    within_year,
-    joinable) {
+  lookup_level,
+  within_level,
+  lookup_year,
+  within_year,
+  joinable
+) {
   fn <- "return_lookup_table_info"
   ul <- toupper(lookup_level)
   wl <- toupper(within_level)
@@ -96,17 +99,17 @@ return_lookup_table_info <- function(
 }
 
 
-
 #' Just another piece of the pipeline
 #'
 #' @inheritParams bounds
 #' @keywords internal
 process_query_info <- function(
-    query_info,
-    within_names,
-    within_codes,
-    return_width,
-    query_opt) {
+  query_info,
+  within_names,
+  within_codes,
+  return_width,
+  query_opt
+) {
   schema <- query_info[["schema"]]
   lookup_code_field <- query_info[["lookup_code"]]
   within_code_field <- ifnull(query_info[["within_code"]], lookup_code_field)
@@ -134,9 +137,13 @@ process_query_info <- function(
 
   lookup_name_field <- sub("cd$", "nm", lookup_code_field)
   within_name_field <- sub("cd$", "nm", within_code_field)
-  fields <- switch(return_width,
+  fields <- switch(
+    return_width,
     "tidy" = unique(c(
-      lookup_code_field, lookup_name_field, within_code_field, within_name_field
+      lookup_code_field,
+      lookup_name_field,
+      within_code_field,
+      within_name_field
     )),
     "full" = "*",
     "minimal" = c(lookup_code_field, lookup_name_field)
@@ -147,7 +154,8 @@ process_query_info <- function(
     where_list <- "1=1" # this means "return all rows"
   } else if (!is.null(within_names)) {
     where_list <- build_where_list(within_name_field, within_names)
-  } else { # implied: !is.null(within_codes))
+  } else {
+    # implied: !is.null(within_codes))
     where_list <- build_where_list(within_code_field, within_codes)
   }
 

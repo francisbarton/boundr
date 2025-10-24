@@ -21,16 +21,17 @@
 #' @returns an `sfc` tibble (data frame with geometry)
 #' @export
 bounds <- function(
-    lookup_level,
-    within_level = NULL,
-    within_names = NULL,
-    within_codes = NULL,
-    lookup_year = NULL,
-    within_year = NULL,
-    # Reduce clutter! https://design.tidyverse.org/argument-clutter.html
-    opts = boundr_options(),
-    # "Prefer an enum"! https://design.tidyverse.org/boolean-strategies.html
-    geometry = c("boundaries", "centroids")) {
+  lookup_level,
+  within_level = NULL,
+  within_names = NULL,
+  within_codes = NULL,
+  lookup_year = NULL,
+  within_year = NULL,
+  # Reduce clutter! https://design.tidyverse.org/argument-clutter.html
+  opts = boundr_options(),
+  # "Prefer an enum"! https://design.tidyverse.org/boolean-strategies.html
+  geometry = c("boundaries", "centroids")
+) {
   gm_type <- arg_match(geometry)
   lookup_level <- tolower(lookup_level)
   rs <- if (gm_type == "centroids") "(PopCentroids|PWC|AWC)" else opts[["rs"]]
@@ -72,8 +73,12 @@ bounds <- function(
     tbl <- add_geometry_to_table(lookup_tbl, opts, gm_type)
   }
 
-  if (lookup_level == "msoa") tbl <- add_msoa_names(tbl)
-  if (return_width != "full") tbl <- remove_nmw(tbl)
+  if (lookup_level == "msoa") {
+    tbl <- add_msoa_names(tbl)
+  }
+  if (return_width != "full") {
+    tbl <- remove_nmw(tbl)
+  }
 
   tbl |>
     dplyr::distinct() |>
@@ -112,10 +117,11 @@ bounds <- function(
 #' boundr_options(return_width = "full") # Ask boundr to return all data columns
 #' @export
 boundr_options <- function(
-    resolution = res_codes(),
-    return_width = c("tidy", "full", "minimal"),
-    crs = 4326,
-    query_option = NULL) {
+  resolution = res_codes(),
+  return_width = c("tidy", "full", "minimal"),
+  crs = 4326,
+  query_option = NULL
+) {
   rw <- arg_match(return_width)
   list(rs = condense(resolution), rw = rw, crs = crs, opt = query_option)
 }
@@ -132,14 +138,14 @@ opts <- boundr_options
 #' resolution) BGC being the preferred option if you don't specify one.
 #' @export
 res_codes <- function() {
+  # fmt: skip
   c(
-    "BGC", "BSC", "BUC", "BFC", "BGE", "BFE", "BUE",
-    "GCB", "SGCB", "UGB", "UGCB", "FCB", "FEB", "BGG"
+    "BGC", "BSC", "BUC", "BFC", "BGE", "BFE", "BUE", "GCB", "SGCB", "UGB",
+    "UGCB", "FCB", "FEB", "BGG"
   )
 }
 
 # Helper functions -----------------------
-
 
 #' @keywords internal
 condense <- \(vec) glue("({paste0(vec, collapse = '|')})")
@@ -165,7 +171,9 @@ return_narrow_bounds_info <- function(lookup, lookup_year, rs) {
     janitor::remove_empty("cols") |>
     rlang::with_options(lifecycle_verbosity = "quiet")
 
-  if (is_interactive()) cli_alert_info("Using {.val {lu_code_field}}")
+  if (is_interactive()) {
+    cli_alert_info("Using {.val {lu_code_field}}")
+  }
   list(
     schema = s2,
     lookup_code = lu_code_field,

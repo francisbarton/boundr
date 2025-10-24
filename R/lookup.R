@@ -34,13 +34,14 @@
 #' @returns A tibble
 #' @export
 lookup <- function(
-    lookup_level,
-    within_level = NULL,
-    within_names = NULL,
-    within_codes = NULL,
-    lookup_year = NULL,
-    within_year = NULL,
-    opts = boundr_options()) {
+  lookup_level,
+  within_level = NULL,
+  within_names = NULL,
+  within_codes = NULL,
+  lookup_year = NULL,
+  within_year = NULL,
+  opts = boundr_options()
+) {
   common_lookup(
     lookup_level,
     within_level,
@@ -61,14 +62,15 @@ lookup <- function(
 #'  field for spatial data (that is, boundaries or centroids) to be joined onto.
 #' @keywords internal
 common_lookup <- function(
-    lookup_level,
-    within_level = NULL,
-    within_names = NULL,
-    within_codes = NULL,
-    lookup_year = NULL,
-    within_year = NULL,
-    opts = boundr_options(),
-    joinable = FALSE) {
+  lookup_level,
+  within_level = NULL,
+  within_names = NULL,
+  within_codes = NULL,
+  lookup_year = NULL,
+  within_year = NULL,
+  opts = boundr_options(),
+  joinable = FALSE
+) {
   lookup_level <- tolower(lookup_level)
   return_width <- opts[["rw"]]
   query_option <- opts[["opt"]]
@@ -93,8 +95,12 @@ common_lookup <- function(
     dplyr::select(!any_of(drop_cols())) |>
     dplyr::distinct()
 
-  if (lookup_level == "msoa") tbl <- add_msoa_names(tbl)
-  if (return_width != "full") tbl <- remove_nmw(tbl)
+  if (lookup_level == "msoa") {
+    tbl <- add_msoa_names(tbl)
+  }
+  if (return_width != "full") {
+    tbl <- remove_nmw(tbl)
+  }
 
   tbl |>
     dplyr::distinct() |>

@@ -67,12 +67,12 @@ test_that("return_narrow_table_info works overall", {
     expect_equal(query_info[[3]], "lad25cd")
 
     query_data <- query_info |>
-    process_query_info(
-      within_names = "Stroud",
-      within_codes = NULL,
-      return_width = "full",
-      query_opt = NULL
-    )
+      process_query_info(
+        within_names = "Stroud",
+        within_codes = NULL,
+        return_width = "full",
+        query_opt = NULL
+      )
 
     expect_true(grepl("MSOA21.*LAD25.*_LU", query_data[[1]]))
     expect_equal(query_data[[2]], "*")
@@ -81,7 +81,6 @@ test_that("return_narrow_table_info works overall", {
     # tbl <- process_lookup_query_data(query_data) |>
     #   dplyr::bind_rows() |>
     #   janitor::clean_names()
-
   }) |>
   rlang::with_interactive(FALSE)
 
@@ -104,7 +103,10 @@ test_that("return_narrow_table_info works overall", {
 
 test_that("It can find a suitable lookup year based on within_year", {
   lookup(
-    "wd", "lad", "Shepway", within_year = 2016,
+    "wd",
+    "lad",
+    "Shepway",
+    within_year = 2016,
     opts = boundr_options(resolution = "SGCB")
   ) |>
     expect_no_error()
@@ -124,11 +126,14 @@ test_that("It can find a suitable lookup year based on within_year", {
     process_query_info("Shepway", NULL, "tidy", NULL) |>
     expect_no_error()
 
-  expect_equal(query_data[[1]], paste0(
-    ogu(),
-    "/WD16_REGD16_LAD16_EW_LU_e40c67c9fe5245f7871f8857c8cd022b",
-    "/FeatureServer"
-  ))
+  expect_equal(
+    query_data[[1]],
+    paste0(
+      ogu(),
+      "/WD16_REGD16_LAD16_EW_LU_e40c67c9fe5245f7871f8857c8cd022b",
+      "/FeatureServer"
+    )
+  )
   expect_equal(query_data[[2]], c("wd16cd", "wd16nm", "lad16cd", "lad16nm"))
   expect_equal(query_data[[3]], "lad16nm IN ('Shepway')")
 })

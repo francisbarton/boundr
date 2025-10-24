@@ -36,7 +36,8 @@ test_that("overall - run examples", {
         within_year = NULL,
         opts = boundr_options(),
         joinable = TRUE
-    ))
+      )
+    )
     expect_no_error(add_geometry(tbl))
     opts <- boundr_options()
     gm_type <- "boundaries"
@@ -65,7 +66,6 @@ test_that("overall - run examples", {
   })
 
 
-
 "test pull_query_url()" |>
   test_that({
     geo_code_field <- "msoa21cd"
@@ -74,7 +74,7 @@ test_that("overall - run examples", {
     s1 <- opengeo_schema |>
       dplyr::filter(
         if_any(.data[[geo_code_field]], \(x) !is.na(x)) &
-        if_any("service_name", \(x) gregg(x, "^{ul}.*{rs}"))
+          if_any("service_name", \(x) gregg(x, "^{ul}.*{rs}"))
       ) |>
       janitor::remove_empty("cols") |>
       rlang::with_options(lifecycle_verbosity = "quiet") |>

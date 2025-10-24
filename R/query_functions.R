@@ -1,6 +1,5 @@
 # Building requests -------------------------------
 
-
 #' Basic OpenGeography API request
 #'
 #' @param url The API URL to query
@@ -10,10 +9,10 @@
 #'  header of each query. Sends the string `"boundr R package"` by default
 #' @keywords internal
 opengeo_api_req <- function(
-    url,
-    append = "0/query",
-    format = "pjson",
-    user_agent = "boundr R package (https://codeberg.org/francisbarton/boundr)"
+  url,
+  append = "0/query",
+  format = "pjson",
+  user_agent = "boundr R package (https://codeberg.org/francisbarton/boundr)"
 ) {
   url |>
     httr2::request() |>
@@ -21,7 +20,6 @@ opengeo_api_req <- function(
     httr2::req_url_path_append(append) |>
     httr2::req_url_query(f = format)
 }
-
 
 
 #' Build an API request for IDs only
@@ -60,7 +58,6 @@ api_data_req <- function(ids, url, fields, geo = TRUE, crs = NULL, ...) {
     httr2::req_url_query(returnIdsOnly = "false")
   if (is.null(crs)) req else httr2::req_url_query(req, outSR = crs)
 }
-
 
 
 # Perform requests -------------------------------
@@ -112,7 +109,6 @@ possibly_parse_json <- function(...) {
 
 # Response handling ----------------------------
 
-
 #' Perform an API query and extract the returned IDs
 #'
 #' For large queries, just return IDs that can then be batched for full queries.
@@ -130,7 +126,9 @@ return_result_ids <- function(url, where, max_tries = 3, verbosity = 0, ...) {
     data <- possibly_parse_json(ret)
     # Sometimes it gets returned with the wrong application type?
     # And it's JSON but not marked as such... needs to be parsed as plain text.
-    if (is.null(data)) data <- jsonlite::fromJSON(httr2::resp_body_string(ret))
+    if (is.null(data)) {
+      data <- jsonlite::fromJSON(httr2::resp_body_string(ret))
+    }
 
     purrr::list_c(purrr::pluck(data, "objectIds"))
   }
@@ -142,12 +140,13 @@ return_result_ids <- function(url, where, max_tries = 3, verbosity = 0, ...) {
 #' @inheritParams query_opengeo_api
 #' @keywords internal
 return_table_data <- function(
-    ids,
-    url,
-    fields,
-    max_tries = 3,
-    verbosity = 0,
-    ...) {
+  ids,
+  url,
+  fields,
+  max_tries = 3,
+  verbosity = 0,
+  ...
+) {
   ret <- api_data_req(ids, url, fields, geo = FALSE, ...) |>
     possibly_query_opengeo_api(max_tries = max_tries, verbosity = verbosity)
 
@@ -172,13 +171,14 @@ return_table_data <- function(
 #' @inheritParams query_opengeo_api
 #' @keywords internal
 return_spatial_data <- function(
-    ids,
-    url,
-    fields,
-    crs = 4326,
-    max_tries = 3,
-    verbosity = 0,
-    ...) {
+  ids,
+  url,
+  fields,
+  crs = 4326,
+  max_tries = 3,
+  verbosity = 0,
+  ...
+) {
   ret <- api_data_req(ids, url, fields, geo = TRUE, crs, ...) |>
     possibly_query_opengeo_api(max_tries = max_tries, verbosity = verbosity)
   if (is.null(ret)) {
