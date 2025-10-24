@@ -157,12 +157,10 @@ return_table_data <- function(
   } else {
     # slightly more verbose than using purrr::map_df ... but safer?
     # https://github.com/tidyverse/purrr/issues/1007#issuecomment-1373624353
+    resp_data <- httr2::resp_body_json(ret)
     tibble::tibble(
-      data = ret |>
-        httr2::resp_body_json() |>
-        purrr::pluck("features") |>
-        purrr::map("attributes")
-      ) |>
+      data = purrr::map(resp_data[["features"]], "attributes")
+    ) |>
       tidyr::unnest_wider("data") |>
       janitor::clean_names()
   }

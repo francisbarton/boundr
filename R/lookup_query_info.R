@@ -75,16 +75,14 @@ return_lookup_table_info <- function(
   lu_code_field <- return_field_code(lookup_level, s1_names, lookup_year)
   assert_that(!is.null(lu_code_field), msg = no_lu_msg(fn))
   s2 <- s1 |>
-    dplyr::filter(!if_any(.data[[lu_code_field]], is.na)) |>
-    janitor::remove_empty("cols") |>
-    rlang::with_options(lifecycle_verbosity = "quiet")
+    dplyr::filter(!if_any(all_of(lu_code_field), is.na)) |>
+    janitor::remove_empty("cols")
   assert_that(nrow(s2) > 0, msg = no_table_msg(fn, lu_code_field))
 
   wn_code_field <- return_field_code(within_level, cd_colnames(s2), within_year)
   s3 <- s2 |>
-    dplyr::filter(!if_any(.data[[wn_code_field]], is.na)) |>
-    janitor::remove_empty("cols") |>
-    rlang::with_options(lifecycle_verbosity = "quiet")
+    dplyr::filter(!if_any(all_of(wn_code_field), is.na)) |>
+    janitor::remove_empty("cols")
   assert_that(nrow(s3) > 0, msg = no_table_msg(fn, wn_code_field))
 
   if (is_interactive()) {
@@ -173,7 +171,7 @@ process_lookup_query_data <- function(query_data) {
     purrr::map(\(x) return_query_ids(query_url, where_string = x)) |>
     purrr::list_c()
   ids |>
-    batch_it(100L) |> # Could this go to more than 100? 500?
+    batch_it(100L) |>
     purrr::map(
       \(x) return_table_data(x, query_url, fields),
       .progress = if (is_interactive()) "Retrieving table data" else FALSE
