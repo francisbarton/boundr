@@ -2,19 +2,21 @@
 % Please edit documentation in R/boundr-package.R
 \name{gregg}
 \alias{gregg}
-\title{Conveniently wrap a regular expr in glue::glue_data() and pass to \code{grepl()}}
+\title{grepl a glued regex}
 \usage{
-gregg(x, rx, g = caller_env(), ...)
+gregg(x, rx, g = parent.frame())
 }
 \arguments{
 \item{x}{A character vector to check}
 
-\item{rx}{A string that after processing by glue_data() will be used as a
-regex pattern in \code{grepl()}}
-
-\item{...}{Arguments passed onto \code{grepl()}}
+\item{rx}{A string that after processing by \code{\link[glue:glue]{glue::glue_data()}} will be used
+as a regex pattern in \code{\link[=grepl]{grepl()}}}
+}
+\value{
+A logical value
 }
 \description{
-Conveniently wrap a regular expr in glue::glue_data() and pass to \code{grepl()}
+Facilitates using regex in search/filter patterns, and puts the
+arguments "the right way round" (x first, then pattern), unlike \code{\link[=grepl]{grepl()}}
 }
 \keyword{internal}

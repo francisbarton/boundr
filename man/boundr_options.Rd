@@ -3,7 +3,7 @@
 \name{boundr_options}
 \alias{boundr_options}
 \alias{opts}
-\title{Use this to set custom options for \code{bounds()} and \code{centroids()}}
+\title{Use this to set custom options for \code{bounds()}}
 \usage{
 boundr_options(
   resolution = res_codes(),
@@ -27,14 +27,14 @@ adhere to the coastline or to the full territorial extent. BGC by default
 resolution; S indicates Super-generalised (200m); U indicates Ultra-
 generalised (500m) boundary resolution. Use E instead of C for full
 extent boundaries (e.g. BFE). Not all combinations are available.
-Ignored if geometry is set to "centroids".}
+Ignored if \code{geometry} is set to "centroids".}
 
 \item{return_width}{character. How many of the possible columns in the
 returned table to keep. Options are "tidy", "full" or "minimal". "Tidy" aims
 to return four data columns (usually) - two columns for the lookup level
 codes and names, and two for the within level codes and names. Plus a
 geometry column. "Full" aims to return all data columns from the lookup.
-"Minimal" aims to return just the two data columns relating to
+"Minimal" aims to return just the two (usually!) data columns relating to
 \code{lookup_level}.
 If \code{within} is not supplied then "tidy" will be equivalent to "minimal".}
 
@@ -43,12 +43,14 @@ If \code{within} is not supplied then "tidy" will be equivalent to "minimal".}
 \item{query_option}{numeric. Defaults to 1, which means that the URL will
 just be the first one from the list of possible services resulting from the
 level and year filters above. If this does not give you what you want, you
-can run the script again with a different option from the list.}
+can run the function again with a different option from the list.}
 }
 \description{
 \code{opts()} is an alias for this function.
 }
 \examples{
+\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 boundr_options(crs = 27700) # Set the CRS to British National Grid
 boundr_options(return_width = "full") # Ask boundr to return all data columns
+\dontshow{\}) # examplesIf}
 }

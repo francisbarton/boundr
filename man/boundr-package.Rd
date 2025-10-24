@@ -6,6 +6,8 @@
 \alias{boundr-package}
 \title{boundr: Retrieve Area Boundaries and Data from the ONS Open Geography Portal}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 The main purpose of this package is to download area lookups and boundaries (in GeoJSON format) using the ONS Open Geography API, for all areas at a specified level within a specified area.
 }
 \seealso{
