@@ -4,5 +4,48 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"workbench.colorCustomizations": {
+			"editorRuler.foreground": "#ff4081",
+			"statusBarItem.warningBackground": "#191de6",
+			"statusBarItem.warningForeground": "#ffffff",
+			"statusBarItem.warningHoverBackground": "#191de6",
+			"statusBarItem.warningHoverForeground": "#ffffff90",
+			"statusBarItem.remoteBackground": "#262af3",
+			"statusBarItem.remoteForeground": "#ffffff",
+			"statusBarItem.remoteHoverBackground": "#3337ff",
+			"statusBarItem.remoteHoverForeground": "#ffffff90",
+			"statusBar.background": "#191de6",
+			"statusBar.foreground": "#ffffff",
+			"statusBar.border": "#191de6",
+			"statusBar.debuggingBackground": "#191de6",
+			"statusBar.debuggingForeground": "#ffffff",
+			"statusBar.debuggingBorder": "#191de6",
+			"statusBar.noFolderBackground": "#191de6",
+			"statusBar.noFolderForeground": "#ffffff",
+			"statusBar.noFolderBorder": "#191de6",
+			"statusBar.prominentBackground": "#191de6",
+			"statusBar.prominentForeground": "#ffffff",
+			"statusBar.prominentHoverBackground": "#191de6",
+			"statusBar.prominentHoverForeground": "#ffffff90",
+			"focusBorder": "#191de699",
+			"progressBar.background": "#191de6",
+			"textLink.foreground": "#595dff",
+			"textLink.activeForeground": "#666aff",
+			"selection.background": "#0c10d9",
+			"list.highlightForeground": "#191de6",
+			"list.focusAndSelectionOutline": "#191de699",
+			"button.background": "#191de6",
+			"button.foreground": "#ffffff",
+			"button.hoverBackground": "#262af3",
+			"tab.activeBorderTop": "#262af3",
+			"pickerGroup.foreground": "#262af3",
+			"list.activeSelectionBackground": "#191de64d",
+			"panelTitle.activeBorder": "#262af3",
+			"activityBar.activeBorder": "#191de6",
+			"activityBarBadge.foreground": "#ffffff",
+			"activityBarBadge.background": "#191de6"
+		},
+		"window.title": "c:\\Users\\Francis.Barton\\Documents\\Projects\\boundr\\boundr.code-workspace"
+	}
 }
