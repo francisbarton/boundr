@@ -49,7 +49,7 @@ can run the function again with a different option from the list.}
 \code{opts()} is an alias for this function.
 }
 \examples{
-\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (FALSE) withAutoprint(\{ # examplesIf}
 boundr_options(crs = 27700) # Set the CRS to British National Grid
 boundr_options(return_width = "full") # Ask boundr to return all data columns
 \dontshow{\}) # examplesIf}
