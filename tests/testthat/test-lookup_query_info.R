@@ -12,7 +12,7 @@ test_that("return_narrow_table_info works overall", {
     expect_error("No relevant lookup tables")
 
   expect_equal(nrow(ti1[["schema"]]), 1)
-  expect_equal(nrow(ti3[["schema"]]), 2)
+  expect_equal(nrow(ti3[["schema"]]), 1)
   expect_equal(ti1[["lookup_code"]], "msoa21cd")
 }) |>
   rlang::with_interactive(FALSE)
@@ -41,12 +41,12 @@ test_that("return_narrow_table_info works overall", {
     s1_names <- cd_colnames(s1)
     lu_code_field <- return_field_code(lookup, s1_names, lookup_year) |>
       expect_no_error()
-    expect_equal(lu_code_field, "lad23cd")
+    expect_equal(lu_code_field, "lad25cd")
     s2 <- dplyr::filter(s1, !if_any(any_of(lu_code_field), is.na)) |>
       janitor::remove_empty("cols")
-    expect_equal(nrow(s2), 1)
+    expect_equal(nrow(s2), 3)
     wn_code_field <- return_field_code(within_level, cd_colnames(s2), NULL)
-    expect_equal(wn_code_field, "ctry23cd")
+    expect_equal(wn_code_field, "ctry25cd")
   }) |>
   rlang::with_interactive(FALSE)
 
@@ -64,24 +64,23 @@ test_that("return_narrow_table_info works overall", {
     )
     expect_equal(nrow(query_info[[1]]), 1)
     expect_equal(query_info[[2]], "msoa21cd")
-    expect_equal(query_info[[3]], "lad24cd")
+    expect_equal(query_info[[3]], "lad25cd")
 
     query_data <- query_info |>
-    process_query_info(
-      within_names = "Stroud",
-      within_codes = NULL,
-      return_width = "full",
-      query_opt = NULL
-    )
+      process_query_info(
+        within_names = "Stroud",
+        within_codes = NULL,
+        return_width = "full",
+        query_opt = NULL
+      )
 
-    expect_true(grepl("MSOA21.*LAD24.*_LU", query_data[[1]]))
+    expect_true(grepl("MSOA21.*LAD25.*_LU", query_data[[1]]))
     expect_equal(query_data[[2]], "*")
-    expect_equal(query_data[[3]], "lad24nm IN ('Stroud')")
+    expect_equal(query_data[[3]], "lad25nm IN ('Stroud')")
 
     # tbl <- process_lookup_query_data(query_data) |>
     #   dplyr::bind_rows() |>
     #   janitor::clean_names()
-
   }) |>
   rlang::with_interactive(FALSE)
 
@@ -104,7 +103,10 @@ test_that("return_narrow_table_info works overall", {
 
 test_that("It can find a suitable lookup year based on within_year", {
   lookup(
-    "wd", "lad", "Shepway", within_year = 2016,
+    "wd",
+    "lad",
+    "Shepway",
+    within_year = 2016,
     opts = boundr_options(resolution = "SGCB")
   ) |>
     expect_no_error()
@@ -124,14 +126,16 @@ test_that("It can find a suitable lookup year based on within_year", {
     process_query_info("Shepway", NULL, "tidy", NULL) |>
     expect_no_error()
 
-  expect_equal(query_data[[1]], paste0(
-    ogu(),
-    "/WD16_REGD16_LAD16_EW_LU_e40c67c9fe5245f7871f8857c8cd022b",
-    "/FeatureServer"
-  ))
+  expect_equal(
+    query_data[[1]],
+    paste0(
+      ogu(),
+      "/WD16_REGD16_LAD16_EW_LU_e40c67c9fe5245f7871f8857c8cd022b",
+      "/FeatureServer"
+    )
+  )
   expect_equal(query_data[[2]], c("wd16cd", "wd16nm", "lad16cd", "lad16nm"))
   expect_equal(query_data[[3]], "lad16nm IN ('Shepway')")
-
 })
 
 
@@ -141,12 +145,12 @@ test_that("Try to understand why this one not working", {
   # expect_no_error(common_lookup("oa", "pcds", NULL, NULL, NULL, NULL, opts()))
 
   query_info <- return_lookup_table_info(
-      "oa",
-      "pcds",
-      lookup_year = 2021,
-      within_year = 2021,
-      joinable = FALSE
-    ) |>
+    "oa",
+    "pcds",
+    lookup_year = 2021,
+    within_year = 2021,
+    joinable = FALSE
+  ) |>
     expect_no_error()
 
   fn <- "return_lookup_table_info"
@@ -171,5 +175,4 @@ test_that("Try to understand why this one not working", {
   # pcds21cd was for some reason missing from the schema
   # this has now been manually fixed so the overall query should now succeed
   expect_equal(s1_names, c("oa21cd", "pcds21cd"))
-
 })
