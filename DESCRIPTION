@@ -12,7 +12,6 @@ Authors@R:
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Imports: 
     assertthat,
     cli (>= 3.4.0),
@@ -38,3 +37,4 @@ Suggests:
 URL: https://codeberg.org/francisbarton/boundr, https://francisbarton.github.io/boundr/, https://francisbarton.codeberg.page/boundr/docs
 BugReports: https://codeberg.org/francisbarton/boundr/issues
 Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.0

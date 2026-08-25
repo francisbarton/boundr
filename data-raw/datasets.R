@@ -81,7 +81,7 @@ build_schema <- function() {
   service_urls <- api_services_data[["service_url"]][-fails]
 
   # Final data format process
-  schema <- data_from_api |>
+  data_from_api |>
     purrr::compact() |>
     purrr::map(httr2::resp_body_json) |>
     purrr::map2(
@@ -117,6 +117,7 @@ build_schema <- function() {
             "^CUA" = "CTYUA",
             "^Enumeration_Districts" = "ED",
             "^European_Electoral_Regions" = "EER",
+            "^Fire and Rescue Authorities" = "FRA",
             "^Fire_and_Rescue_Authorities" = "FRA",
             "^Health_and_Social_Care_Board" = "HSCB",
             "^Index_of_Multiple_Deprivation" = "IMD",
